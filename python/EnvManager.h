@@ -33,7 +33,7 @@ public:
 	double GetHumanReward(int id);     
 
 	int GetNumFullObservation();  
-	py::array_t<double> GetFullObservation(int id);   
+	const Eigen::MatrixXd& GetFullObservations();   
 	
 	void Steps(int num);
 	void StepsAtOnce();   
@@ -41,8 +41,8 @@ public:
 
 	// state and action buffers   
 	void UpdateStateBuffers();   
-	void UpdateExoActionBuffers(py::array_t<double> np_array);   
-	void UpdateHumanActionBuffers(py::array_t<double> np_array);   
+	void UpdateExoActionBuffers(const Eigen::MatrixXd& humanactions);   
+	void UpdateHumanActionBuffers(const Eigen::MatrixXd& humanactions);     
 
 	const Eigen::VectorXd& IsEndOfEpisodes();
 	const Eigen::MatrixXd& GetStates();   
@@ -53,8 +53,7 @@ public:
 	const Eigen::VectorXd& GetRewards();  
 	const Eigen::VectorXd& GetExoRewards();  
 	const Eigen::VectorXd& GetHumanRewards();  
-	// py::array_t<double> GetFullObservations();   
-	py::array_t<double> GetFullObservations();  
+	
 
 	//For Muscle Transitions
 	int GetNumTotalMuscleRelatedDofs(){return mEnvs[0]->GetNumTotalRelatedDofs();};
@@ -79,7 +78,11 @@ private:
 	Eigen::VectorXd mRewards;
 	Eigen::MatrixXd mStates;
 	Eigen::MatrixXd mMuscleTorques;
-	Eigen::MatrixXd mDesiredTorques;
+	Eigen::MatrixXd mDesiredTorques;  
+
+	Eigen::VectorXd mExoRewards;   
+	Eigen::VectorXd mHumanRewards;    
+	Eigen::MatrixXd mObservations;  
 
 	Eigen::MatrixXd mMuscleTuplesJtA;
 	Eigen::MatrixXd mMuscleTuplesTauDes;

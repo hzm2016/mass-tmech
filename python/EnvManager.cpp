@@ -2,6 +2,7 @@
 #include "DARTHelper.h"
 #include <omp.h>
 
+
 EnvManager::
 EnvManager(std::string meta_file,int num_envs)
 	:mNumEnvs(num_envs)
@@ -97,14 +98,7 @@ double
 EnvManager::
 GetExoReward(int id)
 {
-	return mEnvs[id]->GetExoReward();
-}
-
-py::array_t<double> 
-EnvManager::
-GetExoAction(int id)
-{
-	return toNumPyArray(mEnvs[id]->GetAction());
+	return mEnvs[id]->GetExoReward();  
 }
 
 double 
@@ -114,12 +108,19 @@ GetHumanReward(int id)
 	return mEnvs[id]->GetHumanReward();  
 }
 
-py::array_t<double> 
-EnvManager::
-GetHumanAction(int id)
-{
-	return toNumPyArray(mEnvs[id]->GetHumanAction());
-}
+// py::array_t<double> 
+// EnvManager::
+// GetExoAction(int id)
+// {
+// 	return toNumPyArray(mEnvs[id]->GetAction());
+// }
+
+// py::array_t<double> 
+// EnvManager::
+// GetHumanAction(int id)
+// {
+// 	return toNumPyArray(mEnvs[id]->GetHumanAction());
+// }
 
 void
 EnvManager::
@@ -204,9 +205,9 @@ GetRewards()
 {
 	for (int id = 0;id<mNumEnvs;++id)
 	{
-		mRewards[id] = mEnvs[id]->GetReward(); 
+		mExoRewards[id] = mEnvs[id]->GetReward(); 
 	}
-	return mRewards; 
+	return mExoRewards;   
 }
 
 const Eigen::VectorXd&
@@ -215,37 +216,36 @@ GetExoRewards()
 {
 	for (int id = 0;id<mNumEnvs;++id)
 	{
-		mRewards[id] = mEnvs[id]->GetExoReward(); 
+		mHumanRewards[id] = mEnvs[id]->GetExoReward(); 
 	}
-	return mRewards; 
+	return mHumanRewards; 
 }  
 
-py::array_t<double>
-EnvManager::
-GetExoActions()
-{
-	Eigen::MatrixXd actions(mNumEnvs,this->GetNumAction());
-	for (int id = 0;id<mNumEnvs;++id)
-	{
-		actions.row(id) = mEnvs[id]->GetExoAction().transpose();
-	}
+// py::array_t<double>
+// EnvManager::
+// GetExoActions()
+// {
+// 	Eigen::MatrixXd actions(mNumEnvs, this->GetNumAction()); 
+// 	for (int id = 0;id<mNumEnvs;++id)
+// 	{
+// 		actions.row(id) = mEnvs[id]->GetExoAction().transpose();
+// 	}
 
-	return toNumPyArray(actions);
-}  
+// 	return toNumPyArray(actions);
+// }  
 
-py::array_t<double>
-EnvManager::
-GetHumanActions()
-{
-	Eigen::MatrixXd actions(mNumEnvs,this->GetNumHumanAction());
-	for (int id = 0;id<mNumEnvs;++id)
-	{
-		actions.row(id) = mEnvs[id]->GetHumanAction().transpose();
-	}
+// py::array_t<double>
+// EnvManager::
+// GetHumanActions()
+// {
+// 	Eigen::MatrixXd actions(mNumEnvs,this->GetNumHumanAction());
+// 	for (int id = 0;id<mNumEnvs;++id)
+// 	{
+// 		actions.row(id) = mEnvs[id]->GetHumanAction().transpose();
+// 	}
 
-	return toNumPyArray(actions);
-}
-
+// 	return toNumPyArray(actions);
+// }
 
 const Eigen::MatrixXd&
 EnvManager::
@@ -268,21 +268,20 @@ GetDesiredTorques()
 	{
 		mDesiredTorques.row(id) = mEnvs[id]->GetDesiredTorques();
 	}
-	return mDesiredTorques;
-}  
+	return mDesiredTorques;  
+}   
 
-py::array_t<double>
+
+const Eigen::VectorXd&
 EnvManager::
 GetRewards()
 {
-	std::vector<float> rewards(mNumEnvs);
-
 	for (int id = 0;id<mNumEnvs;++id)
 	{
-		rewards[id] = mEnvs[id]->GetReward();
+		mRewards[id] = mEnvs[id]->GetReward();
 	}
-	return toNumPyArray(rewards);
-}  
+	return mRewards;
+}
 
 void
 EnvManager::
@@ -367,16 +366,16 @@ GetNumFullObservation()
 	return mEnvs[0]->GetNumFullObservation();
 }
 
-py::array_t<double>
+const Eigen::MatrixXd&
 EnvManager::  
 GetFullObservations()   
 {
 	Eigen::MatrixXd obs(mNumEnvs, this->GetNumFullObservation());  
 	for (int id = 0;id<mNumEnvs;++id)
 	{
-		obs.row(id) = mEnvs[id]->GetFullObservation().transpose();  
+		mObservations.row(id) = mEnvs[id]->GetFullObservation().transpose();  
 	}
-	return toNumPyArray(obs); 
+	return mObservations;   
 }
 
 // update state and action buffers
@@ -390,27 +389,23 @@ UpdateStateBuffers()
 	}
 }
 
-
 void
 EnvManager::
-UpdateExoActionBuffers(py::array_t<double> np_array)  
+UpdateExoActionBuffers(const Eigen::MatrixXd& exoactions)      
 {
-	Eigen::MatrixXd action = toEigenMatrix(np_array);
 	for (int id = 0;id<mNumEnvs;++id)
 	{
-		mEnvs[id]->UpdateExoActionBuffer(action.row(id).transpose());
+		mEnvs[id]->UpdateExoActionBuffer(exoactions.row(id).transpose());
 	}
 }
 
-
 void
 EnvManager::
-UpdateHumanActionBuffers(py::array_t<double> np_array)   
+UpdateHumanActionBuffers(const Eigen::MatrixXd& humanactions)   
 {
-	Eigen::MatrixXd action = toEigenMatrix(np_array);
 	for (int id = 0;id<mNumEnvs;++id)
 	{
-		mEnvs[id]->UpdateHumanActionBuffer(action.row(id).transpose());
+		mEnvs[id]->UpdateHumanActionBuffer(humanactions.row(id).transpose());
 	}
 }
 
@@ -438,8 +433,6 @@ PYBIND11_MODULE(pymss, m)
 		.def("IsEndOfEpisodes",&EnvManager::IsEndOfEpisodes)
 		.def("GetStates",&EnvManager::GetStates)
 		.def("SetActions",&EnvManager::SetActions)
-		.def("GetRewards",&EnvManager::GetRewards)
-		.def("GetExoRewards",&EnvManager::GetExoRewards) 
 		.def("GetHumanRewards",&EnvManager::GetHumanRewards) 
 		.def("GetNumTotalMuscleRelatedDofs",&EnvManager::GetNumTotalMuscleRelatedDofs)
 		.def("GetNumMuscles",&EnvManager::GetNumMuscles)

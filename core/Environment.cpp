@@ -92,7 +92,10 @@ Initialize(const std::string& meta_file,bool load_obj)
 		}
 
 	}
-	ifs.close();
+	ifs.close();  
+
+	// revised by Zhimin 
+	mNumExoActiveDof = 2;   
 	
 	double kp = 300.0;
 	character->SetPDParameters(kp,sqrt(2*kp));

@@ -70,16 +70,17 @@ class PPO(object):
 
   		# human training details 
 		self.use_muscle = self.env.UseMuscle()
+  
 		self.num_state = self.env.GetNumState()  
   
 		self.num_human_action = self.env.GetNumAction()
 		self.num_muscles = self.env.GetNumMuscles()   
-		self.num_human_states = 56  
+		self.num_human_states = 56   
   
 		# exo training details 
-		self.num_exo_action = int(self.env.GetNumExoAction())      
-
-		self.num_epochs = 10
+		self.num_exo_action = 2       
+		
+		self.num_epochs = 10   
 		self.num_epochs_muscle = 3
 		self.num_evaluation = 0
 		self.num_tuple_so_far = 0
@@ -89,10 +90,10 @@ class PPO(object):
 		self.num_control_Hz = self.env.GetControlHz()
 		self.num_simulation_per_control = self.num_simulation_Hz // self.num_control_Hz
 
-		self.gamma = 0.99  
-		self.lb = 0.99  
+		self.gamma = 0.99   
+		self.lb = 0.99   
 
-		self.buffer_size = 2048
+		self.buffer_size = 2048  
 		self.batch_size = 128
 		self.muscle_batch_size = 128
 
@@ -106,8 +107,8 @@ class PPO(object):
 		self.human_model = SimulationHumanNN(self.num_state,self.num_human_action)  
 		self.muscle_model = MuscleNN(self.env.GetNumTotalMuscleRelatedDofs(),self.num_human_action,self.num_muscles)
 		if use_cuda:
-			self.human_model.cuda()
-			self.muscle_model.cuda() 
+			self.human_model.cuda()  
+			self.muscle_model.cuda()   
 
 		self.default_learning_rate = 1E-4
 		self.default_clip_ratio = 0.2
@@ -126,10 +127,11 @@ class PPO(object):
 		self.loss_critic = 0.0
 		self.loss_muscle = 0.0
 		self.rewards = []  
-		self.rewards_exo = []  
+		self.rewards_exo = []   
+		self.rewards_human = []    
 		self.sum_return = 0.0
-		self.max_return = -1.0
-		self.max_return_epoch = 1
+		self.max_return = -1.0  
+		self.max_return_epoch = 1  
 		self.tic = time.time()
 
 		self.episodes = [None]*self.num_slaves
@@ -139,7 +141,7 @@ class PPO(object):
 		self._action_filter_exo = [self._BuildExoActionFilter() for _i in range(self.num_slaves)]  
 		self._action_filter_human = [self._BuildHumanActionFilter() for _i in range(self.num_slaves)]   
   
-		self.env.Resets(True)
+		self.env.Resets(True)  
 	
 	def _BuildExoActionFilter(self):
 		sampling_rate = self.num_control_Hz #1 / (self.time_step * self._action_repeat)
@@ -274,22 +276,23 @@ class PPO(object):
 		actions = [None]*self.num_slaves 
   
 		rewards = [None]*self.num_slaves
-		states_next = [None]*self.num_slaves  
+		states_next = [None]*self.num_slaves    
   
 		# exo  
-		rewards_exo = [None]*self.num_slaves
-		rewards_human = [None]*self.num_slaves  
+		rewards_exo = [None]*self.num_slaves  
+		rewards_human = [None]*self.num_slaves   
   
-		# only human model 
-		states = self.env.GetStates()   
-  
-  		# get seperate states  
-		states = self.env.GetFullObservations()    
+		if self.only_human: 
+			# only human model 
+			states = self.env.GetStates()   
+		else:   
+			# get seperate states  
+			states = self.env.GetFullObservations()    
 	
 		states_exo = states[:, :-self.num_human_states]     
 		states_human = states[:, -self.num_human_states:]     
   
-		local_step = 0
+		local_step = 0  
 		terminated = [False]*self.num_slaves
 		counter = 0
 		while True:
@@ -304,7 +307,7 @@ class PPO(object):
 			values_human = v_human.cpu().detach().numpy().reshape(-1)   
    
    			# exo action 
-			a_dist_exo,v_exo = self.human_model(Tensor(states_exo))    
+			a_dist_exo,v_exo = self.exo_model(Tensor(states_exo))      
 			actions_exo = a_dist_exo.sample().cpu().detach().numpy()   
 			logprobs_exo = a_dist_exo.log_prob(Tensor(actions_exo)).cpu().detach().numpy().reshape(-1)
 			values_exo = v_exo.cpu().detach().numpy().reshape(-1)    
@@ -314,8 +317,9 @@ class PPO(object):
    
 			# update action buffer  
 			self.env.UpdateExoActionBuffers(actions_exo)    
-			self.env.UpdateHumanActionBuffers(actions_human)    
-   
+			self.env.UpdateHumanActionBuffers(actions_human)     
+
+			# use muscle 
 			if self.use_muscle: 
 				mt = Tensor(self.env.GetMuscleTorques())  
 				for i in range(self.num_simulation_per_control//2):  
@@ -324,15 +328,15 @@ class PPO(object):
 					self.env.SetActivationLevels(activations)  
 					self.env.Steps(2)  
      
-				self.env.UpdateStateBuffers()  # update state buffer  
+				self.env.UpdateStateBuffers()    # update state buffer  
 			else:
 				self.env.StepsAtOnce()         
 				# state buffer update  
-				self.env.UpdateStateBuffers()  # update state buffer 
+				self.env.UpdateStateBuffers()    # update state buffer 
 
-			for j in range(self.num_slaves):
-				nan_occur = False
-				terminated_state = True
+			for j in range(self.num_slaves):   
+				nan_occur = False    
+				terminated_state = True    
 
 				if np.any(np.isnan(states_exo[j])) or np.any(np.isnan(actions_exo[j])) or np.any(np.isnan(values_exo[j])) or np.any(np.isnan(logprobs_exo[j])) or\
 					np.any(np.isnan(states_human[j])) or np.any(np.isnan(actions_human[j])) or np.any(np.isnan(values_human[j])) or np.any(np.isnan(logprobs_human[j])):    
@@ -363,14 +367,15 @@ class PPO(object):
 
 			if local_step >= self.buffer_size:
 				break
-				
-			# states = self.env.GetStates()   
+			
+			if self.only_human:  
+				states = self.env.GetStates()   
+			else:  
+				# get states   
+				states = self.env.GetFullObservations()    
+				states_exo = states[:,0:-self.num_human_state]     
+				states_human = states[:,-self.num_human_state:]      
 
-			# get states 
-			states = self.env.GetFullObservations()    
-			states_exo = states[:,0:-self.num_human_state]     
-			states_human = states[:,-self.num_human_state:]     
-		
 	def OptimizeSimulationHumanNN(self):  
 		all_transitions = np.array(self.replay_buffer.buffer)
 		for j in range(self.num_epochs):

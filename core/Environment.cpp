@@ -239,7 +239,7 @@ GetDesiredTorques()
 {
 	Eigen::VectorXd p_des = mTargetPositions;
 	p_des.tail(mTargetPositions.rows()-mRootJointDof) += mAction;  
-	
+
 	mDesiredTorque = mCharacter->GetSPDForces(p_des);  
 	return mDesiredTorque.tail(mDesiredTorque.rows()-mRootJointDof);   
 }   
@@ -346,7 +346,7 @@ Environment::
 GetHumanState()   
 {
 	auto& skel = mCharacter->GetSkeleton();     
-	Eigen::VectorXd p_human, v_human;
+	Eigen::VectorXd p_human, v_human;  
 	p_human = skel->getPositions().head(mCharacter->GetHumandof());
 	v_human = skel->getVelocities().head(mCharacter->GetHumandof());
 	Eigen::VectorXd p_cur_human, v_cur_human;
@@ -432,7 +432,6 @@ GetHumanReward()
 	return r;
 }
 
-
 void 
 Environment::
 SetExoAction(const Eigen::VectorXd& a)      
@@ -442,7 +441,6 @@ SetExoAction(const Eigen::VectorXd& a)
     // std::cout <<" -----mCurrentExoAction-----" << a << std::endl;
 	double t = mWorld->getTime();  
 }
-
 
 double
 Environment::
@@ -548,8 +546,8 @@ GetFullObservation()
 
 	//get human states   
 	Eigen::VectorXd humanstates_v = GetHumanState();    
-	Eigen::VectorXd observation;   
 
+	Eigen::VectorXd observation;   
 	// get all states 
 	if (mUseExo)
 	{

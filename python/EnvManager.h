@@ -44,8 +44,10 @@ public:
 	void UpdateHumanActionBuffers(np::ndarray np_array);   
 
 	const Eigen::VectorXd& IsEndOfEpisodes();
-	const Eigen::MatrixXd& GetStates();
-	void SetActions(const Eigen::MatrixXd& actions);  
+	const Eigen::MatrixXd& GetStates();   
+
+	void SetActions(const Eigen::MatrixXd& actions);   
+	void SetActions(const Eigen::MatrixXd& exoactions, const Eigen::MatrixXd& humanactions);   
 
 	const Eigen::VectorXd& GetRewards();  
 	const Eigen::VectorXd& GetExoRewards();  

@@ -69,13 +69,12 @@ class PPO(object):
 		self.only_human = 0  # or 0 with human and exo network 
 
   		# human training details 
-		self.use_muscle = self.env.UseMuscle()
-  
-		self.num_state = self.env.GetNumState()  
-  
+		self.use_muscle = self.env.UseMuscle()  
+		self.num_state = self.env.GetNumState()   
 		self.num_human_action = self.env.GetNumAction()  
 		self.num_muscles = self.env.GetNumMuscles()   
-		self.num_human_states = 56   
+  
+		# self.num_human_states = 56  
   
 		# exo training details 
 		self.num_exo_action = 2       

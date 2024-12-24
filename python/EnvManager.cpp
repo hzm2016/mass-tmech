@@ -100,7 +100,7 @@ GetExoReward(int id)
 	return mEnvs[id]->GetExoReward();
 }
 
-np::ndarray 
+py::array_t<double> 
 EnvManager::
 GetExoAction(int id)
 {
@@ -114,7 +114,7 @@ GetHumanReward(int id)
 	return mEnvs[id]->GetHumanReward();  
 }
 
-np::ndarray 
+py::array_t<double> 
 EnvManager::
 GetHumanAction(int id)
 {
@@ -220,7 +220,7 @@ GetExoRewards()
 	return mRewards; 
 }  
 
-np::ndarray
+py::array_t<double>
 EnvManager::
 GetExoActions()
 {
@@ -233,7 +233,7 @@ GetExoActions()
 	return toNumPyArray(actions);
 }  
 
-np::ndarray
+py::array_t<double>
 EnvManager::
 GetHumanActions()
 {
@@ -271,7 +271,7 @@ GetDesiredTorques()
 	return mDesiredTorques;
 }  
 
-np::ndarray
+py::array_t<double>
 EnvManager::
 GetRewards()
 {
@@ -367,7 +367,7 @@ GetNumFullObservation()
 	return mEnvs[0]->GetNumFullObservation();
 }
 
-np::ndarray
+py::array_t<double>
 EnvManager::  
 GetFullObservations()   
 {
@@ -393,7 +393,7 @@ UpdateStateBuffers()
 
 void
 EnvManager::
-UpdateExoActionBuffers(np::ndarray np_array)  
+UpdateExoActionBuffers(py::array_t<double> np_array)  
 {
 	Eigen::MatrixXd action = toEigenMatrix(np_array);
 	for (int id = 0;id<mNumEnvs;++id)
@@ -405,7 +405,7 @@ UpdateExoActionBuffers(np::ndarray np_array)
 
 void
 EnvManager::
-UpdateHumanActionBuffers(np::ndarray np_array)   
+UpdateHumanActionBuffers(py::array_t<double> np_array)   
 {
 	Eigen::MatrixXd action = toEigenMatrix(np_array);
 	for (int id = 0;id<mNumEnvs;++id)

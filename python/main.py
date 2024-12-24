@@ -74,8 +74,6 @@ class PPO(object):
 		self.num_human_action = self.env.GetNumAction()  
 		self.num_muscles = self.env.GetNumMuscles()   
   
-		# self.num_human_states = 56  
-  
 		# exo training details 
 		self.num_exo_action = 2       
 		
@@ -288,8 +286,10 @@ class PPO(object):
 			# get seperate states  
 			states = self.env.GetFullObservations()    
 	
-		states_exo = states[:, :-self.num_human_states]     
-		states_human = states[:, -self.num_human_states:]     
+		# states_exo = states[:, :-self.num_human_states]     
+		# states_human = states[:, -self.num_human_states:]     
+		states_exo = states  
+		states_human = states 
   
 		local_step = 0  
 		terminated = [False]*self.num_slaves

@@ -83,7 +83,6 @@ private:
 	Eigen::MatrixXd mMuscleTuplesTauDes;
 	Eigen::MatrixXd mMuscleTuplesL;
 	Eigen::MatrixXd mMuscleTuplesb;  
-
 };
 
 #endif

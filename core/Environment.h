@@ -82,7 +82,18 @@ public:
 	const Eigen::VectorXd& GetActivationLevels(){return mActivationLevels;}
 	const Eigen::VectorXd& GetAverageActivationLevels(){return mAverageActivationLevels;}
 	void SetActivationLevels(const Eigen::VectorXd& a){mActivationLevels = a;}
-	bool GetUseMuscle(){return mUseMuscle;}
+	bool GetUseMuscle(){return mUseMuscle;}  
+
+	// state buffer   
+	FixedQueue<Eigen::VectorXd> history_buffer_human_state;  
+	FixedQueue<Eigen::VectorXd> history_buffer_exo_state;   
+
+	// action buffer 
+	FixedQueue<Eigen::VectorXd> history_buffer_exo_action;   
+	FixedQueue<Eigen::VectorXd> history_buffer_human_action;    
+
+	// torque buffer
+	FixedQueue<Eigen::VectorXd> history_buffer_torque;    
 private:
 	dart::simulation::WorldPtr mWorld;
 	int mControlHz,mSimulationHz;
@@ -100,18 +111,7 @@ private:
 
 	// human    
 	Eigen::VectorXd mHumanAction;  
-	Eigen::VectorXd mCurrentHumanAction, mPrevHumanAction;   
-
-	// state buffer 
-	FixedQueue<Eigen::VectorXd> history_buffer_human_state;  
-	FixedQueue<Eigen::VectorXd> history_buffer_exo_state;   
-
-	// action buffer 
-	FixedQueue<Eigen::VectorXd> history_buffer_exo_action;   
-	FixedQueue<Eigen::VectorXd> history_buffer_human_action;    
-
-	// torque buffer
-	FixedQueue<Eigen::VectorXd> history_buffer_torque;       
+	Eigen::VectorXd mCurrentHumanAction, mPrevHumanAction;      
 
 	int mNumState;
 	int mNumActiveDof;

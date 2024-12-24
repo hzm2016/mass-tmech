@@ -369,6 +369,7 @@ class PPO(object):
 				break
 			
 			if self.only_human:  
+       			# get states 	 
 				states = self.env.GetStates()   
 			else:  
 				# get states   
@@ -518,7 +519,7 @@ class PPO(object):
 		
 	def Train(self): 
 		self.GenerateTransitions()
-		self.OptimizeModel()
+		self.OptimizeModel()  
 
 	def Evaluate(self):
 		self.num_evaluation = self.num_evaluation + 1
@@ -595,14 +596,16 @@ if __name__=="__main__":
 
 	ppo = PPO(args.meta)
 	nn_dir = '../nn'
-	if not os.path.exists(nn_dir):
-	    os.makedirs(nn_dir)
-	if args.model is not None:
-		ppo.LoadModel(args.model)
+	if not os.path.exists(nn_dir):  
+		os.makedirs(nn_dir)    
+		
+	if args.model is not None: 
+		ppo.LoadModel(args.model)  
 	else:
-		ppo.SaveModel()
+		ppo.SaveModel()   
+
 	print('num states: {}, num actions: {}'.format(ppo.env.GetNumState(),ppo.env.GetNumAction()))
 	for i in range(ppo.max_iteration-5):
-		ppo.Train()
-		rewards = ppo.Evaluate()
-		Plot(rewards,'reward',0,False)
+		ppo.Train()  
+		rewards = ppo.Evaluate()   
+		Plot(rewards,'reward',0,False)    

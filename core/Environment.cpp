@@ -344,6 +344,80 @@ GetState()
 	return state;
 }
 
+void 
+Environment::
+SetAction(const Eigen::VectorXd& a)
+{
+	mAction = a*0.1;   
+
+	double t = mWorld->getTime();   
+
+	std::pair<Eigen::VectorXd,Eigen::VectorXd> pv = mCharacter->GetTargetPosAndVel(t,1.0/mControlHz);  
+	mTargetPositions = pv.first;  
+	mTargetVelocities = pv.second;   
+
+	mSimCount = 0;
+	mRandomSampleIndex = rand()%(mSimulationHz/mControlHz);
+	mAverageActivationLevels.setZero();  
+}
+
+double 
+Environment::
+GetReward() 
+{
+	auto& skel = mCharacter->GetSkeleton();
+
+	Eigen::VectorXd cur_pos = skel->getPositions();
+	Eigen::VectorXd cur_vel = skel->getVelocities();
+
+	Eigen::VectorXd p_diff_all = skel->getPositionDifferences(mTargetPositions,cur_pos);
+	Eigen::VectorXd v_diff_all = skel->getPositionDifferences(mTargetVelocities,cur_vel);
+
+	Eigen::VectorXd p_diff = Eigen::VectorXd::Zero(skel->getNumDofs());
+	Eigen::VectorXd v_diff = Eigen::VectorXd::Zero(skel->getNumDofs());
+
+	const auto& bvh_map = mCharacter->GetBVH()->GetBVHMap();  
+
+	for(auto ss : bvh_map)
+	{
+		auto joint = mCharacter->GetSkeleton()->getBodyNode(ss.first)->getParentJoint();
+		int idx = joint->getIndexInSkeleton(0);
+		if(joint->getType()=="FreeJoint")
+			continue;
+		else if(joint->getType()=="RevoluteJoint")
+			p_diff[idx] = p_diff_all[idx];
+		else if(joint->getType()=="BallJoint")
+			p_diff.segment<3>(idx) = p_diff_all.segment<3>(idx);
+	}
+
+	auto ees = mCharacter->GetEndEffectors();
+	Eigen::VectorXd ee_diff(ees.size()*3);
+	Eigen::VectorXd com_diff;
+
+	for(int i =0;i<ees.size();i++)
+		ee_diff.segment<3>(i*3) = ees[i]->getCOM();
+	com_diff = skel->getCOM();
+
+	skel->setPositions(mTargetPositions);
+	skel->computeForwardKinematics(true,false,false);
+
+	com_diff -= skel->getCOM();
+	for(int i=0;i<ees.size();i++)
+		ee_diff.segment<3>(i*3) -= ees[i]->getCOM()+com_diff;
+
+	skel->setPositions(cur_pos);
+	skel->computeForwardKinematics(true,false,false);
+
+	double r_q = exp_of_squared(p_diff,2.0);
+	double r_v = exp_of_squared(v_diff,0.1);
+	double r_ee = exp_of_squared(ee_diff,40.0);
+	double r_com = exp_of_squared(com_diff,10.0);
+
+	double r = r_ee*(w_q*r_q + w_v*r_v);
+
+	return r;
+}
+
 Eigen::VectorXd 
 Environment::   
 GetHumanState()   
@@ -497,7 +571,6 @@ GetExoState()
     return observation;  
 }
 
-
 void 
 Environment:: 
 UpdateStateBuffer()  
@@ -506,14 +579,12 @@ UpdateStateBuffer()
 	history_buffer_exo_state.push_back(this->GetExoState());        
 }
 
-
 void 
 Environment:: 
 UpdateExoActionBuffer(Eigen::VectorXd exoaction)  
 {
 	history_buffer_exo_action.push_back(exoaction);   
 }
-
 
 void 
 Environment:: 
@@ -522,14 +593,12 @@ UpdateTorqueBuffer(Eigen::VectorXd torque)
 	history_buffer_torque.push_back(torque); 
 }
 
-
 void 
 Environment:: 
 UpdateHumanActionBuffer(Eigen::VectorXd humanaction)
 {
 	history_buffer_human_action.push_back(humanaction); 
 }
-
 
 Eigen::VectorXd 
 Environment::  

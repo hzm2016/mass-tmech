@@ -44,6 +44,8 @@ public:
 	bool IsEndOfEpisode(); 
 
 	Eigen::VectorXd GetState();  
+	void SetAction(const Eigen::VectorXd& a);   
+	double GetReward();    
 
 	// human  
 	Eigen::VectorXd GetHumanState();     

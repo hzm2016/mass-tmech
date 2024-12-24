@@ -190,7 +190,7 @@ SetActions(const Eigen::MatrixXd& actions)
 
 void
 EnvManager::
-SetActions(const Eigen::MatrixXd& exoactions, const Eigen::MatrixXd& humanactions)  
+SetExoHumanActions(const Eigen::MatrixXd& exoactions, const Eigen::MatrixXd& humanactions)  
 {
 	for (int id = 0;id<mNumEnvs;++id) 
 	{
@@ -270,18 +270,6 @@ GetDesiredTorques()
 	}
 	return mDesiredTorques;  
 }   
-
-
-const Eigen::VectorXd&
-EnvManager::
-GetRewards()
-{
-	for (int id = 0;id<mNumEnvs;++id)
-	{
-		mRewards[id] = mEnvs[id]->GetReward();
-	}
-	return mRewards;
-}
 
 void
 EnvManager::

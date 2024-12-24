@@ -47,14 +47,13 @@ public:
 	const Eigen::VectorXd& IsEndOfEpisodes();
 	const Eigen::MatrixXd& GetStates();   
 
-	void SetActions(const Eigen::MatrixXd& actions);   
-	void SetActions(const Eigen::MatrixXd& exoactions, const Eigen::MatrixXd& humanactions);   
+	void SetHumanActions(const Eigen::MatrixXd& actions);   
+	void SetExoHumanActions(const Eigen::MatrixXd& exoactions, const Eigen::MatrixXd& humanactions);   
 
 	const Eigen::VectorXd& GetRewards();  
 	const Eigen::VectorXd& GetExoRewards();  
 	const Eigen::VectorXd& GetHumanRewards();  
 	
-
 	//For Muscle Transitions
 	int GetNumTotalMuscleRelatedDofs(){return mEnvs[0]->GetNumTotalRelatedDofs();};
 	int GetNumMuscles(){return mEnvs[0]->GetCharacter()->GetMuscles().size();}

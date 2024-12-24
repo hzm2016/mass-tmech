@@ -457,7 +457,7 @@ GetExoReward()
     double r_torque = exp(-0.01*torque.squaredNorm());  // train
 
 	// double r= r_torque_smooth + 0.01*r_torque;
-	double r = GetHumanReward();
+	double r = GetHumanReward();  
 	// if (dart::math::isNan(r)){
 	// 	std::cout << "r_torque_smooth  "<< r_torque_smooth << " r_torque " << r_torque << std::endl;
 	// }

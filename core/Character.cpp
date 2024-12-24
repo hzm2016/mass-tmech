@@ -164,7 +164,7 @@ GetSPDForces(const Eigen::VectorXd& p_desired_human, const Eigen::VectorXd& p_de
 	v_diff_human[6] += v_diff_exo[1];     
 
 	Eigen::VectorXd ddq = M_inv*(-mSkeleton->getCoriolisAndGravityForces()+p_diff_human+v_diff_human+mSkeleton->getConstraintForces());
-	Eigen::VectorXd tau = p_diff + v_diff - dt*mKv.cwiseProduct(ddq);
+	Eigen::VectorXd tau = p_diff_human + v_diff_human - dt*mKv.cwiseProduct(ddq);
 
 	tau.head<6>().setZero();
 

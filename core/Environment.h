@@ -3,6 +3,10 @@
 #include "dart/dart.hpp"
 #include "Character.h"
 #include "Muscle.h"
+#include "Fixedeque.h" 
+
+#include <queue>
+#include <deque>
 
 #define HISTORY_BUFFER_LEN 3 
 
@@ -84,6 +88,13 @@ public:
 	void SetActivationLevels(const Eigen::VectorXd& a){mActivationLevels = a;}
 	bool GetUseMuscle(){return mUseMuscle;}  
 
+private:
+	dart::simulation::WorldPtr mWorld;
+	int mControlHz,mSimulationHz;
+	bool mUseMuscle;
+	Character* mCharacter;
+	dart::dynamics::SkeletonPtr mGround;
+	
 	// state buffer   
 	FixedQueue<Eigen::VectorXd> history_buffer_human_state;  
 	FixedQueue<Eigen::VectorXd> history_buffer_exo_state;   
@@ -94,13 +105,7 @@ public:
 
 	// torque buffer
 	FixedQueue<Eigen::VectorXd> history_buffer_torque;    
-private:
-	dart::simulation::WorldPtr mWorld;
-	int mControlHz,mSimulationHz;
-	bool mUseMuscle;
-	Character* mCharacter;
-	dart::dynamics::SkeletonPtr mGround;
-	
+
 	// human 
 	Eigen::VectorXd mAction;
 	Eigen::VectorXd mTargetPositions,mTargetVelocities;  
@@ -118,6 +123,14 @@ private:
 	int mRootJointDof;  
 
 	int mNumFullObservation;  
+
+	int mNumHumanState;    
+	int mNumHumanAction;  
+
+	int mNumExoState;    
+	int mNumExoAction;  
+	
+	int mUseExo;  
 
 	Eigen::VectorXd mActivationLevels;
 	Eigen::VectorXd mAverageActivationLevels;

@@ -18,6 +18,7 @@ public:
 	void Reset();	
 	void SetPDParameters(double kp, double kv);
 	void AddEndEffector(const std::string& body_name){mEndEffectors.push_back(mSkeleton->getBodyNode(body_name));}
+	
 	Eigen::VectorXd GetSPDForces(const Eigen::VectorXd& p_desired);  
 	Eigen::VectorXd GetSPDForces(const Eigen::VectorXd& p_desired_human, const Eigen::VectorXd& p_desired_exo);  
 
@@ -37,7 +38,7 @@ public:
 	std::vector<Muscle*> mMuscles;
 	std::vector<dart::dynamics::BodyNode*> mEndEffectors;
 
-	Eigen::VectorXd mKp, mKv;
+	Eigen::VectorXd mKp, mKv;   
 
 };
 };

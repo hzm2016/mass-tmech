@@ -180,7 +180,7 @@ GetStates()
 
 void
 EnvManager::
-SetActions(const Eigen::MatrixXd& actions)
+SetHumanActions(const Eigen::MatrixXd& actions)
 {
 	for (int id = 0;id<mNumEnvs;++id)
 	{
@@ -420,7 +420,8 @@ PYBIND11_MODULE(pymss, m)
 		.def("Resets",&EnvManager::Resets)
 		.def("IsEndOfEpisodes",&EnvManager::IsEndOfEpisodes)
 		.def("GetStates",&EnvManager::GetStates)
-		.def("SetActions",&EnvManager::SetActions)
+		.def("SetHumanActions",&EnvManager::SetHumanActions)  
+		.def("SetExoHumanActions",&EnvManager::SetExoHumanActions)
 		.def("GetHumanRewards",&EnvManager::GetHumanRewards) 
 		.def("GetNumTotalMuscleRelatedDofs",&EnvManager::GetNumTotalMuscleRelatedDofs)
 		.def("GetNumMuscles",&EnvManager::GetNumMuscles)

@@ -66,7 +66,7 @@ class PPO(object):
 		self.num_slaves = 16
 		self.env = pymss.pymss(meta_file,self.num_slaves)  
   
-		self.only_human = 0  # or 0 with human and exo network 
+		self.only_human = 1  # or 0 with human and exo network 
 
   		# human training details 
 		self.use_muscle = self.env.UseMuscle()  
@@ -312,7 +312,7 @@ class PPO(object):
 			values_exo = v_exo.cpu().detach().numpy().reshape(-1)    
 
 			# set actions of exo and human 
-			self.env.SetActions(actions_exo, actions_human)   
+			self.env.SetExoHumanActions(actions_exo, actions_human)   
    
 			# update action buffer  
 			self.env.UpdateExoActionBuffers(actions_exo)    

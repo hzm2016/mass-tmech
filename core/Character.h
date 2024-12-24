@@ -25,7 +25,9 @@ public:
 	Eigen::VectorXd GetTargetPositions(double t,double dt);
 	std::pair<Eigen::VectorXd,Eigen::VectorXd> GetTargetPosAndVel(double t,double dt);
 	
-	
+	int GetHumandof() {return mHumanDof;}  
+	int GetExodof() {return mExoDof;}    
+
 	const dart::dynamics::SkeletonPtr& GetSkeleton(){return mSkeleton;}
 	const std::vector<Muscle*>& GetMuscles() {return mMuscles;}
 	const std::vector<dart::dynamics::BodyNode*>& GetEndEffectors(){return mEndEffectors;}
@@ -39,6 +41,9 @@ public:
 	std::vector<dart::dynamics::BodyNode*> mEndEffectors;
 
 	Eigen::VectorXd mKp, mKv;   
+
+	int mHumanDof; 
+	int mExoDof;  
 
 };
 };

@@ -129,8 +129,10 @@ private:
 
 	int mNumExoState;    
 	int mNumExoAction;  
-	
+
 	int mUseExo;  
+
+	double randomized_latency;  
 
 	Eigen::VectorXd mActivationLevels;
 	Eigen::VectorXd mAverageActivationLevels;

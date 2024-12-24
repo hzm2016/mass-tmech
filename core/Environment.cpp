@@ -472,22 +472,22 @@ GetExoState()
 	// The last three states   
 	double dt = 1.0/mControlHz; 
 	Eigen::VectorXd observation;   
-	if((randomized_latency <= 0) || (history_buffer_true_state.size() == 1)){
-    	observation = history_buffer_true_state.get(HISTORY_BUFFER_LEN-1);
+	if((randomized_latency <= 0) || (history_buffer_exo_state.size() == 1)){
+    	observation = history_buffer_exo_state.get(HISTORY_BUFFER_LEN-1);
 	}
 	else
 	{
-		int n_steps_ago = int(randomized_latency / dt);
-		if(n_steps_ago + 1 >= history_buffer_true_state.size()){
-			observation = history_buffer_true_state.get(HISTORY_BUFFER_LEN-1);
+		int n_steps_ago = int(randomized_latency / dt);  
+		if(n_steps_ago + 1 >= history_buffer_exo_state.size()){
+			observation = history_buffer_exo_state.get(HISTORY_BUFFER_LEN-1);
 		}
 		else
 		{
 			double remaining_latency = randomized_latency - n_steps_ago * dt; 
 			double blend_alpha = remaining_latency / dt; 
 			observation = (
-				(1.0 - blend_alpha) * history_buffer_true_state.get(HISTORY_BUFFER_LEN - n_steps_ago - 1)
-				+ blend_alpha * history_buffer_true_state.get(HISTORY_BUFFER_LEN - n_steps_ago - 2)); 
+				(1.0 - blend_alpha) * history_buffer_exo_state.get(HISTORY_BUFFER_LEN - n_steps_ago - 1)
+				+ blend_alpha * history_buffer_exo_state.get(HISTORY_BUFFER_LEN - n_steps_ago - 2)); 
 		}
 	}
 
@@ -533,13 +533,13 @@ Environment::
 GetFullObservation()  
 {  
 	// exo states    
-	Eigen::MatrixXd states(mNumState, HISTORY_BUFFER_LEN);
+	Eigen::MatrixXd states(mNumExoState, HISTORY_BUFFER_LEN);
 	for(int i=0; i<HISTORY_BUFFER_LEN; i++)
 		states.col(i) =  history_buffer_exo_state.get(i);
 	Eigen::VectorXd states_v = Eigen::Map<const Eigen::VectorXd>(states.data(), states.size());   
 
 	// exo actions  
-	Eigen::MatrixXd actions(mNumAction, HISTORY_BUFFER_LEN);    
+	Eigen::MatrixXd actions(mNumExoAction, HISTORY_BUFFER_LEN);      
 	for(int i=0; i<HISTORY_BUFFER_LEN; i++)   
 		actions.col(i) =  history_buffer_exo_action.get(i);    
 	Eigen::VectorXd actions_v = Eigen::Map<const Eigen::VectorXd>(actions.data(), actions.size());

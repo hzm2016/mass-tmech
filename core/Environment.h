@@ -130,7 +130,9 @@ private:
 	int mNumExoState;    
 	int mNumExoAction;  
 
-	int mUseExo;  
+	int mNumExoActionDof;  
+
+	int mUseExo;   
 
 	double randomized_latency;  
 

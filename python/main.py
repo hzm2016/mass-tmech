@@ -66,14 +66,14 @@ class PPO(object):
 		self.num_slaves = 16
 		self.env = pymss.pymss(meta_file,self.num_slaves)  
   
-		self.only_human = 1 # or 0 with human and exo network 
+		self.only_human = 0  # or 0 with human and exo network 
 
   		# human training details 
 		self.use_muscle = self.env.UseMuscle()
   
 		self.num_state = self.env.GetNumState()  
   
-		self.num_human_action = self.env.GetNumAction()
+		self.num_human_action = self.env.GetNumAction()  
 		self.num_muscles = self.env.GetNumMuscles()   
 		self.num_human_states = 56   
   

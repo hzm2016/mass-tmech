@@ -174,7 +174,7 @@ class PPO(object):
 
 		filtered_action_exo = []
 		for i in range(action.shape[0]):
-			filtered_action_exo.append(self._action_filter[i].filter(action[i]))
+			filtered_action_exo.append(self._action_filter_exo[i].filter(action[i]))
 		return np.vstack(filtered_action_exo)  
 
 	def _FilterHumanAction(self, action):

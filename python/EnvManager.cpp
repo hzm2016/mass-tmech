@@ -322,6 +322,7 @@ ComputeMuscleTuples()
 		tps.clear();
 	}
 }
+
 const Eigen::MatrixXd&
 EnvManager::
 GetMuscleTuplesJtA()
@@ -358,7 +359,6 @@ const Eigen::MatrixXd&
 EnvManager::  
 GetFullObservations()   
 {
-	Eigen::MatrixXd obs(mNumEnvs, this->GetNumFullObservation());  
 	for (int id = 0;id<mNumEnvs;++id)
 	{
 		mObservations.row(id) = mEnvs[id]->GetFullObservation().transpose();  

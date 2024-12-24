@@ -22,54 +22,63 @@ EnvManager(std::string meta_file,int num_envs)
 	mMuscleTorques.resize(mNumEnvs, muscle_torque_cols);
 	mDesiredTorques.resize(mNumEnvs, tau_des_cols);
 }
+
 int
 EnvManager::
 GetNumState()
 {
 	return mEnvs[0]->GetNumState();
 }
+
 int
 EnvManager::
 GetNumAction()
 {
 	return mEnvs[0]->GetNumAction();
 }
+
 int
 EnvManager::
 GetSimulationHz()
 {
 	return mEnvs[0]->GetSimulationHz();
 }
+
 int
 EnvManager::
 GetControlHz()
 {
 	return mEnvs[0]->GetControlHz();
 }
+
 int
 EnvManager::
 GetNumSteps()
 {
 	return mEnvs[0]->GetNumSteps();
 }
+
 bool
 EnvManager::
 UseMuscle()
 {
 	return mEnvs[0]->GetUseMuscle();
 }
+
 void
 EnvManager::
 Step(int id)
 {
 	mEnvs[id]->Step();
 }
+
 void
 EnvManager::
 Reset(bool RSI,int id)
 {
 	mEnvs[id]->Reset(RSI);
 }
+
 bool
 EnvManager::
 IsEndOfEpisode(int id)
@@ -420,7 +429,9 @@ PYBIND11_MODULE(pymss, m)
 		.def("Step",&EnvManager::Step)
 		.def("Reset",&EnvManager::Reset)
 		.def("IsEndOfEpisode",&EnvManager::IsEndOfEpisode)
-		.def("GetReward",&EnvManager::GetReward)
+		.def("GetReward",&EnvManager::GetReward) 
+		.def("GetExoReward",&EnvManager::GetExoReward)  
+		.def("GetHumanReward",&EnvManager::GetHumanReward)  
 		.def("Steps",&EnvManager::Steps)
 		.def("StepsAtOnce",&EnvManager::StepsAtOnce)
 		.def("Resets",&EnvManager::Resets)
@@ -428,6 +439,8 @@ PYBIND11_MODULE(pymss, m)
 		.def("GetStates",&EnvManager::GetStates)
 		.def("SetActions",&EnvManager::SetActions)
 		.def("GetRewards",&EnvManager::GetRewards)
+		.def("GetExoRewards",&EnvManager::GetExoRewards) 
+		.def("GetHumanRewards",&EnvManager::GetHumanRewards) 
 		.def("GetNumTotalMuscleRelatedDofs",&EnvManager::GetNumTotalMuscleRelatedDofs)
 		.def("GetNumMuscles",&EnvManager::GetNumMuscles)
 		.def("GetMuscleTorques",&EnvManager::GetMuscleTorques)

@@ -53,7 +53,8 @@ public:
 	const Eigen::VectorXd& GetRewards();  
 	const Eigen::VectorXd& GetExoRewards();  
 	const Eigen::VectorXd& GetHumanRewards();  
-	np::ndarray GetFullObservations();   
+	// np::ndarray GetFullObservations();   
+	py::array_t<double> GetFullObservations();  
 
 	//For Muscle Transitions
 	int GetNumTotalMuscleRelatedDofs(){return mEnvs[0]->GetNumTotalRelatedDofs();};

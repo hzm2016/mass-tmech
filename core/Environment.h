@@ -40,8 +40,8 @@ public:
 
 public:
 	void Step();
-	void Reset(bool RSI = true);
-	bool IsEndOfEpisode(); 
+	void Reset(bool RSI = true);  
+	bool IsEndOfEpisode();  
 
 	Eigen::VectorXd GetState();  
 	void SetAction(const Eigen::VectorXd& a);   

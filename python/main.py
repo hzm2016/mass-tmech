@@ -70,7 +70,7 @@ class PPO(object):
 
   		# human training details 
 		self.use_muscle = self.env.UseMuscle()  
-		self.num_state = self.env.GetNumState()   
+		self.num_state = self.env.GetNumState()  
 		self.num_human_action = self.env.GetNumAction()  
 		self.num_muscles = self.env.GetNumMuscles()   
   

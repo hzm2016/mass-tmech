@@ -526,7 +526,7 @@ GetExoReward()
    	Eigen::VectorXd torque_diff = (history_buffer_torque.get(HISTORY_BUFFER_LEN-1)-2*history_buffer_torque.get(HISTORY_BUFFER_LEN-2)+history_buffer_torque.get(HISTORY_BUFFER_LEN-3)); 
 	Eigen::VectorXd torque_diff_exo =  torque_diff.tail(2);   
 
-	double r_torque_smooth = exp_of_squared(torque_diff_exo,15.0);   
+	double r_torque_smooth = exp_of_squared(torque_diff_exo, 15.0);   
 	
 	// get human torque 
  	Eigen::VectorXd torque = GetDesiredTorques().head(mCharacter->GetHumandof());  
@@ -540,7 +540,6 @@ GetExoReward()
 	// }
 	return r; 
 }  
-
 
 Eigen::VectorXd  
 Environment::  

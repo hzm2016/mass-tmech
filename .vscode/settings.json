@@ -4,6 +4,7 @@
         "istream": "cpp",
         "locale": "cpp",
         "tuple": "cpp",
-        "variant": "cpp"
+        "variant": "cpp",
+        "cmath": "cpp"
     }
 }

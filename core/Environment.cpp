@@ -4,6 +4,10 @@
 #include "BVH.h"
 #include "Muscle.h"
 #include "dart/collision/bullet/bullet.hpp"
+#include<cmath>
+#include <algorithm> 
+#include <random>
+
 using namespace dart;
 using namespace dart::simulation;
 using namespace dart::dynamics;
@@ -13,7 +17,6 @@ Environment::
 Environment()
 	:mControlHz(30),mSimulationHz(900),mWorld(std::make_shared<World>()),mUseMuscle(true),w_q(0.65),w_v(0.1),w_ee(0.15),w_com(0.1)
 {
-	// mRewards = RewardFactory::mRewards;	
 	history_buffer_human_state.setMaxLen(HISTORY_BUFFER_LEN);
 	history_buffer_exo_state.setMaxLen(HISTORY_BUFFER_LEN);
 	history_buffer_human_action.setMaxLen(HISTORY_BUFFER_LEN);

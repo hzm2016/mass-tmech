@@ -327,11 +327,11 @@ class PPO(object):
 					self.env.SetActivationLevels(activations)  
 					self.env.Steps(2)  
      
-				self.env.UpdateStateBuffers()    # update state buffer  
+				# self.env.UpdateStateBuffers()    # update state buffer  
 			else:
 				self.env.StepsAtOnce()         
 				# state buffer update  
-				self.env.UpdateStateBuffers()    # update state buffer 
+				# self.env.UpdateStateBuffers()    # update state buffer 
 
 			for j in range(self.num_slaves):   
 				nan_occur = False    

@@ -106,7 +106,8 @@ private:
 	FixedQueue<Eigen::VectorXd> history_buffer_human_action;    
 
 	// torque buffer
-	FixedQueue<Eigen::VectorXd> history_buffer_torque;    
+	FixedQueue<Eigen::VectorXd> history_buffer_exo_torque;    
+	FixedQueue<Eigen::VectorXd> history_buffer_human_torque;    
 
 	// human 
 	Eigen::VectorXd mAction;

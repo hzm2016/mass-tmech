@@ -13,7 +13,13 @@ Environment::
 Environment()
 	:mControlHz(30),mSimulationHz(900),mWorld(std::make_shared<World>()),mUseMuscle(true),w_q(0.65),w_v(0.1),w_ee(0.15),w_com(0.1)
 {
-
+	// mRewards = RewardFactory::mRewards;	
+	history_buffer_human_state.setMaxLen(HISTORY_BUFFER_LEN);
+	history_buffer_exo_state.setMaxLen(HISTORY_BUFFER_LEN);
+	history_buffer_human_action.setMaxLen(HISTORY_BUFFER_LEN);
+	history_buffer_exo_action.setMaxLen(HISTORY_BUFFER_LEN);
+	history_buffer_human_torque.setMaxLen(HISTORY_BUFFER_LEN);
+	history_buffer_exo_torque.setMaxLen(HISTORY_BUFFER_LEN);  
 }
 
 void
@@ -168,7 +174,17 @@ Reset(bool RSI)
 
 	mCharacter->GetSkeleton()->setPositions(mTargetPositions);
 	mCharacter->GetSkeleton()->setVelocities(mTargetVelocities);
-	mCharacter->GetSkeleton()->computeForwardKinematics(true,false,false);
+	mCharacter->GetSkeleton()->computeForwardKinematics(true,false,false);  
+
+	for(int i=0; i<HISTORY_BUFFER_LEN; i++)
+	{
+		history_buffer_human_state.push_back(this->GetHumanState());       
+		history_buffer_exo_state.push_back(this->GetExoState());      
+		history_buffer_human_action.push_back(this->GetHumanAction());      
+		history_buffer_exo_action.push_back(this->GetExoAction());      
+		history_buffer_human_torque.push_back(this->GetDesiredTorques());      
+		history_buffer_exo_torque.push_back(this->GetDesiredTorques());     
+	}
 }
 
 void
@@ -224,14 +240,16 @@ Step()
 		mCharacter->GetSkeleton()->setForces(mDesiredTorque);
 	}
 
-	mWorld->step();
+	mWorld->step();  
 
-	// Eigen::VectorXd p_des = mTargetPositions;
-	// //p_des.tail(mAction.rows()) += mAction;
-	// mCharacter->GetSkeleton()->setPositions(p_des);
-	// mCharacter->GetSkeleton()->setVelocities(mTargetVelocities);
-	// mCharacter->GetSkeleton()->computeForwardKinematics(true,false,false);
-	// mWorld->setTime(mWorld->getTime()+mWorld->getTimeStep());
+	UpdateTorqueBuffer(mDesiredTorque);      
+
+	// Eigen::VectorXd p_des = mTargetPositions;  
+	// //p_des.tail(mAction.rows()) += mAction;  
+	// mCharacter->GetSkeleton()->setPositions(p_des);  
+	// mCharacter->GetSkeleton()->setVelocities(mTargetVelocities);   
+	// mCharacter->GetSkeleton()->computeForwardKinematics(true,false,false);  
+	// mWorld->setTime(mWorld->getTime()+mWorld->getTimeStep());  
 
 	mSimCount++;
 }
@@ -523,7 +541,7 @@ double
 Environment::
 GetExoReward()  
 {
-   	Eigen::VectorXd torque_diff = (history_buffer_torque.get(HISTORY_BUFFER_LEN-1)-2*history_buffer_torque.get(HISTORY_BUFFER_LEN-2)+history_buffer_torque.get(HISTORY_BUFFER_LEN-3)); 
+   	Eigen::VectorXd torque_diff = (history_buffer_human_torque.get(HISTORY_BUFFER_LEN-1)-2*history_buffer_human_torque.get(HISTORY_BUFFER_LEN-2)+history_buffer_human_torque.get(HISTORY_BUFFER_LEN-3)); 
 	Eigen::VectorXd torque_diff_exo =  torque_diff.tail(2);   
 
 	double r_torque_smooth = exp_of_squared(torque_diff_exo, 15.0);   
@@ -585,11 +603,12 @@ UpdateExoActionBuffer(Eigen::VectorXd exoaction)
 	history_buffer_exo_action.push_back(exoaction);   
 }
 
-void 
+void  
 Environment:: 
 UpdateTorqueBuffer(Eigen::VectorXd torque)
 {
-	history_buffer_torque.push_back(torque); 
+	history_buffer_human_torque.push_back(torque);  
+	history_buffer_exo_torque.push_back(torque);  
 }
 
 void 

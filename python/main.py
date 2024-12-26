@@ -102,7 +102,7 @@ class PPO(object):
 		self.muscle_buffer = {}
 
 		# create models  
-		self.exo_model = SimulationExoNN(self.num_exo_state,self.num_exo_action)     # exo  
+		self.exo_model = SimulationExoNN(self.num_exo_state,self.num_exo_action)    
 		self.human_model = SimulationHumanNN(self.num_human_state,self.num_human_action)  
 		self.muscle_model = MuscleNN(self.env.GetNumTotalMuscleRelatedDofs(),self.num_human_action,self.num_muscles)
 		if use_cuda:
@@ -194,16 +194,25 @@ class PPO(object):
 		if self.max_return_epoch == self.num_evaluation:
 			self.exo_model.save('../nn/max_exo.pt')
 			self.human_model.save('../nn/max_human.pt')  
-			self.muscle_model.save('../nn/max_muscle.pt')
+			self.muscle_model.save('../nn/max_muscle.pt')  
 		if self.num_evaluation%100 == 0:
-			self.exo_model.save('../nn/'+str(self.num_evaluation//100)+'_exo.pt')
-			self.human_model.save('../nn/'+str(self.num_evaluation//100)+'_human.pt')
-			self.muscle_model.save('../nn/'+str(self.num_evaluation//100)+'_muscle.pt')
+			self.exo_model.save('../nn/'+str(self.num_evaluation//100)+'_exo.pt')  
+			self.human_model.save('../nn/'+str(self.num_evaluation//100)+'_human.pt')  
+			self.muscle_model.save('../nn/'+str(self.num_evaluation//100)+'_muscle.pt')  
 
-	def LoadModel(self,path):
+	def LoadModel(self,path):  
 		self.exo_model.load('../nn/'+path+'_exo.pt')  
 		self.human_model.load('../nn/'+path+'_human.pt')  
-		self.muscle_model.load('../nn/'+path+'_muscle.pt') 
+		self.muscle_model.load('../nn/'+path+'_muscle.pt')   
+  
+	def LoadExoModel(self,path):  
+		self.exo_model.load('../nn/'+path+'_exo.pt')    
+  
+	def LoadHumanModel(self,path):   
+		self.human_model.load('../nn/'+path+'_human.pt')    
+  
+	def LoadMuscleModel(self,path):   
+		self.muscle_model.load('../nn/'+path+'_muscle.pt')    
 
 	def ComputeTDandGAE(self):
 		self.exo_replay_buffer.Clear()   
@@ -295,7 +304,7 @@ class PPO(object):
 			# states_exo = states[:, :-self.num_human_state]     
 			# states_human = states[:, -self.num_human_state:]    
 			states_exo = self.env.GetExoStates()   
-			states_human = self.env.GetHumanStates()    
+			states_human = self.env.GetHumanStates()     
   
 		local_step = 0  
 		terminated = [False]*self.num_slaves
@@ -425,13 +434,13 @@ class PPO(object):
 			print('Optimizing sim nn : {}/{}'.format(j+1,self.num_epochs),end='\r')
 		print('')
   
-	def OptimizeSimulationExoNN(self):
+	def OptimizeSimulationExoNN(self): 
 		all_transitions = np.array(self.exo_replay_buffer.buffer,dtype=object)  
-		for j in range(self.num_epochs):
-			np.random.shuffle(all_transitions)
+		for j in range(self.num_epochs): 
+			np.random.shuffle(all_transitions) 
 			for i in range(len(all_transitions)//self.batch_size):
 				transitions = all_transitions[i*self.batch_size:(i+1)*self.batch_size]
-				batch = Transition(*zip(*transitions))
+				batch = Transition(*zip(*transitions))  
 
 				stack_s = np.vstack(batch.s).astype(np.float32)
 
@@ -460,20 +469,20 @@ class PPO(object):
 				loss = loss_actor + loss_entropy + loss_critic
 
 				self.optimizer_exo.zero_grad()   
-				loss.backward(retain_graph=True)
-				for param in self.exo_model.parameters():  
-					if param.grad is not None:
-						param.grad.data.clamp_(-0.5,0.5)
+				loss.backward(retain_graph=True)   
+				for param in self.exo_model.parameters():   
+					if param.grad is not None:  
+						param.grad.data.clamp_(-0.5,0.5)  
 				self.optimizer_exo.step()   
 			print('Optimizing sim nn : {}/{}'.format(j+1,self.num_epochs),end='\r')
-		print('')
+		print('')  
 
 	def generate_shuffle_indices(self, batch_size, minibatch_size):
 		n = batch_size
 		m = minibatch_size
 		p = np.random.permutation(n)
 
-		r = m - n%m
+		r = m - n%m  
 		if r>0:
 			p = np.hstack([p,np.random.randint(0,n,r)])
 
@@ -514,7 +523,7 @@ class PPO(object):
 
 			print('Optimizing muscle nn : {}/{}'.format(j+1,self.num_epochs_muscle),end='\r')
 		self.loss_muscle = loss.cpu().detach().numpy().tolist()
-		print('') 
+		print('')  
   
 	def OptimizeModel(self):
 		self.ComputeTDandGAE() 
@@ -523,8 +532,8 @@ class PPO(object):
 		if self.use_muscle:  
 			self.OptimizeMuscleNN()  
 		
-	def Train(self): 
-		self.GenerateTransitions()  
+	def Train(self):   
+		self.GenerateTransitions()   
 		self.OptimizeModel()  
 
 	def Evaluate(self):

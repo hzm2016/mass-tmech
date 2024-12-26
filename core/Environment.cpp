@@ -601,13 +601,14 @@ GetExoReward()
 	
 	// get exo torque  
  	Eigen::VectorXd torque_exo = GetDesiredExoTorques();     
-    double r_torque_exo = exp_of_squared(torque_exo, 0.01);       
+    double r_torque_exo = exp_of_squared(torque_exo, 0.01);   
+
 	double r_human = GetHumanReward();     
 
 	double r = r_torque_smooth + 0.01 * r_torque_exo;       
 
 	if (dart::math::isNan(r)){
-		std::cout << "r_torque_smooth  "<< r_torque_smooth << " r_torque " << r_torque << std::endl;
+		std::cout << "r_torque_smooth  "<< r_torque_smooth << " r_torque " << r_torque_exo << std::endl;
 	}  
 
 	r = 0.1;  

@@ -24,10 +24,10 @@ FloatTensor = torch.cuda.FloatTensor if use_cuda else torch.FloatTensor
 LongTensor = torch.cuda.LongTensor if use_cuda else torch.LongTensor
 ByteTensor = torch.cuda.ByteTensor if use_cuda else torch.ByteTensor
 Tensor = FloatTensor
-Episode = namedtuple('Episode',('s','a','r', 'value', 'logprob'))  
-# exo and human 
-# Episode = namedtuple('Episode',('s', 'a', 'r', 'value', 'logprob', 's_h', 'a_h', 'r_h', 'value_h', 'logprob_h'))
 
+# Episode = namedtuple('Episode',('s','a','r', 'value', 'logprob'))  
+# exo and human 
+Episode = namedtuple('Episode',('s_e', 'a_e', 'r_e', 'value_e', 'logprob_e', 's_h', 'a_h', 'r_h', 'value_h', 'logprob_h')) 
 class EpisodeBuffer(object):
 	def __init__(self):
 		self.data = []
@@ -66,19 +66,21 @@ class PPO(object):
 		self.num_slaves = 16
 		self.env = pymss.pymss(meta_file,self.num_slaves)  
   
-		self.only_human = 1  # or 0 with human and exo network 
+		self.only_human = 1    # or 0 with human and exo network 
+
+		self.use_muscle = self.env.UseMuscle()  
 
   		# human training details 
-		self.use_muscle = self.env.UseMuscle()  
-		self.num_state = self.env.GetNumState()  
+		self.num_human_state = self.env.GetNumState()  
 		self.num_human_action = self.env.GetNumAction()  
 		self.num_muscles = self.env.GetNumMuscles()   
   
 		# exo training details 
+		self.num_exo_state = self.num_human_state 
 		self.num_exo_action = 2       
 		
 		self.num_epochs = 10   
-		self.num_epochs_muscle = 3
+		self.num_epochs_muscle = 3  
 		self.num_evaluation = 0
 		self.num_tuple_so_far = 0
 		self.num_episode = 0
@@ -100,11 +102,11 @@ class PPO(object):
 		self.muscle_buffer = {}
 
 		# create models  
-		self.exo_model = SimulationExoNN(self.num_state,self.num_exo_action)     # exo  
-		self.human_model = SimulationHumanNN(self.num_state,self.num_human_action)  
+		self.exo_model = SimulationExoNN(self.num_exo_state,self.num_exo_action)     # exo  
+		self.human_model = SimulationHumanNN(self.num_human_state,self.num_human_action)  
 		self.muscle_model = MuscleNN(self.env.GetNumTotalMuscleRelatedDofs(),self.num_human_action,self.num_muscles)
 		if use_cuda:
-			self.human_model.cuda()  
+			self.human_model.cuda()   
 			self.muscle_model.cuda()   
 
 		self.default_learning_rate = 1E-4
@@ -116,7 +118,7 @@ class PPO(object):
 		self.optimizer_exo = optim.Adam(self.exo_model.parameters(),lr=self.learning_rate)
 		self.optimizer_human = optim.Adam(self.human_model.parameters(),lr=self.learning_rate)
 		self.optimizer_muscle = optim.Adam(self.muscle_model.parameters(),lr=self.learning_rate)
-		self.max_iteration = 50000
+		self.max_iteration = 50000  
 
 		self.w_entropy = -0.001
 
@@ -230,20 +232,21 @@ class PPO(object):
 			epi_return_exo = 0.0  
 			epi_return_human = 0.0    
 			for i in reversed(range(len(data))):
-				epi_return_exo += rewards[i]
+				# for exo  
+				epi_return_exo += rewards_exo[i]
 				delta_exo = rewards_exo[i] + values_exo[i+1] * self.gamma - values_exo[i]
 				ad_exo = delta_exo + self.gamma * self.lb * ad_exo
 				advantages_exo[i] = ad_exo
     
 				# for human 
-				epi_return_human += rewards[i]   
+				epi_return_human += rewards_human[i]   
 				delta_human = rewards_human[i] + values_human[i+1] * self.gamma - values_human[i]
 				ad_human = delta_human + self.gamma * self.lb * ad_human
 				advantages_human[i] = ad_human
     
 			self.sum_return_exo += epi_return_exo
 			self.sum_return_human += epi_return_human  
-   
+
 			TD_exo = values_exo[:size] + advantages_exo  
 			TD_human = values_human[:size] + advantages_human  
 			
@@ -282,14 +285,15 @@ class PPO(object):
 		if self.only_human: 
 			# only human model 
 			states = self.env.GetStates()   
+			
+			states_exo = states  
+			states_human = states  
 		else:   
 			# get seperate states  
 			states = self.env.GetFullObservations()    
 	
-		# states_exo = states[:, :-self.num_human_states]     
-		# states_human = states[:, -self.num_human_states:]     
-		states_exo = states  
-		states_human = states 
+			states_exo = states[:, :-self.num_human_state]     
+			states_human = states[:, -self.num_human_state:]     
   
 		local_step = 0  
 		terminated = [False]*self.num_slaves
@@ -307,31 +311,32 @@ class PPO(object):
    
    			# exo action 
 			a_dist_exo,v_exo = self.exo_model(Tensor(states_exo))      
-			actions_exo = a_dist_exo.sample().cpu().detach().numpy()   
+			actions_exo = a_dist_exo.sample().cpu().detach().numpy()     
 			logprobs_exo = a_dist_exo.log_prob(Tensor(actions_exo)).cpu().detach().numpy().reshape(-1)
-			values_exo = v_exo.cpu().detach().numpy().reshape(-1)    
+			values_exo = v_exo.cpu().detach().numpy().reshape(-1)     
 
-			# set actions of exo and human 
-			self.env.SetExoHumanActions(actions_exo, actions_human)   
+			# set actions of exo and human   
+			self.env.SetExoHumanActions(actions_exo, actions_human)    
    
 			# update action buffer  
 			self.env.UpdateExoActionBuffers(actions_exo)    
 			self.env.UpdateHumanActionBuffers(actions_human)     
 
 			# use muscle 
-			if self.use_muscle: 
-				mt = Tensor(self.env.GetMuscleTorques())  
-				for i in range(self.num_simulation_per_control//2):  
+			if self.use_muscle:  
+				mt = Tensor(self.env.GetMuscleTorques())    
+				for i in range(self.num_simulation_per_control//2):   
 					dt = Tensor(self.env.GetDesiredTorques())  
 					activations = self.muscle_model(mt,dt).cpu().detach().numpy()  
 					self.env.SetActivationLevels(activations)  
 					self.env.Steps(2)  
      
-				# self.env.UpdateStateBuffers()    # update state buffer  
+				self.env.UpdateStateBuffers()    # update state buffer  
 			else:
 				self.env.StepsAtOnce()         
+
 				# state buffer update  
-				# self.env.UpdateStateBuffers()    # update state buffer 
+				self.env.UpdateStateBuffers()    # update state buffer 
 
 			for j in range(self.num_slaves):   
 				nan_occur = False    
@@ -342,14 +347,12 @@ class PPO(object):
 					nan_occur = True
 				
 				elif self.env.IsEndOfEpisode(j) is False:
-					terminated_state = False
-					# rewards[j] = self.env.GetReward(j)  
-					# self.episodes[j].Push(states[j], actions[j], rewards[j], values[j], logprobs[j])  
+					terminated_state = False 
 					
 					rewards_exo[j] = self.env.GetExoReward(j)  
 					rewards_human[j] = self.env.GetHumanReward(j)   
 					self.episodes[j].Push(states_exo[j], actions_exo[j], rewards_exo[j], values_exo[j], logprobs_exo[j], \
-																states_human[j], actions_human[j], rewards_human[j], values_human[j], logprobs_human[j])
+																states_human[j], actions_human[j], rewards_human[j], values_human[j], logprobs_human[j])  
 					local_step += 1   
 
 				if terminated_state or (nan_occur is True):
@@ -361,17 +364,17 @@ class PPO(object):
 					self.env.Reset(True,j)  
 					
      				# obtain action   
-					self._action_filter_exo[j].init_history(self.env.GetExoAction(j)[:self.num_exo_action])
-					self._action_filter_human[j].init_history(self.env.GetHumanAction(j)[:self.num_human_action]) 
+					# self._action_filter_exo[j].init_history(self.env.GetExoAction(j)[:self.num_exo_action])
+					# self._action_filter_human[j].init_history(self.env.GetHumanAction(j)[:self.num_human_action]) 
 
 			if local_step >= self.buffer_size:
 				break
 			
 			if self.only_human:  
-       			# get states 	 
 				states = self.env.GetStates()   
+				states_exo = states  
+				states_human = states  
 			else:  
-				# get states   
 				states = self.env.GetFullObservations()    
 				states_exo = states[:,0:-self.num_human_state]     
 				states_human = states[:,-self.num_human_state:]      
@@ -384,9 +387,9 @@ class PPO(object):
 				transitions = all_transitions[i*self.batch_size:(i+1)*self.batch_size]
 				batch = Transition(*zip(*transitions))
 
-				stack_s = np.vstack(batch.s).astype(np.float32)
-				stack_a = np.vstack(batch.a).astype(np.float32)
-				stack_lp = np.vstack(batch.logprob).astype(np.float32)
+				stack_s = np.vstack(batch.s_h).astype(np.float32)
+				stack_a = np.vstack(batch.a_h).astype(np.float32)
+				stack_lp = np.vstack(batch.logprob_h).astype(np.float32)
 				stack_td = np.vstack(batch.TD).astype(np.float32)
 				stack_gae = np.vstack(batch.GAE).astype(np.float32)
 				
@@ -481,7 +484,7 @@ class PPO(object):
 				stack_JtA = self.muscle_buffer['JtA'][minibatch].astype(np.float32)
 				stack_tau_des =  self.muscle_buffer['TauDes'][minibatch].astype(np.float32)
 				stack_L = self.muscle_buffer['L'][minibatch].astype(np.float32)
-				stack_L = stack_L.reshape(self.muscle_batch_size,self.num_action,self.num_muscles)
+				stack_L = stack_L.reshape(self.muscle_batch_size,self.num_human_action,self.num_muscles)
 				stack_b = self.muscle_buffer['b'][minibatch].astype(np.float32)
 
 				stack_JtA = Tensor(stack_JtA)
@@ -517,7 +520,7 @@ class PPO(object):
 			self.OptimizeMuscleNN()  
 		
 	def Train(self): 
-		self.GenerateTransitions()
+		self.GenerateTransitions()  
 		self.OptimizeModel()  
 
 	def Evaluate(self):

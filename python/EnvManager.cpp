@@ -133,6 +133,7 @@ Steps(int num)
 			mEnvs[id]->Step();
 	}
 }
+
 void
 EnvManager::
 StepsAtOnce()
@@ -145,6 +146,7 @@ StepsAtOnce()
 			mEnvs[id]->Step();
 	}
 }
+
 void
 EnvManager::
 Resets(bool RSI)
@@ -154,6 +156,7 @@ Resets(bool RSI)
 		mEnvs[id]->Reset(RSI);
 	}
 }
+
 const Eigen::VectorXd&
 EnvManager::
 IsEndOfEpisodes()

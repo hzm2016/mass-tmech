@@ -40,8 +40,10 @@ LoadSkeleton(const std::string& path,bool create_obj)
 		}
 	}
 	
-	mBVH = new BVH(mSkeleton,bvh_map);
+	mBVH = new BVH(mSkeleton,bvh_map);  
+	mHumanDof = mSkeleton->getNumDofs(); 
 }
+
 void
 Character::
 LoadMuscles(const std::string& path)
@@ -79,9 +81,8 @@ LoadMuscles(const std::string& path)
 			i++;
 		}
 	}
-	
-
 }
+
 void
 Character::
 LoadBVH(const std::string& path,bool cyclic)
@@ -92,6 +93,7 @@ LoadBVH(const std::string& path,bool cyclic)
 	}
 	mBVH->Parse(path,cyclic);
 }
+
 void
 Character::
 Reset()
@@ -103,10 +105,11 @@ void
 Character::
 SetPDParameters(double kp, double kv)
 {
-	int dof = mSkeleton->getNumDofs();
+	int dof = mSkeleton->getNumDofs();  
 	mKp = Eigen::VectorXd::Constant(dof,kp);	
 	mKv = Eigen::VectorXd::Constant(dof,kv);	
 }
+
 Eigen::VectorXd
 Character::
 GetSPDForces(const Eigen::VectorXd& p_desired)
@@ -199,8 +202,6 @@ GetTargetPositions(double t,double dt)
 			p[5] += delta;
 		}
 
-
-
 		double tdt_mod = std::fmod(t+dt, mBVH->GetMaxTime());
 		if(tdt_mod-dt<0.0){
 			Eigen::Isometry3d T01 = mBVH->GetT1()*(mBVH->GetT0().inverse());
@@ -214,9 +215,9 @@ GetTargetPositions(double t,double dt)
 		}
 	}
 	
-
 	return p;
 }
+
 std::pair<Eigen::VectorXd,Eigen::VectorXd>
 Character::
 GetTargetPosAndVel(double t,double dt)

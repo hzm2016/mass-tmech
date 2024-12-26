@@ -17,10 +17,10 @@ Environment::
 Environment()
 	:mControlHz(30),mSimulationHz(900),mWorld(std::make_shared<World>()),mUseMuscle(true),w_q(0.65),w_v(0.1),w_ee(0.15),w_com(0.1)
 {
-	history_buffer_human_state.setMaxLen(HISTORY_BUFFER_LEN);
-	history_buffer_exo_state.setMaxLen(HISTORY_BUFFER_LEN);
-	history_buffer_human_action.setMaxLen(HISTORY_BUFFER_LEN);
-	history_buffer_exo_action.setMaxLen(HISTORY_BUFFER_LEN);
+	history_buffer_human_state.setMaxLen(HISTORY_BUFFER_LEN); 
+	history_buffer_exo_state.setMaxLen(HISTORY_BUFFER_LEN);  
+	history_buffer_human_action.setMaxLen(HISTORY_BUFFER_LEN); 
+	history_buffer_exo_action.setMaxLen(HISTORY_BUFFER_LEN);  
 	history_buffer_human_torque.setMaxLen(HISTORY_BUFFER_LEN);
 	history_buffer_exo_torque.setMaxLen(HISTORY_BUFFER_LEN);  
 }
@@ -96,23 +96,22 @@ Initialize(const std::string& meta_file,bool load_obj)
 		else if(!index.compare("reward_param")){
 			double a,b,c,d;
 			ss>>a>>b>>c>>d;
-			this->SetRewardParameters(a,b,c,d);
-
+			this->SetRewardParameters(a,b,c,d); 
 		}
-
 	}
 	ifs.close();  
-
-	// revised by Zhimin 
-	mNumExoActiveDof = 2;   
 	
 	double kp = 300.0;
 	character->SetPDParameters(kp,sqrt(2*kp));
 	this->SetCharacter(character);
 	this->SetGround(MASS::BuildFromFile(std::string(MASS_ROOT_DIR)+std::string("/data/ground.xml")));
 
-	this->Initialize();
+	// revised by Zhimin 
+	mNumExoActiveDof = 2;   
+
+	this->Initialize(); 
 }
+
 void
 Environment::
 Initialize()
@@ -126,8 +125,12 @@ Initialize()
 	else if(mCharacter->GetSkeleton()->getRootBodyNode()->getParentJoint()->getType()=="PlanarJoint")
 		mRootJointDof = 3;	
 	else
-		mRootJointDof = 0;
+		mRootJointDof = 0;  
+	
 	mNumActiveDof = mCharacter->GetSkeleton()->getNumDofs()-mRootJointDof;
+	mNumHumanActiveDof = mNumActiveDof;  
+
+	// usemuscle  
 	if(mUseMuscle)
 	{
 		int num_total_related_dofs = 0;
@@ -145,11 +148,35 @@ Initialize()
 	mWorld->setTimeStep(1.0/mSimulationHz);
 	mWorld->getConstraintSolver()->setCollisionDetector(dart::collision::BulletCollisionDetector::create());
 	mWorld->addSkeleton(mCharacter->GetSkeleton());
-	mWorld->addSkeleton(mGround);
-	mAction = Eigen::VectorXd::Zero(mNumActiveDof);
+	mWorld->addSkeleton(mGround);  
+
+	mAction = Eigen::VectorXd::Zero(mNumActiveDof); 
+
+	// human action 
+	mHumanAction = Eigen::VectorXd::Zero(mNumActiveDof);   
+	mCurrentHumanAction = Eigen::VectorXd::Zero(mNumActiveDof);  
+	mPrevHumanAction = Eigen::VectorXd::Zero(mNumActiveDof); 
+
+	// exo action 
+	mExoAction = Eigen::VectorXd::Zero(mNumExoActiveDof);  
+	mCurrentExoAction = Eigen::VectorXd::Zero(mNumExoActiveDof);  
+	mPrevExoAction = Eigen::VectorXd::Zero(mNumExoActiveDof);  
 	
-	Reset(false);
-	mNumState = GetState().rows();
+	mDesiredTorque = Eigen::VectorXd::Zero(mNumHumanActiveDof); 
+
+	Reset(false);  
+
+	mNumState = GetState().rows();   
+
+	/// human states
+	mNumHumanState = mNumState;   
+
+	/// exo states
+	mNumExoState = GetExoState().rows();  
+
+	std::cout << "NumState: " << mNumState << std::endl; 
+	std::cout << "NumHumanState: " << mNumHumanState << std::endl;  
+	std::cout << "NumExoState: " << mNumExoState << std::endl; 
 }   
 
 void
@@ -171,6 +198,14 @@ Reset(bool RSI)
 
 	mAction.setZero();
 
+	mHumanAction.setZero();  
+	mCurrentHumanAction.setZero();    
+	mPrevHumanAction.setZero();     
+
+	mExoAction.setZero();   
+	mCurrentExoAction.setZero(); 
+	mPrevExoAction.setZero();     
+
 	std::pair<Eigen::VectorXd,Eigen::VectorXd> pv = mCharacter->GetTargetPosAndVel(t,1.0/mControlHz);
 	mTargetPositions = pv.first;
 	mTargetVelocities = pv.second;
@@ -179,10 +214,11 @@ Reset(bool RSI)
 	mCharacter->GetSkeleton()->setVelocities(mTargetVelocities);
 	mCharacter->GetSkeleton()->computeForwardKinematics(true,false,false);  
 
+	randomized_latency = 0;  
 	for(int i=0; i<HISTORY_BUFFER_LEN; i++)
 	{
-		history_buffer_human_state.push_back(this->GetHumanState());       
-		history_buffer_exo_state.push_back(this->GetExoState());      
+		history_buffer_human_state.push_back(this->GetState());       
+		history_buffer_exo_state.push_back(this->GetState());      
 		history_buffer_human_action.push_back(this->GetHumanAction());      
 		history_buffer_exo_action.push_back(this->GetExoAction());      
 		history_buffer_human_torque.push_back(this->GetDesiredTorques());      
@@ -245,7 +281,7 @@ Step()
 
 	mWorld->step();  
 
-	UpdateTorqueBuffer(mDesiredTorque);      
+	// UpdateTorqueBuffer(mDesiredTorque);      
 
 	// Eigen::VectorXd p_des = mTargetPositions;  
 	// //p_des.tail(mAction.rows()) += mAction;  
@@ -333,6 +369,7 @@ IsEndOfEpisode()
 	return isTerminal;   
 }
 
+// original state require 
 Eigen::VectorXd 
 Environment::
 GetState()
@@ -446,7 +483,7 @@ GetHumanState()
 	auto& skel = mCharacter->GetSkeleton();     
 	Eigen::VectorXd p_human, v_human;  
 	p_human = skel->getPositions().head(mCharacter->GetHumandof());
-	v_human = skel->getVelocities().head(mCharacter->GetHumandof());
+	v_human = skel->getVelocities().head(mCharacter->GetHumandof());  
 	Eigen::VectorXd p_cur_human, v_cur_human;
 	p_cur_human.resize(p_human.rows()-6);
 	p_cur_human = p_human.tail(p_human.rows()-6);
@@ -460,7 +497,9 @@ void
 Environment::
 SetHumanAction(const Eigen::VectorXd& a)
 {
-	mAction = a*0.1;   
+	// mAction = a*0.1;   
+	mPrevHumanAction = mCurrentHumanAction;   
+	mCurrentHumanAction = a*0.1; 
 
 	double t = mWorld->getTime();   
 
@@ -536,7 +575,6 @@ SetExoAction(const Eigen::VectorXd& a)
 {
 	mPrevExoAction = mCurrentExoAction;    
 	mCurrentExoAction = a*1;  
-    // std::cout <<" -----mCurrentExoAction-----" << a << std::endl;
 	double t = mWorld->getTime();  
 }
 
@@ -554,19 +592,22 @@ GetExoReward()
 
     double r_torque = exp(-0.01*torque.squaredNorm());  // train
 
-	// double r= r_torque_smooth + 0.01*r_torque;
-	double r = GetHumanReward();  
-	// if (dart::math::isNan(r)){
-	// 	std::cout << "r_torque_smooth  "<< r_torque_smooth << " r_torque " << r_torque << std::endl;
-	// }
+	double r= r_torque_smooth + 0.01*r_torque;
+	
+	// double r = GetHumanReward();  
+
+	if (dart::math::isNan(r)){
+		std::cout << "r_torque_smooth  "<< r_torque_smooth << " r_torque " << r_torque << std::endl;
+	}  
+
+	// double r = 0.1; 
 	return r; 
 }  
 
 Eigen::VectorXd  
 Environment::  
 GetExoState()
-{
-	// The last three states   
+{  
 	double dt = 1.0/mControlHz; 
 	Eigen::VectorXd observation;   
 	if((randomized_latency <= 0) || (history_buffer_exo_state.size() == 1)){
@@ -596,7 +637,7 @@ Environment::
 UpdateStateBuffer()  
 {
 	history_buffer_human_state.push_back(this->GetHumanState());       
-	history_buffer_exo_state.push_back(this->GetExoState());        
+	// history_buffer_exo_state.push_back(this->GetExoState());        
 }
 
 void 
@@ -641,6 +682,7 @@ GetFullObservation()
 	Eigen::VectorXd humanstates_v = GetHumanState();    
 
 	Eigen::VectorXd observation;   
+
 	// get all states 
 	if (mUseExo)
 	{

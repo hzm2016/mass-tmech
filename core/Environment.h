@@ -66,6 +66,7 @@ public:
 	// get total observation 
 	Eigen::VectorXd GetFullObservation();  
 
+	// get desired force 
 	Eigen::VectorXd GetDesiredTorques();   
 	Eigen::VectorXd GetDesiredExoTorques();     
 	Eigen::VectorXd GetMuscleTorques();  
@@ -128,11 +129,12 @@ private:
 	int mNumFullObservation;  
 
 	int mNumHumanState;    
-	int mNumHumanAction;  
+	int mNumHumanAction;   
 
 	int mNumExoState;    
 	int mNumExoAction;  
 
+	int mNumHumanActiveDof;  
 	int mNumExoActiveDof;  
 
 	int mUseExo;   

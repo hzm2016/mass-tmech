@@ -598,7 +598,7 @@ GetExoReward()
 		std::cout << "r_torque_smooth  "<< r_torque_smooth << " r_torque " << r_torque << std::endl;
 	}  
 
-	// double r = 0.1; 
+	r = 0.1;  
 	return r; 
 }  
 

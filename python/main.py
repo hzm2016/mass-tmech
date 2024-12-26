@@ -363,9 +363,9 @@ class PPO(object):
 
 					self.env.Reset(True,j)  
 					
-					print("exo shape :", self.env.GetExoActions(j)[:self.num_exo_action].shape)
-					self._action_filter_exo[j].init_history(self.env.GetExoActions(j)[:self.num_exo_action])   
-					self._action_filter_human[j].init_history(self.env.GetHumanActions(j)[:self.num_human_action])       
+					# print("exo shape :", self.env.GetExoActions(j))
+					# self._action_filter_exo[j].init_history(self.env.GetExoActions(j)[:self.num_exo_action])   
+					# self._action_filter_human[j].init_history(self.env.GetHumanActions(j)[:self.num_human_action])       
 
 			if local_step >= self.buffer_size:
 				break
@@ -380,7 +380,7 @@ class PPO(object):
 				states_human = states[:,-self.num_human_state:]      
 
 	def OptimizeSimulationHumanNN(self):  
-		all_transitions = np.array(self.human_replay_buffer.buffer)   
+		all_transitions = np.array(self.human_replay_buffer.buffer, dtype=object)     
 		for j in range(self.num_epochs):
 			np.random.shuffle(all_transitions)
 			for i in range(len(all_transitions)//self.batch_size):

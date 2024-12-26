@@ -679,10 +679,10 @@ UpdateExoActionBuffer(Eigen::VectorXd exoaction)
 
 void  
 Environment:: 
-UpdateTorqueBuffer(Eigen::VectorXd torque)
+UpdateTorqueBuffer()  
 {
-	history_buffer_human_torque.push_back(torque);  
-	history_buffer_exo_torque.push_back(torque);  
+	history_buffer_human_torque.push_back(mDesiredTorque);   
+	history_buffer_exo_torque.push_back(mDesiredExoTorque);  
 }
 
 void 

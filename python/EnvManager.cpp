@@ -464,8 +464,9 @@ PYBIND11_MODULE(pymss, m)
 		.def("GetMuscleTuplesJtA",&EnvManager::GetMuscleTuplesJtA)
 		.def("GetMuscleTuplesTauDes",&EnvManager::GetMuscleTuplesTauDes)
 		.def("GetMuscleTuplesL",&EnvManager::GetMuscleTuplesL)
-		.def("GetMuscleTuplesb",&EnvManager::GetMuscleTuplesb)
-		.def("UpdateStateBuffers",&EnvManager::UpdateStateBuffers)
+		.def("GetMuscleTuplesb",&EnvManager::GetMuscleTuplesb) 
+		.def("UpdateTorqueBuffer",&EnvManager::UpdateTorqueBuffer)  
+		.def("UpdateStateBuffers",&EnvManager::UpdateStateBuffers)  
 		.def("UpdateExoActionBuffers",&EnvManager::UpdateExoActionBuffers)
 		.def("UpdateHumanActionBuffers",&EnvManager::UpdateHumanActionBuffers); 
 }

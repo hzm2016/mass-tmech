@@ -352,6 +352,9 @@ class PPO(object):
 				# state buffer update  
 				self.env.UpdateStateBuffers()    # update state buffer 
 
+			# update torque
+			self.env.UpdateTorqueBuffer()  
+   
 			for j in range(self.num_slaves):   
 				nan_occur = False    
 				terminated_state = True    
@@ -370,16 +373,16 @@ class PPO(object):
 					local_step += 1   
 
 				if terminated_state or (nan_occur is True):
-					if (nan_occur is True):
-						self.episodes[j].Pop()  
-					self.total_episodes.append(self.episodes[j])
+					if (nan_occur is True): 
+						self.episodes[j].Pop()   
+					self.total_episodes.append(self.episodes[j])   
 					self.episodes[j] = EpisodeBuffer()   
 
 					self.env.Reset(True,j)  
 					
-					# print("exo shape :", self.env.GetExoActions(j))
-					# self._action_filter_exo[j].init_history(self.env.GetExoActions(j)[:self.num_exo_action])   
-					# self._action_filter_human[j].init_history(self.env.GetHumanActions(j)[:self.num_human_action])       
+					print("exo shape :", self.env.GetExoActions(j))
+					self._action_filter_exo[j].init_history(self.env.GetExoActions(j)[:self.num_exo_action])   
+					self._action_filter_human[j].init_history(self.env.GetHumanActions(j)[:self.num_human_action])       
 
 			if local_step >= self.buffer_size: 
 				break
@@ -388,10 +391,7 @@ class PPO(object):
 				states = self.env.GetStates()   
 				states_exo = states  
 				states_human = states  
-			else:  
-				# states = self.env.GetFullObservations()    
-				# states_exo = states[:,0:-self.num_human_state]     
-				# states_human = states[:,-self.num_human_state:]     
+			else: 
 				states_exo = self.env.GetExoStates()   
 				states_human = self.env.GetHumanStates()    
 

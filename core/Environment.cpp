@@ -172,7 +172,7 @@ Initialize()
 
 	/// human states
 	// mNumHumanState = mNumState;   
-	mNumHumanState = GetHumanState().rows();   
+	mNumHumanState = GetHumanState().rows();    
 
 	/// exo states
 	// mNumExoState = GetExoControlState().rows();      
@@ -305,7 +305,7 @@ GetDesiredTorques()
 	Eigen::VectorXd p_des = mTargetPositions;  
 	p_des.tail(mTargetPositions.rows()-mRootJointDof) += mAction;    
 
-	mDesiredTorque = mCharacter->GetSPDForces(p_des);  
+	mDesiredTorque = mCharacter->GetSPDForces(p_des);   
 	return mDesiredTorque.tail(mDesiredTorque.rows()-mRootJointDof);   
 }   
 
@@ -427,16 +427,16 @@ double
 Environment::
 GetReward() 
 {
-	auto& skel = mCharacter->GetSkeleton();
+	auto& skel = mCharacter->GetSkeleton();  
 
-	Eigen::VectorXd cur_pos = skel->getPositions();
-	Eigen::VectorXd cur_vel = skel->getVelocities();
+	Eigen::VectorXd cur_pos = skel->getPositions();  
+	Eigen::VectorXd cur_vel = skel->getVelocities();     
 
 	Eigen::VectorXd p_diff_all = skel->getPositionDifferences(mTargetPositions,cur_pos);
 	Eigen::VectorXd v_diff_all = skel->getPositionDifferences(mTargetVelocities,cur_vel);
 
-	Eigen::VectorXd p_diff = Eigen::VectorXd::Zero(skel->getNumDofs());
-	Eigen::VectorXd v_diff = Eigen::VectorXd::Zero(skel->getNumDofs());
+	Eigen::VectorXd p_diff = Eigen::VectorXd::Zero(skel->getNumDofs());  
+	Eigen::VectorXd v_diff = Eigen::VectorXd::Zero(skel->getNumDofs());  
 
 	const auto& bvh_map = mCharacter->GetBVH()->GetBVHMap();  
 
@@ -452,12 +452,15 @@ GetReward()
 			p_diff.segment<3>(idx) = p_diff_all.segment<3>(idx);
 	}
 
-	auto ees = mCharacter->GetEndEffectors();
-	Eigen::VectorXd ee_diff(ees.size()*3);
-	Eigen::VectorXd com_diff;
+	auto ees = mCharacter->GetEndEffectors();  
+	Eigen::VectorXd ee_diff(ees.size()*3);  
+	Eigen::VectorXd com_diff;   
 
+	// ee_diff  
 	for(int i =0;i<ees.size();i++)
 		ee_diff.segment<3>(i*3) = ees[i]->getCOM();
+	
+	// com   
 	com_diff = skel->getCOM();
 
 	skel->setPositions(mTargetPositions);
@@ -475,7 +478,12 @@ GetReward()
 	double r_ee = exp_of_squared(ee_diff,40.0);
 	double r_com = exp_of_squared(com_diff,10.0);
 
-	double r = r_ee*(w_q*r_q + w_v*r_v);
+	double r = r_ee*(w_q*r_q + w_v*r_v);    
+
+	// smooth the applied force
+	Eigen::VectorXd torque = GetDesiredTorques().head(mCharacter->GetHumandof());   
+	double r_torque = exp_of_squared(torque, 0.01);    
+	// double r_torque = exp(-0.01*torque.squaredNorm());     
 
 	return r;
 }
@@ -586,19 +594,18 @@ double
 Environment::
 GetExoReward()  
 {
+	// smooth torque or smooth joint angle  
    	Eigen::VectorXd torque_diff = (history_buffer_human_torque.get(HISTORY_BUFFER_LEN-1)-2*history_buffer_human_torque.get(HISTORY_BUFFER_LEN-2)+history_buffer_human_torque.get(HISTORY_BUFFER_LEN-3)); 
-	Eigen::VectorXd torque_diff_exo =  torque_diff.tail(2);   
-
-	double r_torque_smooth = exp_of_squared(torque_diff_exo, 15.0);   
+	Eigen::VectorXd torque_diff_exo =  torque_diff.tail(2);     
+	double r_torque_smooth = exp_of_squared(torque_diff_exo, 15.0);     
 	
-	// get human torque 
- 	Eigen::VectorXd torque = GetDesiredTorques().head(mCharacter->GetHumandof());  
-
-    double r_torque = exp(-0.01*torque.squaredNorm());  // train
-
-	double r= r_torque_smooth + 0.01*r_torque;
+	// get human torque  
+ 	Eigen::VectorXd torque = GetDesiredTorques().head(mCharacter->GetHumandof());   
+    double r_torque = exp(-0.01*torque.squaredNorm());  
 	
-	// double r = GetHumanReward();  
+	double r_human = GetHumanReward();    
+
+	double r = r_torque_smooth + 0.01*r_torque;  
 
 	if (dart::math::isNan(r)){
 		std::cout << "r_torque_smooth  "<< r_torque_smooth << " r_torque " << r_torque << std::endl;

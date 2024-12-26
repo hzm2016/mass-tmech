@@ -36,10 +36,7 @@ public:
 	void Initialize();
 	void Initialize(const std::string& meta_file,bool load_obj = false);  
 
-	int GetNumFullObservation(){return mNumFullObservation;}  
-
-	Eigen::VectorXd GetExoAction(){return mExoAction;}
-	Eigen::VectorXd GetHumanAction(){return mHumanAction;}
+	int GetNumFullObservation(){return mNumFullObservation;}   
 
 public:
 	void Step();

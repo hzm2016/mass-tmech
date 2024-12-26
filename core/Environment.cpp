@@ -107,10 +107,9 @@ Initialize(const std::string& meta_file,bool load_obj)
 	this->SetCharacter(character);   
 	this->SetGround(MASS::BuildFromFile(std::string(MASS_ROOT_DIR)+std::string("/data/ground.xml")));
 
-	// revised by Zhimin 
 	mNumExoActiveDof = 2;     
 
-	this->Initialize(); 
+	this->Initialize();  
 }
 
 void
@@ -164,6 +163,7 @@ Initialize()
 	mPrevExoAction = Eigen::VectorXd::Zero(mNumExoActiveDof);  
 	
 	mDesiredTorque = Eigen::VectorXd::Zero(mNumHumanActiveDof);  
+	mDesiredExoTorque = Eigen::VectorXd::Zero(mNumExoActiveDof);   
 
 	// observation   
 	Reset(false);  
@@ -208,6 +208,8 @@ Reset(bool RSI)
 	mExoAction.setZero();   
 	mCurrentExoAction.setZero();   
 	mPrevExoAction.setZero();     
+	
+	mDesiredExoTorque.setZero();  
 
 	std::pair<Eigen::VectorXd,Eigen::VectorXd> pv = mCharacter->GetTargetPosAndVel(t,1.0/mControlHz);
 	mTargetPositions = pv.first;
@@ -221,7 +223,8 @@ Reset(bool RSI)
 	for(int i=0; i<HISTORY_BUFFER_LEN; i++)
 	{
 		history_buffer_human_state.push_back(this->GetHumanState());       
-		history_buffer_exo_state.push_back(this->GetExoState());      
+		history_buffer_exo_state.push_back(this->GetState());      
+		// history_buffer_exo_state.push_back(this->GetExoState());      
 		history_buffer_human_action.push_back(this->GetHumanAction());      
 		history_buffer_exo_action.push_back(this->GetExoAction());      
 		history_buffer_human_torque.push_back(this->GetDesiredTorques());      

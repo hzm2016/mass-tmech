@@ -139,19 +139,21 @@ private:
 	int mNumExoAction;  
 
 	int mNumHumanActiveDof;   
-	int mNumExoActiveDof;  
+	int mNumExoActiveDof;   
+	Eigen::VectorXd mDesiredExoTorque;   
 
 	int mUseExo;   
 
 	double randomized_latency;  
 
+	// human model  
 	Eigen::VectorXd mActivationLevels;   
 	Eigen::VectorXd mAverageActivationLevels;   
-	Eigen::VectorXd mDesiredTorque;  
-	std::vector<MuscleTuple> mMuscleTuples;  
-	MuscleTuple mCurrentMuscleTuple;  
+	Eigen::VectorXd mDesiredTorque;   
+	std::vector<MuscleTuple> mMuscleTuples;   
+	MuscleTuple mCurrentMuscleTuple;   
 
-	int mSimCount;
+	int mSimCount;  
 	int mRandomSampleIndex;
 
 	double w_q,w_v,w_ee,w_com;  

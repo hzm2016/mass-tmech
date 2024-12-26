@@ -596,17 +596,15 @@ Environment::
 GetExoReward()  
 {
 	// smooth torque or smooth joint angle  
-   	Eigen::VectorXd torque_diff = (history_buffer_human_torque.get(HISTORY_BUFFER_LEN-1)-2*history_buffer_human_torque.get(HISTORY_BUFFER_LEN-2)+history_buffer_human_torque.get(HISTORY_BUFFER_LEN-3)); 
-	Eigen::VectorXd torque_diff_exo =  torque_diff.tail(2);     
+   	Eigen::VectorXd torque_diff_exo = (history_buffer_exo_torque.get(HISTORY_BUFFER_LEN-1)-2*history_buffer_exo_torque.get(HISTORY_BUFFER_LEN-2)+history_buffer_exo_torque.get(HISTORY_BUFFER_LEN-3)); 
 	double r_torque_smooth = exp_of_squared(torque_diff_exo, 15.0);     
 	
-	// get human torque  
- 	Eigen::VectorXd torque = GetDesiredTorques().head(mCharacter->GetHumandof());   
-    double r_torque = exp(-0.01*torque.squaredNorm());  
-	
-	double r_human = GetHumanReward();    
+	// get exo torque  
+ 	Eigen::VectorXd torque_exo = GetDesiredExoTorques();     
+    double r_torque_exo = exp_of_squared(torque_exo, 0.01);       
+	double r_human = GetHumanReward();     
 
-	double r = r_torque_smooth + 0.01*r_torque;  
+	double r = r_torque_smooth + 0.01 * r_torque_exo;       
 
 	if (dart::math::isNan(r)){
 		std::cout << "r_torque_smooth  "<< r_torque_smooth << " r_torque " << r_torque << std::endl;

@@ -288,12 +288,12 @@ class PPO(object):
 			states = self.env.GetStates()   
 			states_exo = states     
 			states_human = states    
+			print("states :", states.shape)  
 		else: 
 			states_exo = [None]*self.num_slaves 
 			states_human = [None]*self.num_slaves   
 			states_exo = self.env.GetExoStates()   
-			states_human = self.env.GetHumanStates()    
-   
+			states_human = self.env.GetHumanStates()     
 			print("states exo :", states_exo.shape)    
 			print("states human :", states_human.shape)      
 		
@@ -542,7 +542,7 @@ class PPO(object):
 		
 	def Train(self):   
 		self.GenerateTransitions()   
-		# self.OptimizeModel()  
+		self.OptimizeModel()   
 
 	def Evaluate(self):
 		self.num_evaluation = self.num_evaluation + 1

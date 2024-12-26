@@ -363,8 +363,8 @@ class PPO(object):
 
 					self.env.Reset(True,j)  
 					
-					self._action_filter_exo[j].init_history(self.env.GetExoActions(j))  
-					self._action_filter_human[j].init_history(self.env.GetHumanActions(j))     
+					self._action_filter_exo[j].init_history(self.env.GetExoActions(j)[:self.num_exo_action])   
+					self._action_filter_human[j].init_history(self.env.GetHumanActions(j)[:self.num_human_action])       
 
 			if local_step >= self.buffer_size:
 				break

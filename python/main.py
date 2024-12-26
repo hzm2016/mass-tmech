@@ -281,36 +281,35 @@ class PPO(object):
 		print(self.muscle_buffer['JtA'].shape)
   
 	def GenerateTransitions(self):   
-		self.total_episodes = []  
-  
-		# total model  
-		states = [None]*self.num_slaves
-		actions = [None]*self.num_slaves 
-  
-		rewards = [None]*self.num_slaves
-		states_next = [None]*self.num_slaves    
-  
-		# exo  
-		rewards_exo = [None]*self.num_slaves  
-		rewards_human = [None]*self.num_slaves   
-  
-		if self.only_human: 
-			# only human model 
+		self.total_episodes = []    
+
+		if self.only_human:    
+			states = [None]*self.num_slaves  
 			states = self.env.GetStates()   
-			
-			states_exo = states  
-			states_human = states  
-		else:   
-			# get seperate states    
+			states_exo = states     
+			states_human = states    
+		else: 
+			states_exo = [None]*self.num_slaves 
+			states_human = [None]*self.num_slaves   
 			states_exo = self.env.GetExoStates()   
 			states_human = self.env.GetHumanStates()    
    
 			print("states exo :", states_exo.shape)    
-			print("states human :", states_human.shape)       
+			print("states human :", states_human.shape)      
+		
+		# action  
+		actions_exo = [None]*self.num_slaves   
+		actions_human = [None]*self.num_slaves   
+   
+		# exo  
+		rewards_exo = [None]*self.num_slaves  
+		rewards_human = [None]*self.num_slaves    
   
 		local_step = 0  
 		terminated = [False]*self.num_slaves
+
 		counter = 0  
+		counter_list = [0]*self.num_slaves   
 		while True:
 			counter += 1
 			if counter%10 == 0:
@@ -366,12 +365,18 @@ class PPO(object):
 					terminated_state = False 
 					
 					rewards_exo[j] = self.env.GetExoReward(j)  
-					rewards_human[j] = self.env.GetHumanReward(j)   
-					self.episodes[j].Push(states_exo[j], actions_exo[j], rewards_exo[j], values_exo[j], logprobs_exo[j], \
-																states_human[j], actions_human[j], rewards_human[j], values_human[j], logprobs_human[j])  
-					local_step += 1   
+					rewards_human[j] = self.env.GetHumanReward(j)    
 
-				if terminated_state or (nan_occur is True):
+					if (np.any(np.isnan(rewards_exo[j]))) or (np.any(np.isnan(rewards_human[j]))):
+						pass
+					else:  
+						self.episodes[j].Push(states_exo[j], actions_exo[j], rewards_exo[j], values_exo[j], logprobs_exo[j], \
+																	states_human[j], actions_human[j], rewards_human[j], values_human[j], logprobs_human[j])  
+					local_step += 1   
+					counter_list[j] += 1    
+
+				if terminated_state or (nan_occur is True):  
+					counter_list[j] = 0 
 					if (nan_occur is True): 
 						self.episodes[j].Pop()   
       
@@ -385,7 +390,7 @@ class PPO(object):
 					# self._action_filter_human[j].init_history(self.env.GetHumanActions(j)[:self.num_human_action])       
 
 			if local_step >= self.buffer_size: 
-				break
+				break  
 			
 			if self.only_human:  
 				states = self.env.GetStates()   
@@ -529,11 +534,11 @@ class PPO(object):
 		print('')  
   
 	def OptimizeModel(self):
-		self.ComputeTDandGAE() 
-		self.OptimizeSimulationHumanNN()  
+		self.ComputeTDandGAE()  
+		self.OptimizeSimulationHumanNN()   
 		self.OptimizeSimulationExoNN()  
 		if self.use_muscle:  
-			self.OptimizeMuscleNN()  
+			self.OptimizeMuscleNN()   
 		
 	def Train(self):   
 		self.GenerateTransitions()   

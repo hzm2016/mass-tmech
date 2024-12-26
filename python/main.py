@@ -363,6 +363,7 @@ class PPO(object):
 
 					self.env.Reset(True,j)  
 					
+					print("exo shape :", self.env.GetExoActions(j)[:self.num_exo_action].shape)
 					self._action_filter_exo[j].init_history(self.env.GetExoActions(j)[:self.num_exo_action])   
 					self._action_filter_human[j].init_history(self.env.GetHumanActions(j)[:self.num_human_action])       
 

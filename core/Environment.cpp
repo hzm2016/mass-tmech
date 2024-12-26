@@ -601,10 +601,10 @@ GetExoReward()
    	Eigen::VectorXd torque_diff_exo = (history_buffer_exo_torque.get(HISTORY_BUFFER_LEN-1)-2*history_buffer_exo_torque.get(HISTORY_BUFFER_LEN-2)+history_buffer_exo_torque.get(HISTORY_BUFFER_LEN-3)); 
 	double r_torque_smooth = exp_of_squared(torque_diff_exo, 15.0);     
 	
-	// get exo torque  
- 	Eigen::VectorXd torque_exo = GetDesiredExoTorques();     
-    double r_torque_exo = exp_of_squared(torque_exo, 0.01);   
-
+	// // get exo torque  
+ 	// Eigen::VectorXd torque_exo = GetDesiredExoTorques();     
+    // double r_torque_exo = exp_of_squared(torque_exo, 0.01);   
+	double r_torque_exo = 0.001; 
 	double r_human = GetHumanReward();     
 
 	double r = r_torque_smooth + 0.01 * r_torque_exo;       

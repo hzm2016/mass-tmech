@@ -308,10 +308,9 @@ class PPO(object):
 			print("states exo :", states_exo.shape)    
 			print("states human :", states_human.shape)       
   
-  
 		local_step = 0  
 		terminated = [False]*self.num_slaves
-		counter = 0
+		counter = 0  
 		while True:
 			counter += 1
 			if counter%10 == 0:
@@ -375,14 +374,15 @@ class PPO(object):
 				if terminated_state or (nan_occur is True):
 					if (nan_occur is True): 
 						self.episodes[j].Pop()   
+      
 					self.total_episodes.append(self.episodes[j])   
 					self.episodes[j] = EpisodeBuffer()   
 
 					self.env.Reset(True,j)  
 					
-					print("exo shape :", self.env.GetExoActions(j))
-					self._action_filter_exo[j].init_history(self.env.GetExoActions(j)[:self.num_exo_action])   
-					self._action_filter_human[j].init_history(self.env.GetHumanActions(j)[:self.num_human_action])       
+					# print("exo shape :", self.env.GetExoActions(j))
+					# self._action_filter_exo[j].init_history(self.env.GetExoActions(j)[:self.num_exo_action])   
+					# self._action_filter_human[j].init_history(self.env.GetHumanActions(j)[:self.num_human_action])       
 
 			if local_step >= self.buffer_size: 
 				break
@@ -537,7 +537,7 @@ class PPO(object):
 		
 	def Train(self):   
 		self.GenerateTransitions()   
-		self.OptimizeModel()  
+		# self.OptimizeModel()  
 
 	def Evaluate(self):
 		self.num_evaluation = self.num_evaluation + 1

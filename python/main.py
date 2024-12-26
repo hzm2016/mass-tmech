@@ -76,8 +76,8 @@ class PPO(object):
 		self.num_human_action = self.env.GetNumAction()  
   
 		# exo training details 
-		self.num_exo_state = self.num_human_state 
-		self.num_exo_action = 2       
+		self.num_exo_state = self.env.GetNumExoState()    
+		self.num_exo_action = 2   
 		
 		self.num_epochs = 10   
 		self.num_epochs_muscle = 3  

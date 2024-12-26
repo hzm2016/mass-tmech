@@ -220,8 +220,8 @@ Reset(bool RSI)
 	randomized_latency = 0;  
 	for(int i=0; i<HISTORY_BUFFER_LEN; i++)
 	{
-		history_buffer_human_state.push_back(this->GetState());       
-		history_buffer_exo_state.push_back(this->GetState());      
+		history_buffer_human_state.push_back(this->GetHumanState());       
+		history_buffer_exo_state.push_back(this->GetExoState());      
 		history_buffer_human_action.push_back(this->GetHumanAction());      
 		history_buffer_exo_action.push_back(this->GetExoAction());      
 		history_buffer_human_torque.push_back(this->GetDesiredTorques());      

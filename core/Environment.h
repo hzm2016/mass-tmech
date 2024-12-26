@@ -155,8 +155,8 @@ private:
 	std::vector<MuscleTuple> mMuscleTuples;   
 	MuscleTuple mCurrentMuscleTuple;   
 
-	int mSimCount;  
-	int mRandomSampleIndex;
+	int mSimCount;   
+	int mRandomSampleIndex;    
 
 	double w_q,w_v,w_ee,w_com;  
 };

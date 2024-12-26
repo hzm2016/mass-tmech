@@ -228,7 +228,7 @@ Reset(bool RSI)
 		history_buffer_human_action.push_back(this->GetHumanAction());        
 		history_buffer_exo_action.push_back(this->GetExoAction());      
 		history_buffer_human_torque.push_back(this->GetDesiredTorques());      
-		history_buffer_exo_torque.push_back(this->GetDesiredTorques());     
+		history_buffer_exo_torque.push_back(this->GetDesiredExoTorques());     
 	}
 }
 

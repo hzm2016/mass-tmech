@@ -43,7 +43,8 @@ public:
 	void Resets(bool RSI);  
 
 	// state and action buffers   
-	void UpdateStateBuffers();   
+	void UpdateTorqueBuffer();   
+	void UpdateStateBuffers();    
 	void UpdateExoActionBuffers(const Eigen::MatrixXd& humanactions);   
 	void UpdateHumanActionBuffers(const Eigen::MatrixXd& humanactions);     
 

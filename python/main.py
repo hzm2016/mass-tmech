@@ -68,12 +68,12 @@ class PPO(object):
   
 		self.only_human = 1    # or 0 with human and exo network 
 
-		self.use_muscle = self.env.UseMuscle()  
+		self.use_muscle = self.env.UseMuscle()    
+		self.num_muscles = self.env.GetNumMuscles()    
 
   		# human training details 
 		self.num_human_state = self.env.GetNumState()  
 		self.num_human_action = self.env.GetNumAction()  
-		self.num_muscles = self.env.GetNumMuscles()   
   
 		# exo training details 
 		self.num_exo_state = self.num_human_state 
@@ -290,10 +290,12 @@ class PPO(object):
 			states_human = states  
 		else:   
 			# get seperate states  
-			states = self.env.GetFullObservations()    
+			# states = self.env.GetFullObservations()    
 	
-			states_exo = states[:, :-self.num_human_state]     
-			states_human = states[:, -self.num_human_state:]     
+			# states_exo = states[:, :-self.num_human_state]     
+			# states_human = states[:, -self.num_human_state:]    
+			states_exo = self.env.GetExoStates()   
+			states_human = self.env.GetHumanStates()    
   
 		local_step = 0  
 		terminated = [False]*self.num_slaves
@@ -367,7 +369,7 @@ class PPO(object):
 					# self._action_filter_exo[j].init_history(self.env.GetExoActions(j)[:self.num_exo_action])   
 					# self._action_filter_human[j].init_history(self.env.GetHumanActions(j)[:self.num_human_action])       
 
-			if local_step >= self.buffer_size:
+			if local_step >= self.buffer_size: 
 				break
 			
 			if self.only_human:  
@@ -375,9 +377,11 @@ class PPO(object):
 				states_exo = states  
 				states_human = states  
 			else:  
-				states = self.env.GetFullObservations()    
-				states_exo = states[:,0:-self.num_human_state]     
-				states_human = states[:,-self.num_human_state:]      
+				# states = self.env.GetFullObservations()    
+				# states_exo = states[:,0:-self.num_human_state]     
+				# states_human = states[:,-self.num_human_state:]     
+				states_exo = self.env.GetExoStates()   
+				states_human = self.env.GetHumanStates()   
 
 	def OptimizeSimulationHumanNN(self):  
 		all_transitions = np.array(self.human_replay_buffer.buffer, dtype=object)     

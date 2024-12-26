@@ -56,6 +56,9 @@ public:
 
 	const Eigen::VectorXd& GetHumanActions(int id);        
 	const Eigen::VectorXd& GetExoActions(int id);    
+
+	const Eigen::VectorXd& GetHumanStates();          
+	const Eigen::VectorXd& GetExoStates();     
 	
 	//For Muscle Transitions
 	int GetNumTotalMuscleRelatedDofs(){return mEnvs[0]->GetNumTotalRelatedDofs();};
@@ -85,6 +88,9 @@ private:
 	Eigen::VectorXd mExoRewards;   
 	Eigen::VectorXd mHumanRewards;    
 	Eigen::MatrixXd mObservations;  
+
+	Eigen::MatrixXd mExoStates;  
+	Eigen::MatrixXd mHumanStates;  
 
 	Eigen::MatrixXd mMuscleTuplesJtA;
 	Eigen::MatrixXd mMuscleTuplesTauDes;

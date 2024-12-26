@@ -101,7 +101,8 @@ Initialize(const std::string& meta_file,bool load_obj)
 	}
 	ifs.close();  
 	
-	double kp = 300.0;
+	mUseExo = 1;   
+	double kp = 300.0;  
 	character->SetPDParameters(kp,sqrt(2*kp));
 	this->SetCharacter(character);
 	this->SetGround(MASS::BuildFromFile(std::string(MASS_ROOT_DIR)+std::string("/data/ground.xml")));
@@ -162,7 +163,9 @@ Initialize()
 	mCurrentExoAction = Eigen::VectorXd::Zero(mNumExoActiveDof);  
 	mPrevExoAction = Eigen::VectorXd::Zero(mNumExoActiveDof);  
 	
-	mDesiredTorque = Eigen::VectorXd::Zero(mNumHumanActiveDof); 
+	mDesiredTorque = Eigen::VectorXd::Zero(mNumHumanActiveDof);  
+
+	// observation 
 
 	Reset(false);  
 
@@ -208,7 +211,7 @@ Reset(bool RSI)
 
 	std::pair<Eigen::VectorXd,Eigen::VectorXd> pv = mCharacter->GetTargetPosAndVel(t,1.0/mControlHz);
 	mTargetPositions = pv.first;
-	mTargetVelocities = pv.second;
+	mTargetVelocities = pv.second;  
 
 	mCharacter->GetSkeleton()->setPositions(mTargetPositions);
 	mCharacter->GetSkeleton()->setVelocities(mTargetVelocities);
@@ -635,7 +638,7 @@ Environment::
 UpdateStateBuffer()  
 {
 	history_buffer_human_state.push_back(this->GetHumanState());       
-	// history_buffer_exo_state.push_back(this->GetExoState());        
+	history_buffer_exo_state.push_back(this->GetExoState());        
 }
 
 void 
@@ -667,7 +670,7 @@ GetFullObservation()
 	// exo states    
 	Eigen::MatrixXd states(mNumExoState, HISTORY_BUFFER_LEN);
 	for(int i=0; i<HISTORY_BUFFER_LEN; i++)
-		states.col(i) =  history_buffer_exo_state.get(i);
+		states.col(i) =  history_buffer_exo_state.get(i); 
 	Eigen::VectorXd states_v = Eigen::Map<const Eigen::VectorXd>(states.data(), states.size());   
 
 	// exo actions  
@@ -692,7 +695,7 @@ GetFullObservation()
 		observation.resize(humanstates_v.rows());
 		observation << humanstates_v;
 	}
-	return observation;
+	return observation;   
 }
 
 Eigen::VectorXd clamp(Eigen::VectorXd x, double lo, double hi)

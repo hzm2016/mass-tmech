@@ -136,7 +136,7 @@ private:
 	int mNumExoState;    
 	int mNumExoAction;  
 
-	int mNumHumanActiveDof;  
+	int mNumHumanActiveDof;   
 	int mNumExoActiveDof;  
 
 	int mUseExo;   

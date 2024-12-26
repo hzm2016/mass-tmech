@@ -177,7 +177,6 @@ GetStates()
 	{
 		mStates.row(id) = mEnvs[id]->GetState().transpose();
 	}
-
 	return mStates;
 }
 
@@ -223,6 +222,28 @@ GetExoRewards()
 	}
 	return mHumanRewards; 
 }  
+
+const Eigen::MatrixXd&
+EnvManager:: 
+GetExoStates()  
+{
+	for (int id = 0;id<mNumEnvs;++id)
+	{
+		mExoStates.row(id) = mEnvs[id]->GetExoState().transpose();
+	}
+	return mExoStates;   
+}
+
+const Eigen::MatrixXd&
+EnvManager:: 
+GetHumanStates()  
+{
+	for (int id = 0;id<mNumEnvs;++id)
+	{
+		mHumanStates.row(id) = mEnvs[id]->GetExoState().transpose();
+	}
+	return mHumanStates;     
+}
 
 const Eigen::MatrixXd&
 EnvManager::
@@ -398,6 +419,8 @@ PYBIND11_MODULE(pymss, m)
 		.def("Resets",&EnvManager::Resets)
 		.def("IsEndOfEpisodes",&EnvManager::IsEndOfEpisodes)
 		.def("GetStates",&EnvManager::GetStates)
+		.def("GetExoStates",&EnvManager::GetExoStates) 
+		.def("GetHumanStates",&EnvManager::GetHumanStates) 
 		.def("SetHumanActions",&EnvManager::SetHumanActions)  
 		.def("SetExoHumanActions",&EnvManager::SetExoHumanActions)  
 		.def("GetHumanActions",&EnvManager::GetHumanActions)  

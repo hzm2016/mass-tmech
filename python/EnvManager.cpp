@@ -33,9 +33,23 @@ GetNumState()
 
 int
 EnvManager::
+GetNumExoState()
+{
+	return mEnvs[0]->GetNumExoState();  
+}   
+
+int
+EnvManager::
+GetNumHumanState()
+{
+	return mEnvs[0]->GetNumHumanState();    
+}   
+
+int
+EnvManager::
 GetNumAction()
 {
-	return mEnvs[0]->GetNumAction();
+	return mEnvs[0]->GetNumAction(); 
 }
 
 int
@@ -223,9 +237,20 @@ GetExoRewards()
 	return mHumanRewards; 
 }  
 
+const Eigen::VectorXd&
+EnvManager::
+GetHumanRewards()
+{
+	for (int id = 0;id<mNumEnvs;++id)
+	{
+		mHumanRewards[id] = mEnvs[id]->GetHumanReward(); 
+	}
+	return mHumanRewards; 
+}  
+
 const Eigen::MatrixXd&
 EnvManager:: 
-GetExoStates()  
+GetExoStates()   
 {
 	for (int id = 0;id<mNumEnvs;++id)
 	{
@@ -240,7 +265,7 @@ GetHumanStates()
 {
 	for (int id = 0;id<mNumEnvs;++id)
 	{
-		mHumanStates.row(id) = mEnvs[id]->GetExoState().transpose();
+		mHumanStates.row(id) = mEnvs[id]->GetHumanState().transpose();  
 	}
 	return mHumanStates;     
 }

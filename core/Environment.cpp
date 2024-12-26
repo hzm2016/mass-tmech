@@ -103,12 +103,12 @@ Initialize(const std::string& meta_file,bool load_obj)
 	
 	mUseExo = 1;   
 	double kp = 300.0;  
-	character->SetPDParameters(kp,sqrt(2*kp));
-	this->SetCharacter(character);
+	character->SetPDParameters(kp,sqrt(2*kp));  
+	this->SetCharacter(character);   
 	this->SetGround(MASS::BuildFromFile(std::string(MASS_ROOT_DIR)+std::string("/data/ground.xml")));
 
 	// revised by Zhimin 
-	mNumExoActiveDof = 2;   
+	mNumExoActiveDof = 2;     
 
 	this->Initialize(); 
 }
@@ -165,14 +165,14 @@ Initialize()
 	
 	mDesiredTorque = Eigen::VectorXd::Zero(mNumHumanActiveDof);  
 
-	// observation 
-
+	// observation   
 	Reset(false);  
 
 	mNumState = GetState().rows();   
 
 	/// human states
-	mNumHumanState = mNumState;   
+	// mNumHumanState = mNumState;   
+	mNumHumanState = GetHumanState().rows();   
 
 	/// exo states
 	mNumExoState = GetExoState().rows();  

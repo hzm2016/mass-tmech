@@ -70,6 +70,7 @@
         "bit": "cpp",
         "mixinvector": "cpp",
         "fast_back_stack": "cpp",
-        "core": "cpp"
+        "core": "cpp",
+        "texture": "cpp"
     }
 }

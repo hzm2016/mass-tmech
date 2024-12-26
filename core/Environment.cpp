@@ -283,7 +283,7 @@ Step()
 	{
 		GetDesiredTorques();  
 		mCharacter->GetSkeleton()->setForces(mDesiredTorque);   
-		UpdateTorqueBuffer(mDesiredTorque);      
+		UpdateTorqueBuffer();        
 	}
 
 	mWorld->step();  

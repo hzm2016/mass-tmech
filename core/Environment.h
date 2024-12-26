@@ -63,7 +63,7 @@ public:
 
 	// update buffers    
 	void UpdateStateBuffer();    
-	void UpdateTorqueBuffer(Eigen::VectorXd torque);   
+	void UpdateTorqueBuffer();   
 	void UpdateExoActionBuffer(Eigen::VectorXd exoaction);       
 	void UpdateHumanActionBuffer(Eigen::VectorXd humanaction);   
   

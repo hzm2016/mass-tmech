@@ -395,6 +395,17 @@ GetFullObservations()
 // update state and action buffers
 void 
 EnvManager::  
+UpdateTorqueBuffer()  
+{
+	for (int id = 0;id<mNumEnvs;++id)
+	{
+		mEnvs[id]->UpdateTorqueBuffer();  
+	}
+}
+
+// update state and action buffers
+void 
+EnvManager::  
 UpdateStateBuffers()
 {
 	for (int id = 0;id<mNumEnvs;++id)

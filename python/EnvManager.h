@@ -57,8 +57,8 @@ public:
 	const Eigen::VectorXd& GetHumanActions(int id);        
 	const Eigen::VectorXd& GetExoActions(int id);    
 
-	const Eigen::VectorXd& GetHumanStates();          
-	const Eigen::VectorXd& GetExoStates();     
+	const Eigen::MatrixXd& GetHumanStates();          
+	const Eigen::MatrixXd& GetExoStates();     
 	
 	//For Muscle Transitions
 	int GetNumTotalMuscleRelatedDofs(){return mEnvs[0]->GetNumTotalRelatedDofs();};

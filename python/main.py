@@ -381,7 +381,7 @@ class PPO(object):
 				# states_exo = states[:,0:-self.num_human_state]     
 				# states_human = states[:,-self.num_human_state:]     
 				states_exo = self.env.GetExoStates()   
-				states_human = self.env.GetHumanStates()   
+				states_human = self.env.GetHumanStates()    
 
 	def OptimizeSimulationHumanNN(self):  
 		all_transitions = np.array(self.human_replay_buffer.buffer, dtype=object)     

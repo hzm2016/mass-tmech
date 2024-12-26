@@ -133,7 +133,7 @@ GetSPDForces(const Eigen::VectorXd& p_desired)
 	return tau;
 }
 
-Eigen::VectorXd
+std::pair<Eigen::VectorXd, Eigen::VectorXd>  
 Character::
 GetSPDForces(const Eigen::VectorXd& p_desired_human, const Eigen::VectorXd& p_desired_exo)  
 {
@@ -169,9 +169,10 @@ GetSPDForces(const Eigen::VectorXd& p_desired_human, const Eigen::VectorXd& p_de
 	Eigen::VectorXd ddq = M_inv*(-mSkeleton->getCoriolisAndGravityForces()+p_diff_human+v_diff_human+mSkeleton->getConstraintForces());
 	Eigen::VectorXd tau = p_diff_human + v_diff_human - dt*mKv.cwiseProduct(ddq);
 
-	tau.head<6>().setZero();
+	tau.head<6>().setZero();  
 
-	return tau;
+	Eigen::VectorXd tau_exo = p_diff_exo + v_diff_exo;  
+	return std::make_pair(tau, tau_exo);  
 }
 
 Eigen::VectorXd

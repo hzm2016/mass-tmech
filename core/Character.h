@@ -20,7 +20,7 @@ public:
 	void AddEndEffector(const std::string& body_name){mEndEffectors.push_back(mSkeleton->getBodyNode(body_name));}
 	
 	Eigen::VectorXd GetSPDForces(const Eigen::VectorXd& p_desired);  
-	Eigen::VectorXd GetSPDForces(const Eigen::VectorXd& p_desired_human, const Eigen::VectorXd& p_desired_exo);  
+	std::pair<Eigen::VectorXd, Eigen::VectorXd> GetSPDForces(const Eigen::VectorXd& p_desired_human, const Eigen::VectorXd& p_desired_exo);  
 
 	Eigen::VectorXd GetTargetPositions(double t,double dt);
 	std::pair<Eigen::VectorXd,Eigen::VectorXd> GetTargetPosAndVel(double t,double dt);

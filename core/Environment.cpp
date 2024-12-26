@@ -311,7 +311,7 @@ GetDesiredTorques()
 
 Eigen::VectorXd  
 Environment::
-GetDesiredExoTorques()  
+GetDesiredExoTorques()   
 {
 	Eigen::VectorXd p_des_human = mTargetPositions;  
 	p_des_human.tail(mTargetPositions.rows()-mRootJointDof) += mAction;   
@@ -321,8 +321,9 @@ GetDesiredExoTorques()
 	p_des_exo[1] = mTargetPositions[6];    
 	p_des_exo += mExoAction;     
 
-	mDesiredTorque = mCharacter->GetSPDForces(p_des_human, p_des_exo);     
-	return mDesiredTorque.tail(mDesiredTorque.rows()-mRootJointDof);  
+	auto [mDesiredTorque, mDesiredExoTorque] = mCharacter->GetSPDForces(p_des_human, p_des_exo);    
+
+	return mDesiredExoTorque;   
 }   
 
 Eigen::VectorXd

@@ -21,7 +21,10 @@ EnvManager(std::string meta_file,int num_envs)
 	mRewards.resize(mNumEnvs);
 	mStates.resize(mNumEnvs, GetNumState());
 	mMuscleTorques.resize(mNumEnvs, muscle_torque_cols);
-	mDesiredTorques.resize(mNumEnvs, tau_des_cols);
+	mDesiredTorques.resize(mNumEnvs, tau_des_cols);  
+
+	mExoStates.resize(mNumEnvs, GetNumExoState());   
+	mHumanStates.resize(mNumEnvs, GetNumHumanState());    
 }
 
 int
@@ -252,9 +255,9 @@ const Eigen::MatrixXd&
 EnvManager:: 
 GetExoStates()   
 {
-	for (int id = 0;id<mNumEnvs;++id)
+	for (int id = 0;id<mNumEnvs;++id)  
 	{
-		mExoStates.row(id) = mEnvs[id]->GetExoState().transpose();
+		mExoStates.row(id) = mEnvs[id]->GetExoControlState().transpose();   
 	}
 	return mExoStates;   
 }

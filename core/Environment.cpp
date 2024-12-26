@@ -175,7 +175,8 @@ Initialize()
 	mNumHumanState = GetHumanState().rows();   
 
 	/// exo states
-	mNumExoState = GetExoState().rows();  
+	// mNumExoState = GetExoControlState().rows();      
+	mNumExoState = 6;  
 
 	std::cout << "NumState: " << mNumState << std::endl; 
 	std::cout << "NumHumanState: " << mNumHumanState << std::endl;  
@@ -222,10 +223,9 @@ Reset(bool RSI)
 	randomized_latency = 0;  
 	for(int i=0; i<HISTORY_BUFFER_LEN; i++)
 	{
-		history_buffer_human_state.push_back(this->GetHumanState());       
-		history_buffer_exo_state.push_back(this->GetState());      
-		// history_buffer_exo_state.push_back(this->GetExoState());      
-		history_buffer_human_action.push_back(this->GetHumanAction());      
+		history_buffer_human_state.push_back(this->GetHumanState());        
+		history_buffer_exo_state.push_back(this->GetExoTrueState());         
+		history_buffer_human_action.push_back(this->GetHumanAction());        
 		history_buffer_exo_action.push_back(this->GetExoAction());      
 		history_buffer_human_torque.push_back(this->GetDesiredTorques());      
 		history_buffer_exo_torque.push_back(this->GetDesiredTorques());     
@@ -610,7 +610,7 @@ GetExoReward()
 
 Eigen::VectorXd  
 Environment::  
-GetExoState()
+GetExoState() 
 {  
 	double dt = 1.0/mControlHz; 
 	Eigen::VectorXd observation;   
@@ -636,12 +636,38 @@ GetExoState()
     return observation;  
 }
 
+Eigen::VectorXd 
+Environment::   
+GetExoTrueState()    
+{
+	auto& skel = mCharacter->GetSkeleton();     
+	dart::dynamics::BodyNode* root = skel->getBodyNode(0);   // get root
+	Eigen::VectorXd p_cur = skel->getPositions();
+	Eigen::VectorXd v_cur = skel->getVelocities();
+
+	Eigen::VectorXd p_save = Eigen::VectorXd::Zero(2);
+	Eigen::VectorXd v_save = Eigen::VectorXd::Zero(2);  
+	p_save[0] = p_cur[15];
+	p_save[1] = p_cur[6]; 
+	v_save[0] = v_cur[15];
+	v_save[1] = v_cur[6];    
+    // current joint positions and velocities
+	// Eigen::VectorXd p_cur, v_cur;
+	// // remove global transform of the root
+	// if (mUseExo)
+	// 	p_cur.resize(p_save.rows()-6);
+	// v_cur = v_save/10.0;  
+    Eigen::VectorXd state(p_save.rows()+v_save.rows()); //+tar_poses.rows());
+	state<<p_save,v_save; //tar_poses;  
+	return state;
+}
+
 void 
 Environment:: 
 UpdateStateBuffer()  
 {
 	history_buffer_human_state.push_back(this->GetHumanState());       
-	history_buffer_exo_state.push_back(this->GetExoState());        
+	history_buffer_exo_state.push_back(this->GetExoState());         
 }
 
 void 
@@ -664,6 +690,31 @@ Environment::
 UpdateHumanActionBuffer(Eigen::VectorXd humanaction)
 {
 	history_buffer_human_action.push_back(humanaction); 
+}
+
+Eigen::VectorXd 
+Environment:: 
+GetExoControlState()
+{
+	// exo states    
+	Eigen::MatrixXd states(mNumExoState, HISTORY_BUFFER_LEN);  
+	for(int i=0; i<HISTORY_BUFFER_LEN; i++)  
+		states.col(i) =  history_buffer_exo_state.get(i);    
+	Eigen::VectorXd states_v = Eigen::Map<const Eigen::VectorXd>(states.data(), states.size());   
+
+	// // exo actions  
+	// Eigen::MatrixXd actions(mNumExoAction, HISTORY_BUFFER_LEN);      
+	// for(int i=0; i<HISTORY_BUFFER_LEN; i++)   
+	// 	actions.col(i) =  history_buffer_exo_action.get(i);    
+	// Eigen::VectorXd actions_v = Eigen::Map<const Eigen::VectorXd>(actions.data(), actions.size());
+
+	Eigen::VectorXd observation;   
+	// observation.resize(states_v.rows()+actions_v.rows());   
+	// observation << states_v,actions_v;  
+
+	observation.resize(states_v.rows());     
+	observation << states_v;   
+    return observation;  
 }
 
 Eigen::VectorXd 

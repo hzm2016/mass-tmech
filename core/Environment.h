@@ -58,6 +58,8 @@ public:
 	Eigen::VectorXd GetExoState();    
 	void SetExoAction(const Eigen::VectorXd& a);    
 	double GetExoReward();   
+	Eigen::VectorXd GetExoTrueState();    
+	Eigen::VectorXd GetExoControlState();     
 
 	// update buffers    
 	void UpdateStateBuffer();    
@@ -136,11 +138,11 @@ private:
 	int mNumHumanAction;   
 
 	int mNumExoState;    
-	int mNumExoAction;  
+	int mNumExoAction;    
 
 	int mNumHumanActiveDof;   
 	int mNumExoActiveDof;   
-	Eigen::VectorXd mDesiredExoTorque;   
+	Eigen::VectorXd mDesiredExoTorque;    
 
 	int mUseExo;   
 

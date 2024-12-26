@@ -66,17 +66,20 @@ class PPO(object):
 		self.num_slaves = 16
 		self.env = pymss.pymss(meta_file,self.num_slaves)  
   
-		self.only_human = 1    # or 0 with human and exo network 
+		self.only_human = 0    # or 0 with human and exo network 
 
 		self.use_muscle = self.env.UseMuscle()    
 		self.num_muscles = self.env.GetNumMuscles()    
-
-  		# human training details 
-		self.num_human_state = self.env.GetNumState()  
-		self.num_human_action = self.env.GetNumAction()  
   
 		# exo training details 
-		self.num_exo_state = self.env.GetNumExoState()    
+		if self.only_human: 
+			self.num_exo_state = self.num_human_state  
+			self.num_human_state = self.env.GetNumState()    
+		else: 
+			self.num_exo_state = self.env.GetNumExoState()  
+			self.num_human_state = self.env.GetNumHumanState()  
+
+		self.num_human_action = self.env.GetNumAction()    
 		self.num_exo_action = 2   
 		
 		self.num_epochs = 10   
@@ -298,13 +301,13 @@ class PPO(object):
 			states_exo = states  
 			states_human = states  
 		else:   
-			# get seperate states  
-			# states = self.env.GetFullObservations()    
-	
-			# states_exo = states[:, :-self.num_human_state]     
-			# states_human = states[:, -self.num_human_state:]    
+			# get seperate states    
 			states_exo = self.env.GetExoStates()   
-			states_human = self.env.GetHumanStates()     
+			states_human = self.env.GetHumanStates()    
+   
+			print("states exo :", states_exo.shape)    
+			print("states human :", states_human.shape)       
+  
   
 		local_step = 0  
 		terminated = [False]*self.num_slaves
@@ -611,7 +614,7 @@ if __name__=="__main__":
 
 	ppo = PPO(args.meta)
 	nn_dir = '../nn'
-	if not os.path.exists(nn_dir):  
+	if not os.path.exists(nn_dir):   
 		os.makedirs(nn_dir)    
 		
 	if args.model is not None: 

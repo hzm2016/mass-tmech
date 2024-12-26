@@ -110,14 +110,14 @@ GetHumanReward(int id)
 
 const Eigen::VectorXd&
 EnvManager::
-GetExoAction(int id)
+GetExoActions(int id)
 {
 	return mEnvs[id]->GetExoAction();
 }
 
 const Eigen::VectorXd&
 EnvManager::
-GetHumanAction(int id)  
+GetHumanActions(int id)  
 {
 	return mEnvs[id]->GetHumanAction();
 }
@@ -223,32 +223,6 @@ GetExoRewards()
 	}
 	return mHumanRewards; 
 }  
-
-// py::array_t<double>
-// EnvManager::
-// GetExoActions()
-// {
-// 	Eigen::MatrixXd actions(mNumEnvs, this->GetNumAction()); 
-// 	for (int id = 0;id<mNumEnvs;++id)
-// 	{
-// 		actions.row(id) = mEnvs[id]->GetExoAction().transpose();
-// 	}
-
-// 	return toNumPyArray(actions);
-// }  
-
-// py::array_t<double>
-// EnvManager::
-// GetHumanActions()
-// {
-// 	Eigen::MatrixXd actions(mNumEnvs,this->GetNumHumanAction());
-// 	for (int id = 0;id<mNumEnvs;++id)
-// 	{
-// 		actions.row(id) = mEnvs[id]->GetHumanAction().transpose();
-// 	}
-
-// 	return toNumPyArray(actions);
-// }
 
 const Eigen::MatrixXd&
 EnvManager::
@@ -425,7 +399,9 @@ PYBIND11_MODULE(pymss, m)
 		.def("IsEndOfEpisodes",&EnvManager::IsEndOfEpisodes)
 		.def("GetStates",&EnvManager::GetStates)
 		.def("SetHumanActions",&EnvManager::SetHumanActions)  
-		.def("SetExoHumanActions",&EnvManager::SetExoHumanActions)
+		.def("SetExoHumanActions",&EnvManager::SetExoHumanActions)  
+		.def("GetHumanActions",&EnvManager::GetHumanActions)  
+		.def("GetExoActions",&EnvManager::GetExoActions)
 		.def("GetNumTotalMuscleRelatedDofs",&EnvManager::GetNumTotalMuscleRelatedDofs)
 		.def("GetNumMuscles",&EnvManager::GetNumMuscles)
 		.def("GetMuscleTorques",&EnvManager::GetMuscleTorques)

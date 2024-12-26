@@ -27,6 +27,9 @@ public:
 	void Reset(bool RSI,int id);
 	bool IsEndOfEpisode(int id);  
 
+	int GetNumExoState();  
+	int GetNumHumanState();  
+
 	/// reward of exo and human   
 	double GetReward(int id);   
 	double GetExoReward(int id);   

@@ -108,19 +108,19 @@ GetHumanReward(int id)
 	return mEnvs[id]->GetHumanReward();  
 }
 
-// py::array_t<double> 
-// EnvManager::
-// GetExoAction(int id)
-// {
-// 	return toNumPyArray(mEnvs[id]->GetAction());
-// }
+const Eigen::VectorXd&
+EnvManager::
+GetExoAction(int id)
+{
+	return mEnvs[id]->GetExoAction();
+}
 
-// py::array_t<double> 
-// EnvManager::
-// GetHumanAction(int id)
-// {
-// 	return toNumPyArray(mEnvs[id]->GetHumanAction());
-// }
+const Eigen::VectorXd&
+EnvManager::
+GetHumanAction(int id)  
+{
+	return mEnvs[id]->GetHumanAction();
+}
 
 void
 EnvManager::

@@ -203,7 +203,7 @@ Reset(bool RSI)
 	mPrevHumanAction.setZero();     
 
 	mExoAction.setZero();   
-	mCurrentExoAction.setZero(); 
+	mCurrentExoAction.setZero();   
 	mPrevExoAction.setZero();     
 
 	std::pair<Eigen::VectorXd,Eigen::VectorXd> pv = mCharacter->GetTargetPosAndVel(t,1.0/mControlHz);
@@ -275,13 +275,12 @@ Step()
 	}
 	else
 	{
-		GetDesiredTorques();
-		mCharacter->GetSkeleton()->setForces(mDesiredTorque);
+		GetDesiredTorques();  
+		mCharacter->GetSkeleton()->setForces(mDesiredTorque);   
+		UpdateTorqueBuffer(mDesiredTorque);      
 	}
 
 	mWorld->step();  
-
-	// UpdateTorqueBuffer(mDesiredTorque);      
 
 	// Eigen::VectorXd p_des = mTargetPositions;  
 	// //p_des.tail(mAction.rows()) += mAction;  
@@ -295,10 +294,10 @@ Step()
 
 Eigen::VectorXd  
 Environment::
-GetDesiredTorques()  
+GetDesiredTorques()   
 {
-	Eigen::VectorXd p_des = mTargetPositions;
-	p_des.tail(mTargetPositions.rows()-mRootJointDof) += mAction;  
+	Eigen::VectorXd p_des = mTargetPositions;  
+	p_des.tail(mTargetPositions.rows()-mRootJointDof) += mAction;    
 
 	mDesiredTorque = mCharacter->GetSPDForces(p_des);  
 	return mDesiredTorque.tail(mDesiredTorque.rows()-mRootJointDof);   
@@ -369,7 +368,6 @@ IsEndOfEpisode()
 	return isTerminal;   
 }
 
-// original state require 
 Eigen::VectorXd 
 Environment::
 GetState()
@@ -695,4 +693,35 @@ GetFullObservation()
 		observation << humanstates_v;
 	}
 	return observation;
+}
+
+Eigen::VectorXd clamp(Eigen::VectorXd x, double lo, double hi)
+{
+	for(int i=0; i<x.rows(); i++)
+	{
+		x[i] = (x[i] < lo) ? lo : (hi < x[i]) ? hi : x[i];
+	}
+	return x; 
+}
+
+double clamp(double x, double lo, double hi)
+{
+
+	x = (x< lo) ? lo : (hi < x) ? hi : x;
+
+	return x; 
+}
+
+void
+Environment::  
+ProcessAction(int substep_count, int num)
+{
+    double lerp = double(substep_count + 1) / num;     //substep_count: the step count should be between [0, num_action_repeat).
+    mExoAction = mPrevExoAction + lerp * (mCurrentExoAction - mPrevExoAction);
+	mHumanAction = mCurrentHumanAction; 
+    // return proc_action;
+	// if (mUseHumanNN)
+	// {
+	//  	mHumanAction = mPrevHumanAction + lerp * (mCurrentHumanAction - mPrevHumanAction);
+	// }
 }

@@ -363,9 +363,8 @@ class PPO(object):
 
 					self.env.Reset(True,j)  
 					
-     				# obtain action   
-					# self._action_filter_exo[j].init_history(self.env.GetExoAction(j)[:self.num_exo_action])
-					# self._action_filter_human[j].init_history(self.env.GetHumanAction(j)[:self.num_human_action]) 
+					self._action_filter_exo[j].init_history(self.env.GetExoAction(j))  
+					self._action_filter_human[j].init_history(self.env.GetHumanAction(j))     
 
 			if local_step >= self.buffer_size:
 				break
@@ -380,16 +379,16 @@ class PPO(object):
 				states_human = states[:,-self.num_human_state:]      
 
 	def OptimizeSimulationHumanNN(self):  
-		all_transitions = np.array(self.replay_buffer.buffer)
+		all_transitions = np.array(self.human_replay_buffer.buffer)   
 		for j in range(self.num_epochs):
 			np.random.shuffle(all_transitions)
 			for i in range(len(all_transitions)//self.batch_size):
 				transitions = all_transitions[i*self.batch_size:(i+1)*self.batch_size]
 				batch = Transition(*zip(*transitions))
 
-				stack_s = np.vstack(batch.s_h).astype(np.float32)
-				stack_a = np.vstack(batch.a_h).astype(np.float32)
-				stack_lp = np.vstack(batch.logprob_h).astype(np.float32)
+				stack_s = np.vstack(batch.s).astype(np.float32)
+				stack_a = np.vstack(batch.a).astype(np.float32)
+				stack_lp = np.vstack(batch.logprob).astype(np.float32)
 				stack_td = np.vstack(batch.TD).astype(np.float32)
 				stack_gae = np.vstack(batch.GAE).astype(np.float32)
 				
@@ -422,7 +421,7 @@ class PPO(object):
 		print('')
   
 	def OptimizeSimulationExoNN(self):
-		all_transitions = np.array(self.replay_buffer.buffer,dtype=object)
+		all_transitions = np.array(self.exo_replay_buffer.buffer,dtype=object)  
 		for j in range(self.num_epochs):
 			np.random.shuffle(all_transitions)
 			for i in range(len(all_transitions)//self.batch_size):

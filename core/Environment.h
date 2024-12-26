@@ -38,10 +38,15 @@ public:
 
 	int GetNumFullObservation(){return mNumFullObservation;}  
 
+	Eigen::VectorXd GetExoAction(){return mExoAction;}
+	Eigen::VectorXd GetHumanAction(){return mHumanAction;}
+
 public:
 	void Step();
 	void Reset(bool RSI = true);  
 	bool IsEndOfEpisode();  
+
+	void ProcessAction(int j, int num);   
 
 	Eigen::VectorXd GetState();  
 	void SetAction(const Eigen::VectorXd& a);   
@@ -53,9 +58,9 @@ public:
 	double GetHumanReward();  
 
 	// exo  
-	void SetExoAction(const Eigen::VectorXd& a);    
-	double GetExoReward();    
 	Eigen::VectorXd GetExoState();    
+	void SetExoAction(const Eigen::VectorXd& a);    
+	double GetExoReward();   
 
 	// update buffers    
 	void UpdateStateBuffer();    
@@ -69,11 +74,11 @@ public:
 	// get desired force 
 	Eigen::VectorXd GetDesiredTorques();   
 	Eigen::VectorXd GetDesiredExoTorques();     
-	Eigen::VectorXd GetMuscleTorques();  
+	Eigen::VectorXd GetMuscleTorques();    
 
 	// get actions  
-	Eigen::VectorXd GetExoAction() {return mExoAction;}  
-	Eigen::VectorXd GetHumanAction() {return mHumanAction;}     
+	Eigen::VectorXd GetExoAction() {return mExoAction;}    
+	Eigen::VectorXd GetHumanAction() {return mHumanAction;}      
 
 	const dart::simulation::WorldPtr& GetWorld(){return mWorld;}
 	Character* GetCharacter(){return mCharacter;}
@@ -89,7 +94,7 @@ public:
 	const Eigen::VectorXd& GetActivationLevels(){return mActivationLevels;}
 	const Eigen::VectorXd& GetAverageActivationLevels(){return mAverageActivationLevels;}
 	void SetActivationLevels(const Eigen::VectorXd& a){mActivationLevels = a;}
-	bool GetUseMuscle(){return mUseMuscle;}  
+	bool GetUseMuscle(){return mUseMuscle;}    
 
 private:
 	dart::simulation::WorldPtr mWorld;
@@ -123,8 +128,8 @@ private:
 	Eigen::VectorXd mCurrentHumanAction, mPrevHumanAction;      
 
 	int mNumState;
-	int mNumActiveDof;
-	int mRootJointDof;  
+	int mNumActiveDof;   
+	int mRootJointDof;   
 
 	int mNumFullObservation;  
 
@@ -141,15 +146,16 @@ private:
 
 	double randomized_latency;  
 
-	Eigen::VectorXd mActivationLevels;
-	Eigen::VectorXd mAverageActivationLevels;
-	Eigen::VectorXd mDesiredTorque;
-	std::vector<MuscleTuple> mMuscleTuples;
-	MuscleTuple mCurrentMuscleTuple;
+	Eigen::VectorXd mActivationLevels;   
+	Eigen::VectorXd mAverageActivationLevels;   
+	Eigen::VectorXd mDesiredTorque;  
+	std::vector<MuscleTuple> mMuscleTuples;  
+	MuscleTuple mCurrentMuscleTuple;  
+
 	int mSimCount;
 	int mRandomSampleIndex;
 
-	double w_q,w_v,w_ee,w_com;
+	double w_q,w_v,w_ee,w_com;  
 };
 };
 

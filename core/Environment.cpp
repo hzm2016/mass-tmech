@@ -321,7 +321,9 @@ GetDesiredExoTorques()
 	p_des_exo[1] = mTargetPositions[6];    
 	p_des_exo += mExoAction;     
 
-	auto [mDesiredTorque, mDesiredExoTorque] = mCharacter->GetSPDForces(p_des_human, p_des_exo);    
+	std::pair<Eigen::VectorXd,Eigen::VectorXd> torque_results = mCharacter->GetSPDForces(p_des_human, p_des_exo);     
+	mDesiredTorque = torque_results.first; 
+	mDesiredExoTorque = torque_results.second;  
 
 	return mDesiredExoTorque;   
 }   

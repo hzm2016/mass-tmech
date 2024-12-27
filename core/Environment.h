@@ -87,7 +87,7 @@ public:
 	int GetNumTotalRelatedDofs(){return mCurrentMuscleTuple.JtA.rows();}
 	std::vector<MuscleTuple>& GetMuscleTuples(){return mMuscleTuples;};
 	int GetNumState(){return mNumState;}  
-	int GetNumExoState(){return mNumExoState;}  
+	int GetNumExoState(){return mNumExoControlState;}  
 	int GetNumHumanState(){return mNumHumanState;}
 	int GetNumAction(){return mNumActiveDof;}
 	int GetNumSteps(){return mSimulationHz/mControlHz;}
@@ -139,6 +139,8 @@ private:
 
 	int mNumExoState;    
 	int mNumExoAction;    
+
+	int mNumExoControlState;    
 
 	int mNumHumanActiveDof;   
 	int mNumExoActiveDof;   

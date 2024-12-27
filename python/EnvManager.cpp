@@ -143,10 +143,12 @@ void
 EnvManager::
 Steps(int num)
 {
+	int totalStep = this->GetNumSteps();  
 #pragma omp parallel for
 	for (int id = 0;id<mNumEnvs;++id)
 	{
 		for(int j=0;j<num;j++)
+			mEnvs[id]->ProcessAction(j, num);    
 			mEnvs[id]->Step();
 	}
 }
@@ -160,6 +162,7 @@ StepsAtOnce()
 	for (int id = 0;id<mNumEnvs;++id)
 	{
 		for(int j=0;j<num;j++)
+			mEnvs[id]->ProcessAction(j, num);   
 			mEnvs[id]->Step();
 	}
 }

@@ -73,8 +73,8 @@ class PPO(object):
   
 		# exo training details 
 		if self.only_human: 
-			self.num_exo_state = self.num_human_state  
 			self.num_human_state = self.env.GetNumState()    
+			self.num_exo_state = self.num_human_state  
 		else: 
 			self.num_exo_state = self.env.GetNumExoState()  
 			self.num_human_state = self.env.GetNumHumanState()  
@@ -294,8 +294,8 @@ class PPO(object):
 			states_human = [None]*self.num_slaves   
 			states_exo = self.env.GetExoStates()   
 			states_human = self.env.GetHumanStates()     
-			print("states exo :", states_exo.shape)    
-			print("states human :", states_human.shape)      
+			print("states exo :", states_exo.shape)      
+			print("states human :", states_human.shape)        
 		
 		# action  
 		actions_exo = [None]*self.num_slaves   
@@ -314,25 +314,36 @@ class PPO(object):
 			counter += 1
 			if counter%10 == 0:
 				print('SIM : {}'.format(local_step),end='\r') 
-    
-			# human action 
-			a_dist_human,v_human = self.human_model(Tensor(states_human))
-			actions_human = a_dist_human.sample().cpu().detach().numpy()    
-			logprobs_human = a_dist_human.log_prob(Tensor(actions_human)).cpu().detach().numpy().reshape(-1)
-			values_human = v_human.cpu().detach().numpy().reshape(-1)   
-   
-   			# exo action 
-			a_dist_exo,v_exo = self.exo_model(Tensor(states_exo))      
-			actions_exo = a_dist_exo.sample().cpu().detach().numpy()     
-			logprobs_exo = a_dist_exo.log_prob(Tensor(actions_exo)).cpu().detach().numpy().reshape(-1)
-			values_exo = v_exo.cpu().detach().numpy().reshape(-1)     
 
-			# set actions of exo and human   
-			self.env.SetExoHumanActions(actions_exo, actions_human)    
+			if self.only_human:   
+				# human action 
+				a_dist_human,v_human = self.human_model(Tensor(states_human))
+				actions_human = a_dist_human.sample().cpu().detach().numpy()    
+				logprobs_human = a_dist_human.log_prob(Tensor(actions_human)).cpu().detach().numpy().reshape(-1)
+				values_human = v_human.cpu().detach().numpy().reshape(-1)   
+
+    			# set actions of human   
+				self.env.SetHumanActions(actions_human)     
+				self.env.UpdateHumanActionBuffers(actions_human)     
+			else:  
+				# human action 
+				a_dist_human,v_human = self.human_model(Tensor(states_human))
+				actions_human = a_dist_human.sample().cpu().detach().numpy()    
+				logprobs_human = a_dist_human.log_prob(Tensor(actions_human)).cpu().detach().numpy().reshape(-1)
+				values_human = v_human.cpu().detach().numpy().reshape(-1)   
+    
+				# exo action  
+				a_dist_exo,v_exo = self.exo_model(Tensor(states_exo))      
+				actions_exo = a_dist_exo.sample().cpu().detach().numpy()     
+				logprobs_exo = a_dist_exo.log_prob(Tensor(actions_exo)).cpu().detach().numpy().reshape(-1)
+				values_exo = v_exo.cpu().detach().numpy().reshape(-1)     
+
+				# set actions of exo and human   
+				self.env.SetExoHumanActions(actions_exo, actions_human)    
    
-			# update action buffer  
-			self.env.UpdateExoActionBuffers(actions_exo)    
-			self.env.UpdateHumanActionBuffers(actions_human)     
+				# update action buffer  
+				self.env.UpdateExoActionBuffers(actions_exo)    
+				self.env.UpdateHumanActionBuffers(actions_human)     
 
 			# use muscle 
 			if self.use_muscle:  
@@ -341,39 +352,53 @@ class PPO(object):
 					dt = Tensor(self.env.GetDesiredTorques())  
 					activations = self.muscle_model(mt,dt).cpu().detach().numpy()  
 					self.env.SetActivationLevels(activations)  
-					self.env.Steps(2)  
-     
-				self.env.UpdateStateBuffers()    # update state buffer  
+					self.env.Steps(2)   
 			else:
 				self.env.StepsAtOnce()         
 
-				# state buffer update  
-				self.env.UpdateStateBuffers()    # update state buffer 
+			# state buffer update  
+			self.env.UpdateStateBuffers()    # update state buffer 
 
-			# update torque
-			self.env.UpdateTorqueBuffer()  
+			# update torque  
+			self.env.UpdateTorqueBuffer()   
    
 			for j in range(self.num_slaves):   
 				nan_occur = False    
 				terminated_state = True    
-
-				if np.any(np.isnan(states_exo[j])) or np.any(np.isnan(actions_exo[j])) or np.any(np.isnan(values_exo[j])) or np.any(np.isnan(logprobs_exo[j])) or\
-					np.any(np.isnan(states_human[j])) or np.any(np.isnan(actions_human[j])) or np.any(np.isnan(values_human[j])) or np.any(np.isnan(logprobs_human[j])):    
-					nan_occur = True
 				
-				elif self.env.IsEndOfEpisode(j) is False:
-					terminated_state = False 
+				if self.only_human: 
+					if np.any(np.isnan(states_human[j])) or np.any(np.isnan(actions_human[j])) or np.any(np.isnan(values_human[j])) or np.any(np.isnan(logprobs_human[j])):    
+						nan_occur = True
 					
-					rewards_exo[j] = self.env.GetExoReward(j)  
-					rewards_human[j] = self.env.GetHumanReward(j)    
+					elif self.env.IsEndOfEpisode(j) is False:
+						terminated_state = False 
+						
+						rewards_human[j] = self.env.GetHumanReward(j)    
 
-					if (np.any(np.isnan(rewards_exo[j]))) or (np.any(np.isnan(rewards_human[j]))):
-						pass
-					else:  
-						self.episodes[j].Push(states_exo[j], actions_exo[j], rewards_exo[j], values_exo[j], logprobs_exo[j], \
-																	states_human[j], actions_human[j], rewards_human[j], values_human[j], logprobs_human[j])  
-					local_step += 1   
-					counter_list[j] += 1    
+						if (np.any(np.isnan(rewards_exo[j]))) or (np.any(np.isnan(rewards_human[j]))):  
+							pass
+						else:  
+							self.episodes[j].Push(states_human[j], actions_human[j], rewards_human[j], values_human[j], logprobs_human[j])  
+						local_step += 1   
+						counter_list[j] += 1    
+				else: 
+					if np.any(np.isnan(states_exo[j])) or np.any(np.isnan(actions_exo[j])) or np.any(np.isnan(values_exo[j])) or np.any(np.isnan(logprobs_exo[j])) or\
+						np.any(np.isnan(states_human[j])) or np.any(np.isnan(actions_human[j])) or np.any(np.isnan(values_human[j])) or np.any(np.isnan(logprobs_human[j])):    
+						nan_occur = True
+					
+					elif self.env.IsEndOfEpisode(j) is False:
+						terminated_state = False 
+						
+						rewards_exo[j] = self.env.GetExoReward(j)  
+						rewards_human[j] = self.env.GetHumanReward(j)    
+
+						if (np.any(np.isnan(rewards_exo[j]))) or (np.any(np.isnan(rewards_human[j]))):  
+							pass
+						else:  
+							self.episodes[j].Push(states_exo[j], actions_exo[j], rewards_exo[j], values_exo[j], logprobs_exo[j], \
+																		states_human[j], actions_human[j], rewards_human[j], values_human[j], logprobs_human[j])  
+						local_step += 1   
+						counter_list[j] += 1    
 
 				if terminated_state or (nan_occur is True):  
 					counter_list[j] = 0 
@@ -385,9 +410,10 @@ class PPO(object):
 
 					self.env.Reset(True,j)  
 					
-					# print("exo shape :", self.env.GetExoActions(j))
-					# self._action_filter_exo[j].init_history(self.env.GetExoActions(j)[:self.num_exo_action])   
-					# self._action_filter_human[j].init_history(self.env.GetHumanActions(j)[:self.num_human_action])       
+					print("exo shape :")  
+					print(self.env.GetHumanActions(j))  
+					self._action_filter_exo[j].init_history(self.env.GetExoActions(j)[:self.num_exo_action])   
+					self._action_filter_human[j].init_history(self.env.GetHumanActions(j)[:self.num_human_action])       
 
 			if local_step >= self.buffer_size: 
 				break  

@@ -176,11 +176,13 @@ Initialize()
 
 	/// exo states
 	// mNumExoState = GetExoControlState().rows();      
-	mNumExoState = 6;  
+	mNumExoState = 4;  
 
+	mNumExoControlState = 4 * 3;     
+ 
 	std::cout << "NumState: " << mNumState << std::endl; 
 	std::cout << "NumHumanState: " << mNumHumanState << std::endl;  
-	std::cout << "NumExoState: " << mNumExoState << std::endl; 
+	std::cout << "NumExoState: " << mNumExoControlState << std::endl; 
 }   
 
 void
@@ -321,7 +323,7 @@ GetDesiredExoTorques()
 	p_des_exo[1] = mTargetPositions[6];    
 	p_des_exo += mExoAction;     
 	
-	std::cout << p_des_exo[0] << "," << p_des_exo[1] << std::endl;   
+	// std::cout << p_des_exo[0] << "," << p_des_exo[1] << std::endl;   
 	std::pair<Eigen::VectorXd,Eigen::VectorXd> torque_results = mCharacter->GetSPDForces(p_des_human, p_des_exo);     
 	mDesiredTorque = torque_results.first; 
 	mDesiredExoTorque = torque_results.second;  
@@ -513,7 +515,6 @@ void
 Environment::
 SetHumanAction(const Eigen::VectorXd& a)
 {
-	// mAction = a*0.1;   
 	mPrevHumanAction = mCurrentHumanAction;   
 	mCurrentHumanAction = a*0.1; 
 
@@ -580,7 +581,10 @@ GetHumanReward()
 	double r_ee = exp_of_squared(ee_diff,40.0);
 	double r_com = exp_of_squared(com_diff,10.0);
 
-	double r = r_ee*(w_q*r_q + w_v*r_v);
+	double r = r_ee*(w_q*r_q + w_v*r_v);  
+
+	Eigen::VectorXd torque_human = GetDesiredTorques().head(mCharacter->GetHumandof());   
+	double r_torque = exp_of_squared(torque_human, 0.01);      
 
 	return r;
 }
@@ -660,13 +664,8 @@ GetExoTrueState()
 	p_save[0] = p_cur[15];
 	p_save[1] = p_cur[6]; 
 	v_save[0] = v_cur[15];
-	v_save[1] = v_cur[6];    
-    // current joint positions and velocities
-	// Eigen::VectorXd p_cur, v_cur;
-	// // remove global transform of the root
-	// if (mUseExo)
-	// 	p_cur.resize(p_save.rows()-6);
-	// v_cur = v_save/10.0;  
+	v_save[1] = v_cur[6];   
+
     Eigen::VectorXd state(p_save.rows()+v_save.rows()); //+tar_poses.rows());
 	state<<p_save,v_save; //tar_poses;  
 	return state;
@@ -676,8 +675,8 @@ void
 Environment:: 
 UpdateStateBuffer()  
 {
-	history_buffer_human_state.push_back(this->GetHumanState());       
-	history_buffer_exo_state.push_back(this->GetExoState());         
+	history_buffer_human_state.push_back(this->GetHumanState());        
+	history_buffer_exo_state.push_back(this->GetExoTrueState());         
 }
 
 void 
@@ -785,10 +784,5 @@ ProcessAction(int substep_count, int num)
 {
     double lerp = double(substep_count + 1) / num;     //substep_count: the step count should be between [0, num_action_repeat).
     mExoAction = mPrevExoAction + lerp * (mCurrentExoAction - mPrevExoAction);
-	mHumanAction = mCurrentHumanAction; 
-    // return proc_action;
-	// if (mUseHumanNN)
-	// {
-	//  	mHumanAction = mPrevHumanAction + lerp * (mCurrentHumanAction - mPrevHumanAction);
-	// }
+	mHumanAction = mPrevHumanAction + lerp * (mCurrentHumanAction - mPrevHumanAction);
 }

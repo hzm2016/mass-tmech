@@ -117,7 +117,6 @@ GetSPDForces(const Eigen::VectorXd& p_desired)
 	Eigen::VectorXd q = mSkeleton->getPositions();
 	Eigen::VectorXd dq = mSkeleton->getVelocities();
 	double dt = mSkeleton->getTimeStep();
-	// Eigen::MatrixXd M_inv = mSkeleton->getInvMassMatrix();
 	Eigen::MatrixXd M_inv = (mSkeleton->getMassMatrix() + Eigen::MatrixXd(dt*mKv.asDiagonal())).inverse();
 
 	Eigen::VectorXd qdqdt = q + dq*dt;
@@ -147,6 +146,9 @@ GetSPDForces(const Eigen::VectorXd& p_desired_human, const Eigen::VectorXd& p_de
 	q_exo[1] = q[6];  
 	dq_exo[0] = dq[15]; 
 	dq_exo[1] = dq[6];    
+	
+	Eigen::VectorXd mKp_exo = mKp.head(1).replicate(2, 1);   
+    Eigen::VectorXd mKv_exo = mKv.head(1).replicate(2, 1);     
 
 	double dt = mSkeleton->getTimeStep();   
 	Eigen::MatrixXd M_inv = (mSkeleton->getMassMatrix() + Eigen::MatrixXd(dt*mKv.asDiagonal())).inverse();
@@ -157,8 +159,8 @@ GetSPDForces(const Eigen::VectorXd& p_desired_human, const Eigen::VectorXd& p_de
 	Eigen::VectorXd v_diff_human = -mKv.cwiseProduct(dq);  
 
 	Eigen::VectorXd qdqdt_exo = q_exo + dq_exo * dt;      
-	Eigen::VectorXd p_diff_exo = -mKp.cwiseProduct(mSkeleton->getPositionDifferences(qdqdt_exo,p_desired_exo));    
-	Eigen::VectorXd v_diff_exo = -mKv.cwiseProduct(dq_exo);  
+	Eigen::VectorXd p_diff_exo = -mKp_exo.cwiseProduct(qdqdt_exo - p_desired_exo);      
+	Eigen::VectorXd v_diff_exo = -mKv_exo.cwiseProduct(dq_exo);    
 
 	/// add torque to human joint 
 	p_diff_human[15] += p_diff_exo[0];   

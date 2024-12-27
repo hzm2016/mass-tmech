@@ -686,19 +686,19 @@ UpdateExoActionBuffer(Eigen::VectorXd exoaction)
 	history_buffer_exo_action.push_back(exoaction);   
 }
 
+void 
+Environment:: 
+UpdateHumanActionBuffer(Eigen::VectorXd humanaction)
+{
+	history_buffer_human_action.push_back(humanaction); 
+}
+
 void  
 Environment:: 
 UpdateTorqueBuffer()  
 {
 	history_buffer_human_torque.push_back(mDesiredTorque);   
 	history_buffer_exo_torque.push_back(mDesiredExoTorque);  
-}
-
-void 
-Environment:: 
-UpdateHumanActionBuffer(Eigen::VectorXd humanaction)
-{
-	history_buffer_human_action.push_back(humanaction); 
 }
 
 Eigen::VectorXd 

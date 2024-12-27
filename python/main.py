@@ -352,9 +352,9 @@ class PPO(object):
 					dt = Tensor(self.env.GetDesiredTorques())  
 					activations = self.muscle_model(mt,dt).cpu().detach().numpy()  
 					self.env.SetActivationLevels(activations)  
-					self.env.Steps(2)   
+					self.env.Steps(2, i*2)    
 			else:
-				self.env.StepsAtOnce()         
+				self.env.StepsAtOnce()       # move 20 steps 
 
 			# state buffer update  
 			self.env.UpdateStateBuffers()    # update state buffer 
@@ -410,10 +410,10 @@ class PPO(object):
 
 					self.env.Reset(True,j)  
 					
-					print("exo shape :")  
-					print(self.env.GetHumanActions(j))  
-					self._action_filter_exo[j].init_history(self.env.GetExoActions(j)[:self.num_exo_action])   
-					self._action_filter_human[j].init_history(self.env.GetHumanActions(j)[:self.num_human_action])       
+					# print("exo shape :")  
+					# print(self.env.GetHumanActions(j))  
+					# self._action_filter_exo[j].init_history(self.env.GetExoActions(j)[:self.num_exo_action])   
+					# self._action_filter_human[j].init_history(self.env.GetHumanActions(j)[:self.num_human_action])       
 
 			if local_step >= self.buffer_size: 
 				break  

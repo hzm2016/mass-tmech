@@ -38,7 +38,7 @@ public:
 	int GetNumFullObservation();  
 	const Eigen::MatrixXd& GetFullObservations();   
 	
-	void Steps(int num);
+	void Steps(int num, int donestep);
 	void StepsAtOnce();   
 	void Resets(bool RSI);  
 

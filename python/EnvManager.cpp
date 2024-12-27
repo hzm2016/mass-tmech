@@ -141,14 +141,14 @@ GetHumanActions(int id)
 
 void
 EnvManager::
-Steps(int num)
+Steps(int num, int doneStep)
 {
 	int totalStep = this->GetNumSteps();  
 #pragma omp parallel for
 	for (int id = 0;id<mNumEnvs;++id)
 	{
 		for(int j=0;j<num;j++)
-			mEnvs[id]->ProcessAction(j, num);    
+			mEnvs[id]->ProcessAction(j+doneStep, totalStep);       
 			mEnvs[id]->Step();
 	}
 }

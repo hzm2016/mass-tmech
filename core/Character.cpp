@@ -160,15 +160,17 @@ GetSPDForces(const Eigen::VectorXd& p_desired_human, const Eigen::VectorXd& p_de
 
 	Eigen::VectorXd qdqdt_exo = q_exo + dq_exo * dt;     
 	
+	Eigen::VectorXd p_diff_exo = Eigen::VectorXd::Zero(2);    
+	Eigen::VectorXd v_diff_exo = Eigen::VectorXd::Zero(2);   
 	if (p_desired_exo.size() == 4)
 	{
-		Eigen::VectorXd p_diff_exo = -mKp_exo.cwiseProduct(qdqdt_exo - p_desired_exo.head(2));          
-		Eigen::VectorXd v_diff_exo = -mKv_exo.cwiseProduct(dq_exo - p_desired_exo.tail(2));    
+		p_diff_exo = -mKp_exo.cwiseProduct(qdqdt_exo - p_desired_exo.head(2));          
+		v_diff_exo = -mKv_exo.cwiseProduct(dq_exo - p_desired_exo.tail(2));    
 	}
 	else
 	{
-		Eigen::VectorXd p_diff_exo = -mKp_exo.cwiseProduct(qdqdt_exo - p_desired_exo);      
-		Eigen::VectorXd v_diff_exo = -mKv_exo.cwiseProduct(dq_exo);    
+		p_diff_exo = -mKp_exo.cwiseProduct(qdqdt_exo - p_desired_exo);      
+		v_diff_exo = -mKv_exo.cwiseProduct(dq_exo);    
 	}
 
 	/// add torque to human joint 

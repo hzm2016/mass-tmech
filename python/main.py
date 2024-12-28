@@ -636,7 +636,8 @@ import os
 if __name__=="__main__":
 	parser = argparse.ArgumentParser()
 	parser.add_argument('-m','--path',help='model path')
-	parser.add_argument('-n','--name',help='model path')
+	parser.add_argument('-n','--name',help='model name') 
+	parser.add_argument('-sp','--save_path',help='save path')
 	parser.add_argument('-d','--meta',help='meta file')  
 	parser.add_argument('-a','--algorithm',help='mass nature tmech')   
 	parser.add_argument('-t','--type',help='wm: with muscle, wo: without muscle')    
@@ -646,7 +647,7 @@ if __name__=="__main__":
 		print('Provide meta file')
 		exit()
 
-	args.meta = 'metadata_' + args.algorithm + '_' + args.type  
+	# args.meta = 'metadata_' + args.algorithm + '_' + args.type + '.txt' 
 
 	ppo = PPO(args.meta)
 	nn_dir = '../nn'
@@ -658,14 +659,14 @@ if __name__=="__main__":
 		ppo.LoadHumanModel(args.path, args.name)   
 		ppo.LoadMuscleModel(args.path, args.name)   
 	else:
-		ppo.SaveModel(args.path)     
+		ppo.SaveModel(args.save_path)     
 
 	file_name_reward_path = '../data/episode_reward_' + args.algorithm + '_' + args.type + '.npy'  
 	episode_reward = []  
 	print('num states: {}, num actions: {}'.format(ppo.env.GetNumState(),ppo.env.GetNumAction()))
 	for i in range(ppo.max_iteration-5):
 		ppo.Train()  
-		rewards = ppo.Evaluate(args.path)    
+		rewards = ppo.Evaluate(args.save_path)      
 		Plot(rewards,'reward',0,False)    
 
 		# episode_reward.append(rewards)  

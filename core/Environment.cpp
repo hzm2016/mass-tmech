@@ -783,12 +783,16 @@ ProcessAction(int substep_count, int num)
 	mHumanAction = mPrevHumanAction + lerp * (mCurrentHumanAction - mPrevHumanAction);
 }
 
-double exp_of_squared(const Eigen::VectorXd& vec,double w)
+double 
+Environment::  
+exp_of_squared(const Eigen::VectorXd& vec,double w)
 {
 	return exp(-w*vec.squaredNorm());
 }
 
-double exp_of_squared(double val,double w)
+double 
+Environment::  
+exp_of_squared(double val,double w)
 {
 	return exp(-w*val*val);
 }

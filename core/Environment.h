@@ -33,7 +33,8 @@ public:
 	void SetGround(const dart::dynamics::SkeletonPtr& ground) {mGround = ground;}
 
 	void SetRewardParameters(double w_q,double w_v,double w_ee,double w_com){this->w_q = w_q;this->w_v = w_v;this->w_ee = w_ee;this->w_com = w_com;}
-	void Initialize();
+	void SetPDParameters(double kp) {mkp = kp;}
+ 	void Initialize();
 	void Initialize(const std::string& meta_file,bool load_obj = false);  
 
 	int GetNumFullObservation(){return mNumFullObservation;}   
@@ -144,13 +145,13 @@ private:
 
 	int mNumHumanActiveDof;   
 	int mNumExoActiveDof;   
+	int mNumExoControlDof;    
 	Eigen::VectorXd mDesiredExoTorque;    
 
 	int mUseExo;   
 
 	double randomized_latency;  
 
-	// human model  
 	Eigen::VectorXd mActivationLevels;   
 	Eigen::VectorXd mAverageActivationLevels;   
 	Eigen::VectorXd mDesiredTorque;   
@@ -161,6 +162,8 @@ private:
 	int mRandomSampleIndex;    
 
 	double w_q,w_v,w_ee,w_com;  
+
+	double mkp; 
 };
 };
 

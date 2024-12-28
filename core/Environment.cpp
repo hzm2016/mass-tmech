@@ -98,12 +98,17 @@ Initialize(const std::string& meta_file,bool load_obj)
 			ss>>a>>b>>c>>d;
 			this->SetRewardParameters(a,b,c,d); 
 		}
+		else if(!index.compare("PD_param")){
+			double kp;
+			ss>>kp;
+			this->SetPDParameters(kp);   
+		}
 	}
 	ifs.close();  
 	
 	mUseExo = 1;   
-	double kp = 300.0;  
-	character->SetPDParameters(kp,sqrt(2*kp));  
+	// double kp = 300.0;  
+	character->SetPDParameters(mkp,sqrt(2*mkp));      
 	this->SetCharacter(character);   
 	this->SetGround(MASS::BuildFromFile(std::string(MASS_ROOT_DIR)+std::string("/data/ground.xml")));
 
@@ -158,9 +163,10 @@ Initialize()
 	mPrevHumanAction = Eigen::VectorXd::Zero(mNumActiveDof); 
 
 	// exo action 
-	mExoAction = Eigen::VectorXd::Zero(mNumExoActiveDof);  
-	mCurrentExoAction = Eigen::VectorXd::Zero(mNumExoActiveDof);  
-	mPrevExoAction = Eigen::VectorXd::Zero(mNumExoActiveDof);  
+	mNumExoControlDof = mNumExoActiveDof;  
+	mExoAction = Eigen::VectorXd::Zero(mNumExoControlDof);  
+	mCurrentExoAction = Eigen::VectorXd::Zero(mNumExoControlDof);  
+	mPrevExoAction = Eigen::VectorXd::Zero(mNumExoControlDof);   
 	
 	mDesiredTorque = Eigen::VectorXd::Zero(mNumHumanActiveDof);  
 	mDesiredExoTorque = Eigen::VectorXd::Zero(mNumExoActiveDof);   
@@ -176,13 +182,14 @@ Initialize()
 
 	/// exo states
 	// mNumExoState = GetExoControlState().rows();      
-	mNumExoState = 4;  
+	mNumExoState = GetExoTrueState().rows();    
 
 	mNumExoControlState = 4 * 3;     
  
 	std::cout << "NumState: " << mNumState << std::endl; 
 	std::cout << "NumHumanState: " << mNumHumanState << std::endl;  
-	std::cout << "NumExoState: " << mNumExoControlState << std::endl; 
+	std::cout << "NumExoState: " << mNumExoControlState << std::endl;  
+	std::cout << "RootDof: " << mRootJointDof << std::endl;   
 }   
 
 void
@@ -213,6 +220,7 @@ Reset(bool RSI)
 	mPrevExoAction.setZero();     
 	
 	mDesiredExoTorque.setZero();  
+	mDesiredTorque.setZero();  
 
 	std::pair<Eigen::VectorXd,Eigen::VectorXd> pv = mCharacter->GetTargetPosAndVel(t,1.0/mControlHz);
 	mTargetPositions = pv.first;
@@ -305,7 +313,7 @@ Environment::
 GetDesiredTorques()   
 {
 	Eigen::VectorXd p_des = mTargetPositions;  
-	p_des.tail(mTargetPositions.rows()-mRootJointDof) += mAction;    
+	p_des.tail(mNumHumanActiveDof) += mHumanAction;    
 
 	mDesiredTorque = mCharacter->GetSPDForces(p_des);   
 	return mDesiredTorque.tail(mDesiredTorque.rows()-mRootJointDof);   
@@ -316,7 +324,7 @@ Environment::
 GetDesiredExoTorques()   
 {
 	Eigen::VectorXd p_des_human = mTargetPositions;  
-	p_des_human.tail(mTargetPositions.rows()-mRootJointDof) += mAction;   
+	p_des_human.tail(mNumHumanActiveDof) += mHumanAction;   
 
 	Eigen::VectorXd p_des_exo = Eigen::VectorXd::Zero(2);   
 	p_des_exo[0] = mTargetPositions[15];    
@@ -346,18 +354,6 @@ GetMuscleTorques()
 	}
 	
 	return mCurrentMuscleTuple.JtA;
-}
-double exp_of_squared(const Eigen::VectorXd& vec,double w)
-{
-	return exp(-w*vec.squaredNorm());
-}
-double exp_of_squared(const Eigen::Vector3d& vec,double w)
-{
-	return exp(-w*vec.squaredNorm());
-}
-double exp_of_squared(double val,double w)
-{
-	return exp(-w*val*val);
 }
 
 bool
@@ -500,15 +496,14 @@ GetHumanState()
 {
 	auto& skel = mCharacter->GetSkeleton();     
 	Eigen::VectorXd p_human, v_human;  
-	p_human = skel->getPositions().head(mCharacter->GetHumandof());
-	v_human = skel->getVelocities().head(mCharacter->GetHumandof());  
+	p_human = skel->getPositions().tail(mNumHumanActiveDof);
+	v_human = skel->getVelocities().tail(mNumHumanActiveDof);  
 	Eigen::VectorXd p_cur_human, v_cur_human;
-	p_cur_human.resize(p_human.rows()-6);
-	p_cur_human = p_human.tail(p_human.rows()-6);
-	v_cur_human = v_human/10.0;
+	p_cur_human = p_human;    
+	v_cur_human = v_human/10.0;    
 	Eigen::VectorXd human_state(p_cur_human.rows()+v_cur_human.rows());
-	human_state << p_cur_human, v_cur_human;
-	return human_state;
+	human_state << p_cur_human, v_cur_human;  
+	return human_state;  
 }
 
 void 
@@ -655,7 +650,8 @@ Environment::
 GetExoTrueState()    
 {
 	auto& skel = mCharacter->GetSkeleton();     
-	dart::dynamics::BodyNode* root = skel->getBodyNode(0);   // get root
+	// dart::dynamics::BodyNode* root = skel->getBodyNode(0);   // get root
+	
 	Eigen::VectorXd p_cur = skel->getPositions();
 	Eigen::VectorXd v_cur = skel->getVelocities();
 
@@ -785,4 +781,17 @@ ProcessAction(int substep_count, int num)
     double lerp = double(substep_count + 1) / num;     //substep_count: the step count should be between [0, num_action_repeat).
     mExoAction = mPrevExoAction + lerp * (mCurrentExoAction - mPrevExoAction);
 	mHumanAction = mPrevHumanAction + lerp * (mCurrentHumanAction - mPrevHumanAction);
+}
+
+double exp_of_squared(const Eigen::VectorXd& vec,double w)
+{
+	return exp(-w*vec.squaredNorm());
+}
+double exp_of_squared(const Eigen::Vector3d& vec,double w)
+{
+	return exp(-w*vec.squaredNorm());
+}
+double exp_of_squared(double val,double w)
+{
+	return exp(-w*val*val);
 }

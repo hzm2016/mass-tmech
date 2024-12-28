@@ -787,10 +787,7 @@ double exp_of_squared(const Eigen::VectorXd& vec,double w)
 {
 	return exp(-w*vec.squaredNorm());
 }
-double exp_of_squared(const Eigen::Vector3d& vec,double w)
-{
-	return exp(-w*vec.squaredNorm());
-}
+
 double exp_of_squared(double val,double w)
 {
 	return exp(-w*val*val);

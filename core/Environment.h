@@ -44,6 +44,9 @@ public:
 	void Reset(bool RSI = true);  
 	bool IsEndOfEpisode();  
 
+	double exp_of_squared(const Eigen::VectorXd& vec,double w); 
+	double exp_of_squared(double val,double w); 
+
 	void ProcessAction(int j, int num);   
 
 	Eigen::VectorXd GetState();  

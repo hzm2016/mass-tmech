@@ -179,8 +179,7 @@ Initialize()
 
 	mNumState = GetState().rows();   
 
-	/// human states
-	// mNumHumanState = mNumState;   
+	/// human states  
 	mNumHumanState = GetHumanState().rows();    
 
 	/// exo states
@@ -315,13 +314,13 @@ Step()
 
 Eigen::VectorXd  
 Environment::
-GetDesiredTorques()   
+GetDesiredTorques()  
 {
-	Eigen::VectorXd p_des = mTargetPositions;  
+	Eigen::VectorXd p_des = mTargetPositions;   
 	p_des.tail(mNumHumanActiveDof) += mHumanAction;    
 
-	mDesiredTorque = mCharacter->GetSPDForces(p_des);   
-	return mDesiredTorque.tail(mDesiredTorque.rows()-mRootJointDof);   
+	mDesiredTorque = mCharacter->GetSPDForces(p_des);     
+	return mDesiredTorque.tail(mNumHumanActiveDof);    
 }   
 
 Eigen::VectorXd  

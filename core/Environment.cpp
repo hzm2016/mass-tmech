@@ -295,9 +295,12 @@ Step()
 	}
 	else
 	{
+		// without exo network 
 		GetDesiredTorques();  
+		// with exo network 
+		// GetDesiredExoTorques();  
 		mCharacter->GetSkeleton()->setForces(mDesiredTorque);   
-		UpdateTorqueBuffer();        
+		UpdateTorqueBuffer();       
 	}
 
 	mWorld->step();  
@@ -599,7 +602,7 @@ GetHumanReward()
 	Eigen::VectorXd torque_human = GetDesiredTorques().head(mCharacter->GetHumandof());   
 	double r_torque = exp_of_squared(torque_human, 0.01);      
 
-	return r;
+	return r;  
 }
 
 void 
@@ -629,7 +632,7 @@ GetExoReward()
 
 	if (dart::math::isNan(r)){
 		std::cout << "r_torque_smooth  "<< r_torque_smooth << " r_torque " << r_torque_exo << std::endl;
-	}  
+	}   
 
 	r = 0.1;  
 	return r; 

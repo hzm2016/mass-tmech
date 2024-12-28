@@ -131,9 +131,11 @@ class PPO(object):
 		self.rewards = []  
 		self.rewards_exo = []   
 		self.rewards_human = []    
-		self.sum_return = 0.0
-		self.max_return = -1.0  
-		self.max_return_epoch = 1  
+		self.max_return_human = -1.0  
+		self.max_return_human_epoch = 1   
+  
+		self.max_return_exo = -1.0  
+		self.max_return_exo_epoch = 1     
 		self.tic = time.time()
 
 		self.episodes = [None]*self.num_slaves
@@ -194,7 +196,7 @@ class PPO(object):
 		self.human_model.save('../'+model_path+'/current_human.pt')   
 		self.muscle_model.save('../'+model_path+'/current_muscle.pt')    
 
-		if self.max_return_epoch == self.num_evaluation:
+		if self.max_return_human_epoch == self.num_evaluation:
 			self.exo_model.save('../'+model_path+'/max_exo.pt')
 			self.human_model.save('../'+model_path+'/max_human.pt')  
 			self.muscle_model.save('../'+model_path+'/max_muscle.pt')  
@@ -223,10 +225,10 @@ class PPO(object):
 		self.muscle_buffer = {}    
 
 		self.sum_return_exo = 0.0
-		self.sum_return_human = 0.0   
+		self.sum_return_human = 0.0    
 		for epi in self.total_episodes:  
-			data = epi.GetData()
-			size = len(data)
+			data = epi.GetData()  
+			size = len(data)  
 			if size == 0:
 				continue
 			
@@ -266,8 +268,8 @@ class PPO(object):
 				self.exo_replay_buffer.Push(states_exo[i], actions_exo[i], logprobs_exo[i], TD_exo[i], advantages_exo[i]) 
 				self.human_replay_buffer.Push(states_human[i], actions_human[i], logprobs_human[i], TD_human[i], advantages_human[i])   
 	
-		self.num_episode = len(self.total_episodes)
-		self.num_tuple = len(self.replay_buffer.buffer)
+		self.num_episode = len(self.total_episodes)   
+		self.num_tuple = len(self.human_replay_buffer.buffer)    
 		print('SIM : {}'.format(self.num_tuple))
 		self.num_tuple_so_far += self.num_tuple
 
@@ -577,14 +579,16 @@ class PPO(object):
 		s = int((time.time() - self.tic))
 		m = m - h*60
 		s = int((time.time() - self.tic))
-		s = s - h*3600 - m*60
+		s = s - h*3600 - m*60  
+	
 		if self.num_episode == 0:
 			self.num_episode = 1
 		if self.num_tuple == 0:
 			self.num_tuple = 1
-		if self.max_return < self.sum_return/self.num_episode:
-			self.max_return = self.sum_return/self.num_episode
-			self.max_return_epoch = self.num_evaluation
+		if self.max_return_human < self.sum_return_human/self.num_episode:
+			self.max_return_human = self.sum_return_human/self.num_episode
+			self.max_return_human_epoch = self.num_evaluation
+
 		print('# {} === {}h:{}m:{}s ==='.format(self.num_evaluation,h,m,s))
 		print('||Loss Actor               : {:.4f}'.format(self.loss_actor))
 		print('||Loss Critic              : {:.4f}'.format(self.loss_critic))
@@ -593,11 +597,12 @@ class PPO(object):
 		print('||Num Transition So far    : {}'.format(self.num_tuple_so_far))
 		print('||Num Transition           : {}'.format(self.num_tuple))
 		print('||Num Episode              : {}'.format(self.num_episode))
-		print('||Avg Return per episode   : {:.3f}'.format(self.sum_return/self.num_episode))
-		print('||Avg Reward per transition: {:.3f}'.format(self.sum_return/self.num_tuple))
+		print('||Avg Return per episode   : {:.3f}'.format(self.sum_return_human/self.num_episode))
+		print('||Avg Reward per transition: {:.3f}'.format(self.sum_return_human/self.num_tuple))
 		print('||Avg Step per episode     : {:.1f}'.format(self.num_tuple/self.num_episode))
-		print('||Max Avg Retun So far     : {:.3f} at #{}'.format(self.max_return,self.max_return_epoch))
-		self.rewards.append(self.sum_return/self.num_episode)
+		print('||Max Avg Retun So far     : {:.3f} at #{}'.format(self.max_return_human,self.max_return_human_epoch))
+  
+		self.rewards.append(self.sum_return_human/self.num_episode)
 		
 		self.SaveModel(model_path)  
 		

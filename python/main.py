@@ -280,7 +280,7 @@ class PPO(object):
 		self.muscle_buffer['TauDes'] = self.env.GetMuscleTuplesTauDes()
 		self.muscle_buffer['L'] = self.env.GetMuscleTuplesL()
 		self.muscle_buffer['b'] = self.env.GetMuscleTuplesb()
-		print(self.muscle_buffer['JtA'].shape)
+		print(self.muscle_buffer['JtA'].shape)  
   
 	def GenerateTransitions(self):   
 		self.total_episodes = []    
@@ -347,13 +347,13 @@ class PPO(object):
 				self.env.UpdateExoActionBuffers(actions_exo)    
 				self.env.UpdateHumanActionBuffers(actions_human)     
 
-			# use muscle 
-			if self.use_muscle:  
+			# use muscle  
+			if self.use_muscle:   
 				mt = Tensor(self.env.GetMuscleTorques())    
-				for i in range(self.num_simulation_per_control//2):   
-					dt = Tensor(self.env.GetDesiredTorques())  
-					activations = self.muscle_model(mt,dt).cpu().detach().numpy()  
-					self.env.SetActivationLevels(activations)  
+				for i in range(self.num_simulation_per_control//2):    
+					dt = Tensor(self.env.GetDesiredTorques())    
+					activations = self.muscle_model(mt,dt).cpu().detach().numpy()    
+					self.env.SetActivationLevels(activations)    
 					self.env.Steps(2, i*2)    
 			else:
 				self.env.StepsAtOnce()       # move 20 steps 
@@ -579,12 +579,12 @@ class PPO(object):
 		s = int((time.time() - self.tic))
 		m = m - h*60
 		s = int((time.time() - self.tic))
-		s = s - h*3600 - m*60  
+		s = s - h*3600 - m*60   
 	
-		if self.num_episode == 0:
-			self.num_episode = 1
-		if self.num_tuple == 0:
-			self.num_tuple = 1
+		if self.num_episode == 0:  
+			self.num_episode = 1  
+		if self.num_tuple == 0:  
+			self.num_tuple = 1  
 		if self.max_return_human < self.sum_return_human/self.num_episode:
 			self.max_return_human = self.sum_return_human/self.num_episode
 			self.max_return_human_epoch = self.num_evaluation
@@ -597,9 +597,11 @@ class PPO(object):
 		print('||Num Transition So far    : {}'.format(self.num_tuple_so_far))
 		print('||Num Transition           : {}'.format(self.num_tuple))
 		print('||Num Episode              : {}'.format(self.num_episode))
-		print('||Avg Return per episode   : {:.3f}'.format(self.sum_return_human/self.num_episode))
-		print('||Avg Reward per transition: {:.3f}'.format(self.sum_return_human/self.num_tuple))
-		print('||Avg Step per episode     : {:.1f}'.format(self.num_tuple/self.num_episode))
+		print('||Avg Human Return per episode   : {:.3f}'.format(self.sum_return_human/self.num_episode))
+		print('||Avg Human Reward per transition: {:.3f}'.format(self.sum_return_human/self.num_tuple))  
+		print('||Avg Exo Return per episode   : {:.3f}'.format(self.sum_return_exo/self.num_episode))
+		print('||Avg Exo Reward per transition: {:.3f}'.format(self.sum_return_exo/self.num_tuple))  
+		print('||Avg Step per episode     : {:.1f}'.format(self.num_tuple/self.num_episode))  
 		print('||Max Avg Retun So far     : {:.3f} at #{}'.format(self.max_return_human,self.max_return_human_epoch))
   
 		self.rewards.append(self.sum_return_human/self.num_episode)

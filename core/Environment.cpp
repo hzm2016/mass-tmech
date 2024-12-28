@@ -576,7 +576,7 @@ GetHumanReward()
 
 	auto ees = mCharacter->GetEndEffectors();
 	Eigen::VectorXd ee_diff(ees.size()*3);
-	Eigen::VectorXd com_diff;
+	Eigen::VectorXd com_diff;  
 
 	for(int i =0;i<ees.size();i++)
 		ee_diff.segment<3>(i*3) = ees[i]->getCOM();
@@ -589,8 +589,8 @@ GetHumanReward()
 	for(int i=0;i<ees.size();i++)
 		ee_diff.segment<3>(i*3) -= ees[i]->getCOM()+com_diff;
 
-	skel->setPositions(cur_pos);
-	skel->computeForwardKinematics(true,false,false);
+	skel->setPositions(cur_pos);  
+	skel->computeForwardKinematics(true,false,false);  
 
 	double r_q = exp_of_squared(p_diff,2.0);
 	double r_v = exp_of_squared(v_diff,0.1);
@@ -599,8 +599,8 @@ GetHumanReward()
 
 	double r = r_ee*(w_q*r_q + w_v*r_v);   
 
-	Eigen::VectorXd torque_human = GetDesiredTorques().head(mCharacter->GetHumandof());   
-	double r_torque = exp_of_squared(torque_human, 0.01);      
+	Eigen::VectorXd torque_human = GetDesiredTorques().tail(mNumHumanActiveDof);         
+	double r_torque = exp_of_squared(torque_human, 0.01);       
 
 	return r;  
 }
@@ -623,15 +623,20 @@ GetExoReward()
 	double r_torque_smooth = exp_of_squared(torque_diff_exo, 15.0);     
 	
 	// // get exo torque  
- 	// Eigen::VectorXd torque_exo = GetDesiredExoTorques();     
-    // double r_torque_exo = exp_of_squared(torque_exo, 0.01);   
+ 	Eigen::VectorXd torque_exo = GetDesiredExoTorques();    
+    double r_torque_exo = exp_of_squared(mDesiredExoTorque, 0.01);      
+
 	double r_torque_exo = 0.001; 
+
 	double r_human = GetHumanReward();     
 
 	double r = r_torque_smooth + 0.01 * r_torque_exo;       
 
+	// reward muscle efforts   
+	double r_muscle = exp_of_squared(mActivationLevels, 0.01);     
+
 	if (dart::math::isNan(r)){
-		std::cout << "r_torque_smooth  "<< r_torque_smooth << " r_torque " << r_torque_exo << std::endl;
+		std::cout << "r_torque_smooth  "<< r_torque_smooth << " r_torque " << r_torque_exo << "r_muscle :" << r_muscle << "r_human" << r_human << std::endl;
 	}   
 
 	r = 0.1;  

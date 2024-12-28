@@ -1,0 +1,32 @@
+use_muscle false
+use_humanNetwork true
+use_muscleNetWork false
+symmetry false 
+use_COP false
+con_hz 30
+sim_hz 600
+terminal_time 10.0
+PD_param 400
+foot_clearance_termination -0.84 -0.87
+foot_tolerance_termination -0.887985
+target_motion_visualization false
+human_file /data/human.xml true
+exo_initial_state /data/motion/initial_exo_state.txt
+#human_initial_state /data/motion/initial_human_state.txt 
+muscle_file /data/muscle284.xml
+exo_file /data/HipExoCUNY.urdf
+model_component_file /data/force_config.xml false
+Joint_constraint_file /data/model_joint_constraint.xml true
+Human_spring_force_file /data/Springforce_config.xml false
+Human_bushing_force_file /data/Bushingforce_config.xml false
+motion_file /data/motion/walk.bvh true
+reward_param 0.75 0.2 0.4 0.0 0.0 0.4
+smooth_reward_param 0.0 0.3 0.0 0.0
+foot_clearance_reward 0.2
+observation_latency 0.04
+reward COPReward left_cop 1 left_foot 0.08
+reward COPReward right_cop 1 right_foot 0.08
+reward COPReward both_cop 2 left_foot right_foot 0.0
+reward COMReward zero_com_momentum 2 left_foot right_foot 0.0
+reward torqueReward mimum_torque 0.1
+joint_reward_weight 1 1 1 

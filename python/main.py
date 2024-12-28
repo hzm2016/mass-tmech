@@ -66,7 +66,7 @@ class PPO(object):
 		self.num_slaves = 16
 		self.env = pymss.pymss(meta_file,self.num_slaves)  
   
-		self.only_human = 0    # or 0 with human and exo network 
+		self.only_human = 0    
 
 		self.use_muscle = self.env.UseMuscle()    
 		self.num_muscles = self.env.GetNumMuscles()    
@@ -189,33 +189,33 @@ class PPO(object):
 			filtered_action_human.append(self._action_filter_human[i].filter(action[i]))
 		return np.vstack(filtered_action_human)  
 
-	def SaveModel(self):  
-		self.exo_model.save('../nn/current_exo.pt')  
-		self.human_model.save('../nn/current_human.pt')   
-		self.muscle_model.save('../nn/current_muscle.pt')    
+	def SaveModel(self,model_path):      
+		self.exo_model.save('../'+model_path+'/current_exo.pt')  
+		self.human_model.save('../'+model_path+'/current_human.pt')   
+		self.muscle_model.save('../'+model_path+'/current_muscle.pt')    
 
 		if self.max_return_epoch == self.num_evaluation:
-			self.exo_model.save('../nn/max_exo.pt')
-			self.human_model.save('../nn/max_human.pt')  
-			self.muscle_model.save('../nn/max_muscle.pt')  
+			self.exo_model.save('../'+model_path+'/max_exo.pt')
+			self.human_model.save('../'+model_path+'/max_human.pt')  
+			self.muscle_model.save('../'+model_path+'/max_muscle.pt')  
 		if self.num_evaluation%100 == 0:
-			self.exo_model.save('../nn/'+str(self.num_evaluation//100)+'_exo.pt')  
-			self.human_model.save('../nn/'+str(self.num_evaluation//100)+'_human.pt')  
-			self.muscle_model.save('../nn/'+str(self.num_evaluation//100)+'_muscle.pt')  
+			self.exo_model.save('../'+model_path+'/'+str(self.num_evaluation//100)+'_exo.pt')  
+			self.human_model.save('../'+model_path+'/'+str(self.num_evaluation//100)+'_human.pt')  
+			self.muscle_model.save('../'+model_path+'/'+str(self.num_evaluation//100)+'_muscle.pt')  
 
-	def LoadModel(self,path):  
-		self.exo_model.load('../nn/'+path+'_exo.pt')  
-		self.human_model.load('../nn/'+path+'_human.pt')  
-		self.muscle_model.load('../nn/'+path+'_muscle.pt')   
+	def LoadModel(self,model_path,model_name):   
+		self.exo_model.load('../'+model_path+'/'+model_name+'_exo.pt')  
+		self.human_model.load('../'+model_path+'/'+model_name+'_human.pt')  
+		self.muscle_model.load('../'+model_path+'/'+model_name+'_muscle.pt')   
   
-	def LoadExoModel(self,path):  
-		self.exo_model.load('../nn/'+path+'_exo.pt')    
+	def LoadExoModel(self,model_path,model_name):  
+		self.exo_model.load('../'+model_path+'/'+model_name+'_exo.pt')    
   
-	def LoadHumanModel(self,path):   
-		self.human_model.load('../nn/'+path+'_human.pt')    
+	def LoadHumanModel(self,model_path,model_name):   
+		self.human_model.load('../'+model_path+'/'+model_name+'_human.pt')      
   
-	def LoadMuscleModel(self,path):   
-		self.muscle_model.load('../nn/'+path+'_muscle.pt')    
+	def LoadMuscleModel(self,model_path,model_name):   
+		self.muscle_model.load('../'+model_path+'/'+model_name+'_muscle.pt')    
 
 	def ComputeTDandGAE(self):
 		self.exo_replay_buffer.Clear()   
@@ -570,7 +570,7 @@ class PPO(object):
 		self.GenerateTransitions()   
 		self.OptimizeModel()   
 
-	def Evaluate(self):
+	def Evaluate(self,model_path):  
 		self.num_evaluation = self.num_evaluation + 1
 		h = int((time.time() - self.tic)//3600.0)
 		m = int((time.time() - self.tic)//60.0)
@@ -599,7 +599,7 @@ class PPO(object):
 		print('||Max Avg Retun So far     : {:.3f} at #{}'.format(self.max_return,self.max_return_epoch))
 		self.rewards.append(self.sum_return/self.num_episode)
 		
-		self.SaveModel()
+		self.SaveModel(model_path)  
 		
 		print('=============================================')
 		return np.array(self.rewards)
@@ -635,26 +635,39 @@ import argparse
 import os
 if __name__=="__main__":
 	parser = argparse.ArgumentParser()
-	parser.add_argument('-m','--model',help='model path')
-	parser.add_argument('-d','--meta',help='meta file')
+	parser.add_argument('-m','--path',help='model path')
+	parser.add_argument('-n','--name',help='model path')
+	parser.add_argument('-d','--meta',help='meta file')  
+	parser.add_argument('-a','--algorithm',help='mass nature tmech')   
+	parser.add_argument('-t','--type',help='wm: with muscle, wo: without muscle')    
 
 	args =parser.parse_args()
 	if args.meta is None:
 		print('Provide meta file')
 		exit()
 
+	args.meta = 'metadata_' + args.algorithm + '_' + args.type  
+
 	ppo = PPO(args.meta)
 	nn_dir = '../nn'
-	if not os.path.exists(nn_dir):   
+	if not os.path.exists(nn_dir):    
 		os.makedirs(nn_dir)    
-		
-	if args.model is not None: 
-		ppo.LoadModel(args.model)  
+	
+	if args.path is not None: 
+		# ppo.LoadModel(args.path, args.name)  
+		ppo.LoadHumanModel(args.path, args.name)   
+		ppo.LoadMuscleModel(args.path, args.name)   
 	else:
-		ppo.SaveModel()   
+		ppo.SaveModel(args.path)     
 
+	file_name_reward_path = '../data/episode_reward_' + args.algorithm + '_' + args.type + '.npy'  
+	episode_reward = []  
 	print('num states: {}, num actions: {}'.format(ppo.env.GetNumState(),ppo.env.GetNumAction()))
 	for i in range(ppo.max_iteration-5):
 		ppo.Train()  
-		rewards = ppo.Evaluate()   
+		rewards = ppo.Evaluate(args.path)    
 		Plot(rewards,'reward',0,False)    
+
+		# episode_reward.append(rewards)  
+	
+	np.save(file_name_reward_path, rewards)      

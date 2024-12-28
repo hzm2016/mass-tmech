@@ -653,6 +653,8 @@ if __name__=="__main__":
 	if args.meta is None:
 		print('Provide meta file')
 		exit()
+	else: 
+		print("Load data from :", args.meta)   
 
 	# args.meta = 'metadata_' + args.algorithm + '_' + args.type + '.txt' 
 

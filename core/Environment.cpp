@@ -115,6 +115,9 @@ Initialize(const std::string& meta_file,bool load_obj)
 	mNumExoActiveDof = 2;     
 
 	this->Initialize();  
+
+	std::cout << "NumExoActionDof: " << mNumExoActiveDof << std::endl; 
+	std::cout << "kp: " << mkp << std::endl;      
 }
 
 void
@@ -190,6 +193,7 @@ Initialize()
 	std::cout << "NumHumanState: " << mNumHumanState << std::endl;  
 	std::cout << "NumExoState: " << mNumExoControlState << std::endl;  
 	std::cout << "RootDof: " << mRootJointDof << std::endl;   
+	std::cout << "HumanDof: " << mCharacter->GetHumandof() << std::endl;   
 }   
 
 void
@@ -223,8 +227,8 @@ Reset(bool RSI)
 	mDesiredTorque.setZero();  
 
 	std::pair<Eigen::VectorXd,Eigen::VectorXd> pv = mCharacter->GetTargetPosAndVel(t,1.0/mControlHz);
-	mTargetPositions = pv.first;
-	mTargetVelocities = pv.second;  
+	mTargetPositions = pv.first;   
+	mTargetVelocities = pv.second;   
 
 	mCharacter->GetSkeleton()->setPositions(mTargetPositions);
 	mCharacter->GetSkeleton()->setVelocities(mTargetVelocities);
@@ -590,7 +594,7 @@ GetHumanReward()
 	double r_ee = exp_of_squared(ee_diff,40.0);
 	double r_com = exp_of_squared(com_diff,10.0);
 
-	double r = r_ee*(w_q*r_q + w_v*r_v);  
+	double r = r_ee*(w_q*r_q + w_v*r_v);   
 
 	Eigen::VectorXd torque_human = GetDesiredTorques().head(mCharacter->GetHumandof());   
 	double r_torque = exp_of_squared(torque_human, 0.01);      

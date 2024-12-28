@@ -139,7 +139,7 @@ private:
 	int mNumFullObservation;  
 
 	int mNumHumanState;    
-	int mNumHumanAction;   
+	int mNumHumanAction;    
 
 	int mNumExoState;    
 	int mNumExoAction;    

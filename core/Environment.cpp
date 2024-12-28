@@ -626,7 +626,7 @@ GetExoReward()
  	Eigen::VectorXd torque_exo = GetDesiredExoTorques();    
     double r_torque_exo = exp_of_squared(mDesiredExoTorque, 0.01);      
 
-	double r_torque_exo = 0.001; 
+	r_torque_exo = 0.001; 
 
 	double r_human = GetHumanReward();     
 

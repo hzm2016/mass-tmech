@@ -287,7 +287,7 @@ Step()
 			mCurrentMuscleTuple.b = Jtp.segment(mRootJointDof,n-mRootJointDof);
 			mCurrentMuscleTuple.tau_des = mDesiredTorque.tail(mDesiredTorque.rows()-mRootJointDof);
 			mMuscleTuples.push_back(mCurrentMuscleTuple);
-		}
+		}   
 	}
 	else
 	{
@@ -326,10 +326,24 @@ GetDesiredExoTorques()
 	Eigen::VectorXd p_des_human = mTargetPositions;  
 	p_des_human.tail(mNumHumanActiveDof) += mHumanAction;   
 
-	Eigen::VectorXd p_des_exo = Eigen::VectorXd::Zero(2);   
-	p_des_exo[0] = mTargetPositions[15];    
-	p_des_exo[1] = mTargetPositions[6];    
-	p_des_exo += mExoAction;     
+	// only output reference position 
+	Eigen::VectorXd p_des_exo = Eigen::VectorXd::Zero(mNumExoControlDof);     
+	if (mNumExoControlDof == 4)
+	{ 
+		// output reference position and velocity  
+		p_des_exo[0] = mTargetPositions[15];     
+		p_des_exo[1] = mTargetPositions[6]; 
+		p_des_exo[2] = mTargetVelocities[15];  
+		p_des_exo[3] = mTargetVelocities[6];   
+		p_des_exo += mExoAction;  
+	}
+	else
+	{
+		// only output reference position 
+		p_des_exo[0] = mTargetPositions[15];     
+		p_des_exo[1] = mTargetPositions[6];     
+		p_des_exo += mExoAction;     
+	}
 	
 	// std::cout << p_des_exo[0] << "," << p_des_exo[1] << std::endl;   
 	std::pair<Eigen::VectorXd,Eigen::VectorXd> torque_results = mCharacter->GetSPDForces(p_des_human, p_des_exo);     
@@ -651,7 +665,7 @@ GetExoTrueState()
 {
 	auto& skel = mCharacter->GetSkeleton();     
 	// dart::dynamics::BodyNode* root = skel->getBodyNode(0);   // get root
-	
+
 	Eigen::VectorXd p_cur = skel->getPositions();
 	Eigen::VectorXd v_cur = skel->getVelocities();
 

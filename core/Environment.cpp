@@ -194,6 +194,7 @@ Initialize()
 	std::cout << "NumExoState: " << mNumExoControlState << std::endl;  
 	std::cout << "RootDof: " << mRootJointDof << std::endl;   
 	std::cout << "HumanDof: " << mCharacter->GetHumandof() << std::endl;   
+	std::cout << "NumBodyNodes: " << mCharacter->GetSkeleton()->getNumBodyNodes() << std::endl;   
 }   
 
 void

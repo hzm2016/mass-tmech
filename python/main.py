@@ -25,8 +25,8 @@ LongTensor = torch.cuda.LongTensor if use_cuda else torch.LongTensor
 ByteTensor = torch.cuda.ByteTensor if use_cuda else torch.ByteTensor
 Tensor = FloatTensor
 
-# Episode = namedtuple('Episode',('s','a','r', 'value', 'logprob'))  
-# exo and human 
+import wandb  
+
 Episode = namedtuple('Episode',('s_e', 'a_e', 'r_e', 'value_e', 'logprob_e', 's_h', 'a_h', 'r_h', 'value_h', 'logprob_h')) 
 class EpisodeBuffer(object):
 	def __init__(self):
@@ -608,7 +608,22 @@ class PPO(object):
 		
 		self.SaveModel(model_path)  
 		
+		print('=============================================')   
+		wandb.log({
+      		"Loss Actor": self.loss_actor,
+			"Loss Critic": self.loss_critic,
+			"Loss Muscle": self.loss_muscle,
+			"Num Transition So far": self.num_tuple_so_far,
+			"Num Transition": self.num_tuple,
+			"Num Episode": self.num_episode,
+			"Avg Return per episode": self.sum_return/self.num_episode,
+			"Avg Reward per transition": self.sum_return/self.num_tuple,
+			"Avg Step per episode": self.num_tuple/self.num_episode,
+			"Max Avg Retun So far": self.max_return,
+			"Max Avg Return Epoch": self.max_return_epoch}
+		)  
 		print('=============================================')
+  
 		return np.array(self.rewards)
 
 import matplotlib
@@ -640,15 +655,23 @@ def Plot(y,title,num_fig=1,ylim=True):
 
 import argparse
 import os
-if __name__=="__main__":
-	parser = argparse.ArgumentParser()
+if __name__=="__main__":  
+	parser = argparse.ArgumentParser()  
 	parser.add_argument('-m','--path',help='model path')
 	parser.add_argument('-n','--name',help='model name') 
 	parser.add_argument('-sp','--save_path',help='save path')
 	parser.add_argument('-d','--meta',help='meta file')  
 	parser.add_argument('-a','--algorithm',help='mass nature tmech')   
-	parser.add_argument('-t','--type',help='wm: with muscle, wo: without muscle')    
+	parser.add_argument('-t','--type',help='wm: with muscle, wo: without muscle')   
+	parser.add_argument('-f','--flag',help='recognize the main features')     
 
+	parser.add_argument('-wp', '--wandb_project', default='junxi_training', help='wandb project name')
+	parser.add_argument('--wandb_entity', default='markzhumi1805', help='wandb entity name')
+	parser.add_argument('-wn', '--wandb_name', default='Test', help='wandb run name')
+	parser.add_argument('-ws', '--wandb_notes', default='', help='wandb notes')   
+ 
+	parser.add_argument('--maxiterations',type=int, default=50000, help='meta file')    
+ 
 	args =parser.parse_args()
 	if args.meta is None:
 		print('Provide meta file')
@@ -656,8 +679,15 @@ if __name__=="__main__":
 	else: 
 		print("Load data from :", args.meta)   
 
-	# args.meta = 'metadata_' + args.algorithm + '_' + args.type + '.txt' 
+	args.meta = '../data/metadata_' + args.algorithm + '_' + args.type + '.txt' 
 
+	config = {"learning_rate": 0.001, "epochs": 10, "batch_size": 32}   
+
+	wandb.init(
+		project=args.wandb_project,
+		name=args.wandb_name 
+    ) 
+ 
 	ppo = PPO(args.meta)
 	nn_dir = '../nn'
 	if not os.path.exists(nn_dir):    
@@ -677,7 +707,5 @@ if __name__=="__main__":
 		ppo.Train()  
 		rewards = ppo.Evaluate(args.save_path)      
 		Plot(rewards,'reward',0,False)    
-
-		# episode_reward.append(rewards)  
 	
 	np.save(file_name_reward_path, rewards)      

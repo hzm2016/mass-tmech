@@ -1,0 +1,1 @@
+python3 main.py -d ../data/metadata_mass_wo.txt -a mass -t wo -wp mass-with-muscle

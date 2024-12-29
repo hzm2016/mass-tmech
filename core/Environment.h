@@ -166,7 +166,14 @@ private:
 
 	double w_q,w_v,w_ee,w_com;  
 
-	double mkp; 
+	double mkp;  
+
+	double mkp_human,mkp_exo;  
+	  
+	double upper_bound_p;   
+	double lower_bound_p; 
+	double upper_bound_v;  
+	double lower_bound_v;  
 };
 };
 

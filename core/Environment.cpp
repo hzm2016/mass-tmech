@@ -113,6 +113,10 @@ Initialize(const std::string& meta_file,bool load_obj)
 	this->SetGround(MASS::BuildFromFile(std::string(MASS_ROOT_DIR)+std::string("/data/ground.xml")));
 
 	mNumExoActiveDof = 2;     
+	upper_bound_p = M_PI;  
+	lower_bound_p = -1 * M_PI; 
+	upper_bound_v = M_PI; 
+	lower_bound_v = -1 * M_PI;   
 
 	this->Initialize();  
 
@@ -126,14 +130,14 @@ Initialize()
 {
 	if(mCharacter->GetSkeleton()==nullptr){
 		std::cout<<"Initialize character First"<<std::endl;
-		exit(0);
-	}
+		exit(0);  
+	}   
 	if(mCharacter->GetSkeleton()->getRootBodyNode()->getParentJoint()->getType()=="FreeJoint")
 		mRootJointDof = 6;
 	else if(mCharacter->GetSkeleton()->getRootBodyNode()->getParentJoint()->getType()=="PlanarJoint")
 		mRootJointDof = 3;	
 	else
-		mRootJointDof = 0;  
+		mRootJointDof = 0;   
 	
 	mNumActiveDof = mCharacter->GetSkeleton()->getNumDofs()-mRootJointDof;
 	mNumHumanActiveDof = mNumActiveDof;  
@@ -145,12 +149,12 @@ Initialize()
 		for(auto m : mCharacter->GetMuscles()){
 			m->Update();
 			num_total_related_dofs += m->GetNumRelatedDofs();
-		}
+		}   
 		mCurrentMuscleTuple.JtA = Eigen::VectorXd::Zero(num_total_related_dofs);
 		mCurrentMuscleTuple.L = Eigen::VectorXd::Zero(mNumActiveDof*mCharacter->GetMuscles().size());
 		mCurrentMuscleTuple.b = Eigen::VectorXd::Zero(mNumActiveDof);
-		mCurrentMuscleTuple.tau_des = Eigen::VectorXd::Zero(mNumActiveDof);
-		mActivationLevels = Eigen::VectorXd::Zero(mCharacter->GetMuscles().size());
+		mCurrentMuscleTuple.tau_des = Eigen::VectorXd::Zero(mNumActiveDof);  
+		mActivationLevels = Eigen::VectorXd::Zero(mCharacter->GetMuscles().size()); 
 	}
 	mWorld->setGravity(Eigen::Vector3d(0,-9.8,0.0));
 	mWorld->setTimeStep(1.0/mSimulationHz);

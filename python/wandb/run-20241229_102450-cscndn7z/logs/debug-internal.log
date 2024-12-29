@@ -1,0 +1,16 @@
+{"time":"2024-12-29T10:24:50.848124355-05:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-29T10:24:50.84814228-05:00","level":"INFO","msg":"created symlink","path":"/home/sulab/hipexo/mass-tmech/python/wandb/run-20241229_102450-cscndn7z/logs/debug-core.log"}
+{"time":"2024-12-29T10:24:51.07508001-05:00","level":"INFO","msg":"created new stream","id":"cscndn7z"}
+{"time":"2024-12-29T10:24:51.075110934-05:00","level":"INFO","msg":"stream: started","id":"cscndn7z"}
+{"time":"2024-12-29T10:24:51.076314337-05:00","level":"INFO","msg":"handler: started","stream_id":"cscndn7z"}
+{"time":"2024-12-29T10:24:51.076343251-05:00","level":"INFO","msg":"writer: Do: started","stream_id":"cscndn7z"}
+{"time":"2024-12-29T10:24:51.076483717-05:00","level":"INFO","msg":"sender: started","stream_id":"cscndn7z"}
+{"time":"2024-12-29T10:24:51.342439818-05:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-29T10:24:51.724214986-05:00","level":"INFO","msg":"stream: closing","id":"cscndn7z"}
+{"time":"2024-12-29T10:24:51.724259843-05:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-29T10:24:51.725019169-05:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-29T10:24:52.281287496-05:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-29T10:24:52.767042558-05:00","level":"INFO","msg":"handler: closed","stream_id":"cscndn7z"}
+{"time":"2024-12-29T10:24:52.76708107-05:00","level":"INFO","msg":"writer: Close: closed","stream_id":"cscndn7z"}
+{"time":"2024-12-29T10:24:52.767131605-05:00","level":"INFO","msg":"sender: closed","stream_id":"cscndn7z"}
+{"time":"2024-12-29T10:24:52.767139637-05:00","level":"INFO","msg":"stream: closed","id":"cscndn7z"}

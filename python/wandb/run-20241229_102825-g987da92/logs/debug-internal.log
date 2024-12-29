@@ -1,0 +1,16 @@
+{"time":"2024-12-29T10:28:25.648592404-05:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-29T10:28:25.648607535-05:00","level":"INFO","msg":"created symlink","path":"/home/sulab/hipexo/mass-tmech/python/wandb/run-20241229_102825-g987da92/logs/debug-core.log"}
+{"time":"2024-12-29T10:28:25.752746503-05:00","level":"INFO","msg":"created new stream","id":"g987da92"}
+{"time":"2024-12-29T10:28:25.752777331-05:00","level":"INFO","msg":"stream: started","id":"g987da92"}
+{"time":"2024-12-29T10:28:25.753863304-05:00","level":"INFO","msg":"writer: Do: started","stream_id":"g987da92"}
+{"time":"2024-12-29T10:28:25.753987678-05:00","level":"INFO","msg":"handler: started","stream_id":"g987da92"}
+{"time":"2024-12-29T10:28:25.753868537-05:00","level":"INFO","msg":"sender: started","stream_id":"g987da92"}
+{"time":"2024-12-29T10:28:26.135579249-05:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-29T10:28:26.763198403-05:00","level":"INFO","msg":"stream: closing","id":"g987da92"}
+{"time":"2024-12-29T10:28:26.763233117-05:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-29T10:28:26.763830644-05:00","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-29T10:28:27.130838512-05:00","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-29T10:28:27.710196303-05:00","level":"INFO","msg":"handler: closed","stream_id":"g987da92"}
+{"time":"2024-12-29T10:28:27.710231604-05:00","level":"INFO","msg":"writer: Close: closed","stream_id":"g987da92"}
+{"time":"2024-12-29T10:28:27.710274824-05:00","level":"INFO","msg":"sender: closed","stream_id":"g987da92"}
+{"time":"2024-12-29T10:28:27.710294214-05:00","level":"INFO","msg":"stream: closed","id":"g987da92"}

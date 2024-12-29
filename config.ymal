@@ -1,0 +1,3 @@
+num_env: 16
+learning_rate: 0.0001 
+max_iterations: 100000

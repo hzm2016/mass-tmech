@@ -1,0 +1,33 @@
+/home/sulab/anaconda3/envs/exo/lib/python3.8/site-packages/torch/nn/init.py:453: UserWarning: Initializing zero-element tensors is a no-op
+  warnings.warn("Initializing zero-element tensors is a no-op")
+save simulation nn ../trained_policy/nn_tmech_wo//current_exo.pt
+save simulation nn ../trained_policy/nn_tmech_wo//current_human.pt
+save muscle nn ../trained_policy/nn_tmech_wo//current_muscle.pt
+save simulation nn ../trained_policy/nn_tmech_wo//0_exo.pt
+save simulation nn ../trained_policy/nn_tmech_wo//0_human.pt
+save muscle nn ../trained_policy/nn_tmech_wo//0_muscle.pt
+num states: 136, num actions: 50
+states exo : (16, 12)
+states human : (16, 100)
+main.py:337: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at /opt/conda/conda-bld/pytorch_1724789259345/work/torch/csrc/tensor/python_tensor.cpp:78.)
+  a_dist_human,v_human = self.human_model(Tensor(states_human))
+Traceback (most recent call last):
+  File "main.py", line 733, in <module>
+    ppo.Train()
+  File "main.py", line 577, in Train
+    self.GenerateTransitions()
+  File "main.py", line 343, in GenerateTransitions
+    a_dist_exo,v_exo = self.exo_model(Tensor(states_exo))
+  File "/home/sulab/anaconda3/envs/exo/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/sulab/anaconda3/envs/exo/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/sulab/hipexo/mass-tmech/python/Model.py", line 199, in forward
+    p_out = F.relu(self.p_fc1(x))
+  File "/home/sulab/anaconda3/envs/exo/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1553, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/sulab/anaconda3/envs/exo/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1562, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/sulab/anaconda3/envs/exo/lib/python3.8/site-packages/torch/nn/modules/linear.py", line 117, in forward
+    return F.linear(input, self.weight, self.bias)
+RuntimeError: Expected all tensors to be on the same device, but found at least two devices, cpu and cuda:0! (when checking argument for argument mat1 in method wrapper_CUDA_addmm)

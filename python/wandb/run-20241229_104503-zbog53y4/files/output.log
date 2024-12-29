@@ -1,0 +1,21 @@
+/home/sulab/anaconda3/envs/exo/lib/python3.8/site-packages/torch/nn/init.py:453: UserWarning: Initializing zero-element tensors is a no-op
+  warnings.warn("Initializing zero-element tensors is a no-op")
+save simulation nn ../trained_policy/nn_tmech_wo//current_exo.pt
+save simulation nn ../trained_policy/nn_tmech_wo//current_human.pt
+save muscle nn ../trained_policy/nn_tmech_wo//current_muscle.pt
+save simulation nn ../trained_policy/nn_tmech_wo//0_exo.pt
+save simulation nn ../trained_policy/nn_tmech_wo//0_human.pt
+save muscle nn ../trained_policy/nn_tmech_wo//0_muscle.pt
+num states: 136, num actions: 50
+states exo : (16, 12)
+states human : (16, 100)
+main.py:341: UserWarning: The torch.cuda.*DtypeTensor constructors are no longer recommended. It's best to use methods such as torch.tensor(data, dtype=*, device='cuda') to create tensors. (Triggered internally at /opt/conda/conda-bld/pytorch_1724789259345/work/torch/csrc/tensor/python_tensor.cpp:78.)
+  a_dist_human,v_human = self.human_model(Tensor(states_human))
+SIM : 0904
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+Traceback (most recent call last):
+  File "main.py", line 738, in <module>
+    rewards_exo, rewards_human = ppo.Evaluate(args.save_path)
+TypeError: Evaluate() takes 1 positional argument but 2 were given

@@ -20,6 +20,10 @@ import numpy as np
 import pymss
 from Model import *
 use_cuda = torch.cuda.is_available()
+print("use_cuda :", use_cuda)  
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
+
 FloatTensor = torch.cuda.FloatTensor if use_cuda else torch.FloatTensor
 LongTensor = torch.cuda.LongTensor if use_cuda else torch.LongTensor
 ByteTensor = torch.cuda.ByteTensor if use_cuda else torch.ByteTensor
@@ -106,10 +110,11 @@ class PPO(object):
 		self.muscle_buffer = {}
 
 		# create models  
-		self.exo_model = SimulationExoNN(self.num_exo_state,self.num_exo_action)    
-		self.human_model = SimulationHumanNN(self.num_human_state,self.num_human_action)  
+		self.exo_model = SimulationExoNN(self.num_exo_state,self.num_exo_action)  
+		self.human_model = SimulationHumanNN(self.num_human_state,self.num_human_action) 
 		self.muscle_model = MuscleNN(self.env.GetNumTotalMuscleRelatedDofs(),self.num_human_action,self.num_muscles)
 		if use_cuda:
+			self.exo_model.cuda()  
 			self.human_model.cuda()   
 			self.muscle_model.cuda()   
 
@@ -196,18 +201,18 @@ class PPO(object):
 		return np.vstack(filtered_action_human)  
 
 	def SaveModel(self,):      
-		self.exo_model.save(self.save_path+'/current_exo.pt')  
-		self.human_model.save(self.save_path+'/current_human.pt')   
-		self.muscle_model.save(self.save_path+'/current_muscle.pt')    
+		self.exo_model.save(self.save_path+'current_exo.pt')  
+		self.human_model.save(self.save_path+'current_human.pt')   
+		self.muscle_model.save(self.save_path+'current_muscle.pt')    
 
 		if self.max_return_human_epoch == self.num_evaluation:
-			self.exo_model.save(self.save_path+'/max_exo.pt')
-			self.human_model.save(self.save_path+'/max_human.pt')  
-			self.muscle_model.save(self.save_path+'/max_muscle.pt')  
+			self.exo_model.save(self.save_path+'max_exo.pt')
+			self.human_model.save(self.save_path+'max_human.pt')  
+			self.muscle_model.save(self.save_path+'max_muscle.pt')  
 		if self.num_evaluation%100 == 0:
-			self.exo_model.save(self.save_path+'/'+str(self.num_evaluation//100)+'_exo.pt')  
-			self.human_model.save(self.save_path+'/'+str(self.num_evaluation//100)+'_human.pt')  
-			self.muscle_model.save(self.save_path+'/'+str(self.num_evaluation//100)+'_muscle.pt')  
+			self.exo_model.save(self.save_path+str(self.num_evaluation//100)+'_exo.pt')  
+			self.human_model.save(self.save_path+str(self.num_evaluation//100)+'_human.pt')   
+			self.muscle_model.save(self.save_path+str(self.num_evaluation//100)+'_muscle.pt')   
 
 	def LoadModel(self,model_path,model_name):   
 		self.exo_model.load('../'+model_path+'/'+model_name+'_exo.pt')  
@@ -708,7 +713,7 @@ if __name__=="__main__":
  
 	args.max_iteration = config['max_iteration']
 	# save trained policy 
-	nn_dir = '../trained_policy/' + args.save_path + '/'    
+	nn_dir = '../trained_policy/' + args.save_path + '/'
 	if not os.path.exists(nn_dir):      
 		os.makedirs(nn_dir)      
 	ppo = PPO(args.meta, save_path=nn_dir)    
@@ -730,7 +735,7 @@ if __name__=="__main__":
 	print('num states: {}, num actions: {}'.format(ppo.env.GetNumState(),ppo.env.GetNumAction()))  
 	for i in range(ppo.max_iteration-5):   
 		ppo.Train()    
-		rewards_exo, rewards_human = ppo.Evaluate(args.save_path)        
+		rewards_exo, rewards_human = ppo.Evaluate()         
 		Plot(rewards_exo,'reward_exo', 0, False)     
 		Plot(rewards_human,'reward_human', 0, False)     
   

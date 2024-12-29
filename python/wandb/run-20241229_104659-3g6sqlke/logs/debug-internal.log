@@ -1,0 +1,10 @@
+{"time":"2024-12-29T10:46:59.558322288-05:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-29T10:46:59.558343697-05:00","level":"INFO","msg":"created symlink","path":"/home/sulab/hipexo/mass-tmech/python/wandb/run-20241229_104659-3g6sqlke/logs/debug-core.log"}
+{"time":"2024-12-29T10:46:59.662437782-05:00","level":"INFO","msg":"created new stream","id":"3g6sqlke"}
+{"time":"2024-12-29T10:46:59.662465624-05:00","level":"INFO","msg":"stream: started","id":"3g6sqlke"}
+{"time":"2024-12-29T10:46:59.663132881-05:00","level":"INFO","msg":"sender: started","stream_id":"3g6sqlke"}
+{"time":"2024-12-29T10:46:59.663204614-05:00","level":"INFO","msg":"writer: Do: started","stream_id":"3g6sqlke"}
+{"time":"2024-12-29T10:46:59.663304312-05:00","level":"INFO","msg":"handler: started","stream_id":"3g6sqlke"}
+{"time":"2024-12-29T10:46:59.947289302-05:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-29T10:49:00.719870567-05:00","level":"ERROR","msg":"HTTP error","status":404,"method":"POST","url":"https://api.wandb.ai/files/jimmyhou-north-carolina-state-university/tmech/3g6sqlke/file_stream"}
+{"time":"2024-12-29T10:49:00.719927366-05:00","level":"ERROR+4","msg":"filestream: fatal error: filestream: failed to upload: 404 Not Found path=files/jimmyhou-north-carolina-state-university/tmech/3g6sqlke/file_stream: {\"error\":\"run tmech/3g6sqlke not found while streaming file\"}"}

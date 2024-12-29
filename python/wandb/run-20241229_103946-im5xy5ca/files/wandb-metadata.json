@@ -1,0 +1,56 @@
+{
+  "os":  "Linux-5.15.0-130-generic-x86_64-with-glibc2.17",
+  "python":  "CPython 3.8.20",
+  "startedAt":  "2024-12-29T15:39:46.263935Z",
+  "args":  [
+    "-d",
+    "../data/metadata_mass_wo.txt",
+    "-a",
+    "tmech",
+    "-t",
+    "wo",
+    "-wp",
+    "tmech",
+    "-wn",
+    "tmech-without-muscle",
+    "-sp",
+    "nn_tmech_wo"
+  ],
+  "program":  "main.py",
+  "codePath":  "python/main.py",
+  "git":  {
+    "remote":  "git@github.com:hzm2016/mass-tmech.git",
+    "commit":  "a155020e6cef22c4aba3386a9de6f6f6b74bb6a5"
+  },
+  "email":  "houzm1994@gmail.com",
+  "root":  "/home/sulab/hipexo/mass-tmech/python",
+  "host":  "sulab-Legion-T7-34IRZ8",
+  "executable":  "/home/sulab/anaconda3/envs/exo/bin/python3",
+  "codePathLocal":  "main.py",
+  "cpu_count":  16,
+  "cpu_count_logical":  24,
+  "gpu":  "NVIDIA GeForce RTX 4080",
+  "gpu_count":  1,
+  "disk":  {
+    "/":  {
+      "total":  "452326653952",
+      "used":  "36576174080"
+    }
+  },
+  "memory":  {
+    "total":  "33368244224"
+  },
+  "cpu":  {
+    "count":  16,
+    "countLogical":  24
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "NVIDIA GeForce RTX 4080",
+      "memoryTotal":  "17171480576",
+      "cudaCores":  9728,
+      "architecture":  "Ada"
+    }
+  ],
+  "cudaVersion":  "12.2"
+}

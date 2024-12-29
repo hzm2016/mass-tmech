@@ -1,0 +1,8 @@
+{"time":"2024-12-29T10:50:05.455455588-05:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-29T10:50:05.455472108-05:00","level":"INFO","msg":"created symlink","path":"/home/sulab/hipexo/mass-tmech/python/wandb/run-20241229_105005-j58n1i4g/logs/debug-core.log"}
+{"time":"2024-12-29T10:50:05.563772742-05:00","level":"INFO","msg":"created new stream","id":"j58n1i4g"}
+{"time":"2024-12-29T10:50:05.563798434-05:00","level":"INFO","msg":"stream: started","id":"j58n1i4g"}
+{"time":"2024-12-29T10:50:05.564890568-05:00","level":"INFO","msg":"handler: started","stream_id":"j58n1i4g"}
+{"time":"2024-12-29T10:50:05.564918319-05:00","level":"INFO","msg":"writer: Do: started","stream_id":"j58n1i4g"}
+{"time":"2024-12-29T10:50:05.56495786-05:00","level":"INFO","msg":"sender: started","stream_id":"j58n1i4g"}
+{"time":"2024-12-29T10:50:06.089078091-05:00","level":"INFO","msg":"Starting system monitor"}

@@ -696,7 +696,7 @@ if __name__=="__main__":
 		"num_epochs": 5,
 	}
 
-	with open("config.yaml", "r") as f:
+	with open("../config.yaml", "r") as f:
 		file_config = yaml.safe_load(f)  
 	config = {**default_config, **file_config}  
 

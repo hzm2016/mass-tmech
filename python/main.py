@@ -196,18 +196,18 @@ class PPO(object):
 		return np.vstack(filtered_action_human)  
 
 	def SaveModel(self,):      
-		self.exo_model.save('../'+self.save_path+'/current_exo.pt')  
-		self.human_model.save('../'+self.save_path+'/current_human.pt')   
-		self.muscle_model.save('../'+self.save_path+'/current_muscle.pt')    
+		self.exo_model.save(self.save_path+'/current_exo.pt')  
+		self.human_model.save(self.save_path+'/current_human.pt')   
+		self.muscle_model.save(self.save_path+'/current_muscle.pt')    
 
 		if self.max_return_human_epoch == self.num_evaluation:
-			self.exo_model.save('../'+self.save_path+'/max_exo.pt')
-			self.human_model.save('../'+self.save_path+'/max_human.pt')  
-			self.muscle_model.save('../'+self.save_path+'/max_muscle.pt')  
+			self.exo_model.save(self.save_path+'/max_exo.pt')
+			self.human_model.save(self.save_path+'/max_human.pt')  
+			self.muscle_model.save(self.save_path+'/max_muscle.pt')  
 		if self.num_evaluation%100 == 0:
-			self.exo_model.save('../'+self.save_path+'/'+str(self.num_evaluation//100)+'_exo.pt')  
-			self.human_model.save('../'+self.save_path+'/'+str(self.num_evaluation//100)+'_human.pt')  
-			self.muscle_model.save('../'+self.save_path+'/'+str(self.num_evaluation//100)+'_muscle.pt')  
+			self.exo_model.save(self.save_path+'/'+str(self.num_evaluation//100)+'_exo.pt')  
+			self.human_model.save(self.save_path+'/'+str(self.num_evaluation//100)+'_human.pt')  
+			self.muscle_model.save(self.save_path+'/'+str(self.num_evaluation//100)+'_muscle.pt')  
 
 	def LoadModel(self,model_path,model_name):   
 		self.exo_model.load('../'+model_path+'/'+model_name+'_exo.pt')  

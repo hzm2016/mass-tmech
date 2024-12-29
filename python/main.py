@@ -26,6 +26,7 @@ ByteTensor = torch.cuda.ByteTensor if use_cuda else torch.ByteTensor
 Tensor = FloatTensor
 
 import wandb  
+import yaml  
 
 Episode = namedtuple('Episode',('s_e', 'a_e', 'r_e', 'value_e', 'logprob_e', 's_h', 'a_h', 'r_h', 'value_h', 'logprob_h')) 
 class EpisodeBuffer(object):
@@ -71,7 +72,6 @@ class PPO(object):
 		self.use_muscle = self.env.UseMuscle()    
 		self.num_muscles = self.env.GetNumMuscles()    
   
-		# exo training details 
 		if self.only_human: 
 			self.num_human_state = self.env.GetNumState()    
 			self.num_exo_state = self.num_human_state  
@@ -607,9 +607,10 @@ class PPO(object):
 		print('||Avg Step per episode     : {:.1f}'.format(self.num_tuple/self.num_episode))  
 		print('||Max Avg Retun So far     : {:.3f} at #{}'.format(self.max_return_human,self.max_return_human_epoch))
   
-		self.rewards.append(self.sum_return_human/self.num_episode)
+		self.rewards_exo.append(self.sum_return_exo/self.num_episode)  
+		self.rewards_human.append(self.sum_return_human/self.num_episode)  
 		
-		self.SaveModel(model_path)  
+		self.SaveModel(model_path)   
 		
 		print('=============================================')   
 		wandb.log({ 
@@ -631,7 +632,7 @@ class PPO(object):
 		)  
 		print('=============================================')
   
-		return np.array(self.rewards)
+		return np.array(self.rewards_exo), np.array(self.rewards_human)  
 
 import matplotlib
 import matplotlib.pyplot as plt
@@ -677,7 +678,7 @@ if __name__=="__main__":
 	parser.add_argument('-wn', '--wandb_name', default='Test', help='wandb run name')
 	parser.add_argument('-ws', '--wandb_notes', default='', help='wandb notes')   
  
-	parser.add_argument('--max_iterations',type=int, default=50000, help='meta file')    
+	parser.add_argument('--max_iteration',type=int, default=50000, help='meta file')    
  
 	args =parser.parse_args()
 	if args.meta is None:
@@ -688,11 +689,20 @@ if __name__=="__main__":
 
 	args.meta = '../data/metadata_' + args.algorithm + '_' + args.type + '.txt' 
 
-	config = {"learning_rate": 0.001, "epochs": 10, "batch_size": 32}   
+	default_config = {
+		"learning_rate": 0.001,
+		"batch_size": 32,
+		"num_epochs": 5,
+	}
+
+	with open("config.yaml", "r") as f:
+		file_config = yaml.safe_load(f)  
+	config = {**default_config, **file_config}
 
 	wandb.init(
 		project=args.wandb_project,
-		name=args.wandb_name 
+		name=args.wandb_name, 
+		config=config  
     ) 
  
 	ppo = PPO(args.meta)
@@ -711,13 +721,16 @@ if __name__=="__main__":
 	if not os.path.exists(reward_dir):    
 		os.makedirs(reward_dir)       
 	
-	file_name_reward_path = '../reward/episode_reward_' + args.algorithm + '_' + args.type + '.npy'  
+	file_name_exo_reward_path = '../reward/episode_reward_' + args.algorithm + '_' + args.type + '_exo.npy' 
+	file_name_human_reward_path = '../reward/episode_reward_' + args.algorithm + '_' + args.type + '_human.npy'   
 	episode_reward = []  
 	print('num states: {}, num actions: {}'.format(ppo.env.GetNumState(),ppo.env.GetNumAction()))
 	for i in range(ppo.max_iteration-5):
 		ppo.Train()  
-		rewards = ppo.Evaluate(args.save_path)      
-		Plot(rewards,'reward',0,False)    
-	
+		rewards_exo, rewards_human = ppo.Evaluate(args.save_path)      
+		Plot(rewards_exo,'reward_exo', 0, False)    
+		Plot(rewards_human,'reward_human', 0, False)    
+  
 		if i%100==0: 
-			np.save(file_name_reward_path, rewards)      
+			np.save(file_name_exo_reward_path, rewards_exo)       
+			np.save(file_name_human_reward_path, rewards_human)       

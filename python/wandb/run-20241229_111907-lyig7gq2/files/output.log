@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "main.py", line 701, in <module>
+    ppo.SaveModel(args.save_path)
+  File "main.py", line 195, in SaveModel
+    self.exo_model.save('../'+model_path+'/current_exo.pt')
+TypeError: can only concatenate str (not "NoneType") to str

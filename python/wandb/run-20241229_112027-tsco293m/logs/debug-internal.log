@@ -1,0 +1,8 @@
+{"time":"2024-12-29T11:20:27.105685428+08:00","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-29T11:20:27.105693513+08:00","level":"INFO","msg":"created symlink","path":"/home/harlab/1-ncsu/mass-tmech/python/wandb/run-20241229_112027-tsco293m/logs/debug-core.log"}
+{"time":"2024-12-29T11:20:27.208343633+08:00","level":"INFO","msg":"created new stream","id":"tsco293m"}
+{"time":"2024-12-29T11:20:27.208397318+08:00","level":"INFO","msg":"stream: started","id":"tsco293m"}
+{"time":"2024-12-29T11:20:27.208452948+08:00","level":"INFO","msg":"handler: started","stream_id":"tsco293m"}
+{"time":"2024-12-29T11:20:27.208454386+08:00","level":"INFO","msg":"writer: Do: started","stream_id":"tsco293m"}
+{"time":"2024-12-29T11:20:27.208511074+08:00","level":"INFO","msg":"sender: started","stream_id":"tsco293m"}
+{"time":"2024-12-29T11:20:27.437184373+08:00","level":"INFO","msg":"Starting system monitor"}

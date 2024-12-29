@@ -712,4 +712,5 @@ if __name__=="__main__":
 		rewards = ppo.Evaluate(args.save_path)      
 		Plot(rewards,'reward',0,False)    
 	
-	np.save(file_name_reward_path, rewards)      
+		if i%100==0: 
+			np.save(file_name_reward_path, rewards)      

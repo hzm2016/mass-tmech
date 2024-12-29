@@ -1,0 +1,45 @@
+{
+  "os":  "Linux-5.15.0-119-generic-x86_64-with-glibc2.17",
+  "python":  "CPython 3.8.19",
+  "startedAt":  "2024-12-29T03:20:27.104504Z",
+  "args":  [
+    "-d",
+    "../data/metadata_mass_wo.txt",
+    "-a",
+    "tmech",
+    "-t",
+    "wm",
+    "-wp",
+    "tmech",
+    "-wn",
+    "tmech-with-muscle",
+    "-sp",
+    "nn"
+  ],
+  "program":  "main.py",
+  "codePath":  "python/main.py",
+  "git":  {
+    "remote":  "git@github.com:hzm2016/mass-tmech.git",
+    "commit":  "1a6e84cfaffca6137e8067f4525ecd0acb6be4a7"
+  },
+  "email":  "houzm1994@gmail.com",
+  "root":  "/home/harlab/1-ncsu/mass-tmech/python",
+  "host":  "harlab-X1",
+  "executable":  "/home/harlab/anaconda3/envs/exo/bin/python3",
+  "codePathLocal":  "main.py",
+  "cpu_count":  12,
+  "cpu_count_logical":  16,
+  "disk":  {
+    "/":  {
+      "total":  "16017379328",
+      "used":  "14966587392"
+    }
+  },
+  "memory":  {
+    "total":  "16358572032"
+  },
+  "cpu":  {
+    "count":  12,
+    "countLogical":  16
+  }
+}

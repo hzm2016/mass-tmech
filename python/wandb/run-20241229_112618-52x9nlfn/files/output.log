@@ -1,0 +1,1311 @@
+/home/harlab/anaconda3/envs/exo/lib/python3.8/site-packages/torch/nn/init.py:453: UserWarning: Initializing zero-element tensors is a no-op
+  warnings.warn("Initializing zero-element tensors is a no-op")
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+save simulation nn ../nn/0_exo.pt
+save simulation nn ../nn/0_human.pt
+save muscle nn ../nn/0_muscle.pt
+num states: 136, num actions: 50
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 0904
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 1 === 0h:0m:1s ===
+||Loss Actor               : 0.0000
+||Loss Critic              : 0.0000
+||Loss Muscle              : 0.0000
+||Noise                    : 1.000
+||Num Transition So far    : 0
+||Num Transition           : 1
+||Num Episode              : 1
+||Avg Human Return per episode   : 0.000
+||Avg Human Reward per transition: 0.000
+||Avg Exo Return per episode   : 0.000
+||Avg Exo Reward per transition: 0.000
+||Avg Step per episode     : 1.0
+||Max Avg Retun So far     : 0.000 at #1
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+save simulation nn ../nn/max_exo.pt
+save simulation nn ../nn/max_human.pt
+save muscle nn ../nn/max_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 0904
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 2 === 0h:0m:2s ===
+||Loss Actor               : 0.0000
+||Loss Critic              : 0.0000
+||Loss Muscle              : 0.0000
+||Noise                    : 1.000
+||Num Transition So far    : 0
+||Num Transition           : 1
+||Num Episode              : 1
+||Avg Human Return per episode   : 0.000
+||Avg Human Reward per transition: 0.000
+||Avg Exo Return per episode   : 0.000
+||Avg Exo Reward per transition: 0.000
+||Avg Step per episode     : 1.0
+||Max Avg Retun So far     : 0.000 at #1
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 0904
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 3 === 0h:0m:4s ===
+||Loss Actor               : 0.0000
+||Loss Critic              : 0.0000
+||Loss Muscle              : 0.0000
+||Noise                    : 1.000
+||Num Transition So far    : 0
+||Num Transition           : 1
+||Num Episode              : 1
+||Avg Human Return per episode   : 0.000
+||Avg Human Reward per transition: 0.000
+||Avg Exo Return per episode   : 0.000
+||Avg Exo Reward per transition: 0.000
+||Avg Step per episode     : 1.0
+||Max Avg Retun So far     : 0.000 at #1
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 3493
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 4 === 0h:0m:8s ===
+||Loss Actor               : -0.0181
+||Loss Critic              : 4.1082
+||Loss Muscle              : 0.0000
+||Noise                    : 1.000
+||Num Transition So far    : 3493
+||Num Transition           : 3493
+||Num Episode              : 8
+||Avg Human Return per episode   : 51.440
+||Avg Human Reward per transition: 0.118
+||Avg Exo Return per episode   : 43.663
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 436.6
+||Max Avg Retun So far     : 51.440 at #4
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+save simulation nn ../nn/max_exo.pt
+save simulation nn ../nn/max_human.pt
+save muscle nn ../nn/max_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2821
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 5 === 0h:0m:11s ===
+||Loss Actor               : 0.0093
+||Loss Critic              : 2.4026
+||Loss Muscle              : 0.0000
+||Noise                    : 0.999
+||Num Transition So far    : 6314
+||Num Transition           : 2821
+||Num Episode              : 5
+||Avg Human Return per episode   : 51.529
+||Avg Human Reward per transition: 0.091
+||Avg Exo Return per episode   : 56.420
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 564.2
+||Max Avg Retun So far     : 51.529 at #5
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+save simulation nn ../nn/max_exo.pt
+save simulation nn ../nn/max_human.pt
+save muscle nn ../nn/max_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1970
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 6 === 0h:0m:14s ===
+||Loss Actor               : 0.0027
+||Loss Critic              : 2.3101
+||Loss Muscle              : 0.0000
+||Noise                    : 0.999
+||Num Transition So far    : 8284
+||Num Transition           : 1970
+||Num Episode              : 3
+||Avg Human Return per episode   : 52.193
+||Avg Human Reward per transition: 0.079
+||Avg Exo Return per episode   : 65.667
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 656.7
+||Max Avg Retun So far     : 52.193 at #6
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+save simulation nn ../nn/max_exo.pt
+save simulation nn ../nn/max_human.pt
+save muscle nn ../nn/max_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1972
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 7 === 0h:0m:17s ===
+||Loss Actor               : -0.0287
+||Loss Critic              : 4.4335
+||Loss Muscle              : 0.0000
+||Noise                    : 0.999
+||Num Transition So far    : 10256
+||Num Transition           : 1972
+||Num Episode              : 5
+||Avg Human Return per episode   : 41.061
+||Avg Human Reward per transition: 0.104
+||Avg Exo Return per episode   : 39.440
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 394.4
+||Max Avg Retun So far     : 52.193 at #6
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2657
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 8 === 0h:0m:20s ===
+||Loss Actor               : -0.0026
+||Loss Critic              : 2.4631
+||Loss Muscle              : 0.0000
+||Noise                    : 0.998
+||Num Transition So far    : 12913
+||Num Transition           : 2657
+||Num Episode              : 6
+||Avg Human Return per episode   : 52.534
+||Avg Human Reward per transition: 0.119
+||Avg Exo Return per episode   : 44.283
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 442.8
+||Max Avg Retun So far     : 52.534 at #8
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+save simulation nn ../nn/max_exo.pt
+save simulation nn ../nn/max_human.pt
+save muscle nn ../nn/max_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1419
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 9 === 0h:0m:23s ===
+||Loss Actor               : -0.0127
+||Loss Critic              : 3.0426
+||Loss Muscle              : 0.0000
+||Noise                    : 0.998
+||Num Transition So far    : 14332
+||Num Transition           : 1419
+||Num Episode              : 3
+||Avg Human Return per episode   : 51.057
+||Avg Human Reward per transition: 0.108
+||Avg Exo Return per episode   : 47.300
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 473.0
+||Max Avg Retun So far     : 52.534 at #8
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1909
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 10 === 0h:0m:26s ===
+||Loss Actor               : -0.0196
+||Loss Critic              : 3.1123
+||Loss Muscle              : 0.0000
+||Noise                    : 0.998
+||Num Transition So far    : 16241
+||Num Transition           : 1909
+||Num Episode              : 4
+||Avg Human Return per episode   : 50.750
+||Avg Human Reward per transition: 0.106
+||Avg Exo Return per episode   : 47.725
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 477.2
+||Max Avg Retun So far     : 52.534 at #8
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2129
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 11 === 0h:0m:30s ===
+||Loss Actor               : -0.0035
+||Loss Critic              : 2.6849
+||Loss Muscle              : 0.0000
+||Noise                    : 0.998
+||Num Transition So far    : 18370
+||Num Transition           : 2129
+||Num Episode              : 4
+||Avg Human Return per episode   : 50.510
+||Avg Human Reward per transition: 0.095
+||Avg Exo Return per episode   : 53.225
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 532.2
+||Max Avg Retun So far     : 52.534 at #8
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 3234
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 12 === 0h:0m:34s ===
+||Loss Actor               : -0.0112
+||Loss Critic              : 2.5554
+||Loss Muscle              : 0.0000
+||Noise                    : 0.998
+||Num Transition So far    : 21604
+||Num Transition           : 3234
+||Num Episode              : 7
+||Avg Human Return per episode   : 50.978
+||Avg Human Reward per transition: 0.110
+||Avg Exo Return per episode   : 46.200
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 462.0
+||Max Avg Retun So far     : 52.534 at #8
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 3693
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 13 === 0h:0m:37s ===
+||Loss Actor               : -0.0074
+||Loss Critic              : 2.0679
+||Loss Muscle              : 0.0000
+||Noise                    : 0.998
+||Num Transition So far    : 21973
+||Num Transition           : 369
+||Num Episode              : 1
+||Avg Human Return per episode   : 40.216
+||Avg Human Reward per transition: 0.109
+||Avg Exo Return per episode   : 36.900
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 369.0
+||Max Avg Retun So far     : 52.534 at #8
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2282
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 14 === 0h:0m:41s ===
+||Loss Actor               : -0.0082
+||Loss Critic              : 2.4742
+||Loss Muscle              : 0.0000
+||Noise                    : 0.997
+||Num Transition So far    : 24255
+||Num Transition           : 2282
+||Num Episode              : 5
+||Avg Human Return per episode   : 45.143
+||Avg Human Reward per transition: 0.099
+||Avg Exo Return per episode   : 45.640
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 456.4
+||Max Avg Retun So far     : 52.534 at #8
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2943
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 15 === 0h:0m:45s ===
+||Loss Actor               : -0.0099
+||Loss Critic              : 1.3775
+||Loss Muscle              : 0.0000
+||Noise                    : 0.997
+||Num Transition So far    : 27198
+||Num Transition           : 2943
+||Num Episode              : 6
+||Avg Human Return per episode   : 47.084
+||Avg Human Reward per transition: 0.096
+||Avg Exo Return per episode   : 49.050
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 490.5
+||Max Avg Retun So far     : 52.534 at #8
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1891
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 16 === 0h:0m:50s ===
+||Loss Actor               : -0.0224
+||Loss Critic              : 1.4721
+||Loss Muscle              : 0.0000
+||Noise                    : 0.998
+||Num Transition So far    : 29089
+||Num Transition           : 1891
+||Num Episode              : 4
+||Avg Human Return per episode   : 47.969
+||Avg Human Reward per transition: 0.101
+||Avg Exo Return per episode   : 47.275
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 472.8
+||Max Avg Retun So far     : 52.534 at #8
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1738
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 17 === 0h:0m:54s ===
+||Loss Actor               : -0.0225
+||Loss Critic              : 1.1119
+||Loss Muscle              : 0.0000
+||Noise                    : 0.997
+||Num Transition So far    : 30827
+||Num Transition           : 1738
+||Num Episode              : 3
+||Avg Human Return per episode   : 56.303
+||Avg Human Reward per transition: 0.097
+||Avg Exo Return per episode   : 57.933
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 579.3
+||Max Avg Retun So far     : 56.303 at #17
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+save simulation nn ../nn/max_exo.pt
+save simulation nn ../nn/max_human.pt
+save muscle nn ../nn/max_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2344
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 18 === 0h:1m:1s ===
+||Loss Actor               : 0.0080
+||Loss Critic              : 0.7797
+||Loss Muscle              : 0.0000
+||Noise                    : 0.997
+||Num Transition So far    : 33171
+||Num Transition           : 2344
+||Num Episode              : 5
+||Avg Human Return per episode   : 50.218
+||Avg Human Reward per transition: 0.107
+||Avg Exo Return per episode   : 46.880
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 468.8
+||Max Avg Retun So far     : 56.303 at #17
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1286
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 19 === 0h:1m:5s ===
+||Loss Actor               : -0.0170
+||Loss Critic              : 0.8344
+||Loss Muscle              : 0.0000
+||Noise                    : 0.996
+||Num Transition So far    : 34457
+||Num Transition           : 1286
+||Num Episode              : 3
+||Avg Human Return per episode   : 43.040
+||Avg Human Reward per transition: 0.100
+||Avg Exo Return per episode   : 42.867
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 428.7
+||Max Avg Retun So far     : 56.303 at #17
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2318
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 20 === 0h:1m:11s ===
+||Loss Actor               : -0.0107
+||Loss Critic              : 0.7436
+||Loss Muscle              : 0.0000
+||Noise                    : 0.997
+||Num Transition So far    : 36775
+||Num Transition           : 2318
+||Num Episode              : 4
+||Avg Human Return per episode   : 56.423
+||Avg Human Reward per transition: 0.097
+||Avg Exo Return per episode   : 57.950
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 579.5
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+save simulation nn ../nn/max_exo.pt
+save simulation nn ../nn/max_human.pt
+save muscle nn ../nn/max_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 3923
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 21 === 0h:1m:19s ===
+||Loss Actor               : 0.0056
+||Loss Critic              : 1.2377
+||Loss Muscle              : 0.0000
+||Noise                    : 0.997
+||Num Transition So far    : 40698
+||Num Transition           : 3923
+||Num Episode              : 8
+||Avg Human Return per episode   : 49.905
+||Avg Human Reward per transition: 0.102
+||Avg Exo Return per episode   : 49.038
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 490.4
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 4153
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 22 === 0h:1m:23s ===
+||Loss Actor               : -0.0116
+||Loss Critic              : 0.7274
+||Loss Muscle              : 0.0000
+||Noise                    : 0.997
+||Num Transition So far    : 41113
+||Num Transition           : 415
+||Num Episode              : 1
+||Avg Human Return per episode   : 45.444
+||Avg Human Reward per transition: 0.110
+||Avg Exo Return per episode   : 41.500
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 415.0
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2116
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 23 === 0h:1m:28s ===
+||Loss Actor               : -0.0129
+||Loss Critic              : 1.1796
+||Loss Muscle              : 0.0000
+||Noise                    : 0.997
+||Num Transition So far    : 43229
+||Num Transition           : 2116
+||Num Episode              : 4
+||Avg Human Return per episode   : 43.916
+||Avg Human Reward per transition: 0.083
+||Avg Exo Return per episode   : 52.900
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 529.0
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1753
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 24 === 0h:1m:32s ===
+||Loss Actor               : 0.0073
+||Loss Critic              : 0.6543
+||Loss Muscle              : 0.0000
+||Noise                    : 0.996
+||Num Transition So far    : 44982
+||Num Transition           : 1753
+||Num Episode              : 4
+||Avg Human Return per episode   : 42.476
+||Avg Human Reward per transition: 0.097
+||Avg Exo Return per episode   : 43.825
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 438.2
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2073
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 25 === 0h:1m:36s ===
+||Loss Actor               : -0.0033
+||Loss Critic              : 0.6604
+||Loss Muscle              : 0.0000
+||Noise                    : 0.996
+||Num Transition So far    : 47055
+||Num Transition           : 2073
+||Num Episode              : 4
+||Avg Human Return per episode   : 55.997
+||Avg Human Reward per transition: 0.108
+||Avg Exo Return per episode   : 51.825
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 518.2
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2714
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 26 === 0h:1m:40s ===
+||Loss Actor               : 0.0050
+||Loss Critic              : 0.5388
+||Loss Muscle              : 0.0000
+||Noise                    : 0.995
+||Num Transition So far    : 49769
+||Num Transition           : 2714
+||Num Episode              : 5
+||Avg Human Return per episode   : 50.669
+||Avg Human Reward per transition: 0.093
+||Avg Exo Return per episode   : 54.280
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 542.8
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 6913
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 27 === 0h:1m:43s ===
+||Loss Actor               : -0.0124
+||Loss Critic              : 1.0479
+||Loss Muscle              : 0.0000
+||Noise                    : 0.995
+||Num Transition So far    : 50460
+||Num Transition           : 691
+||Num Episode              : 1
+||Avg Human Return per episode   : 55.285
+||Avg Human Reward per transition: 0.080
+||Avg Exo Return per episode   : 69.100
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 691.0
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 3549
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 28 === 0h:1m:48s ===
+||Loss Actor               : -0.0023
+||Loss Critic              : 0.4469
+||Loss Muscle              : 0.0000
+||Noise                    : 0.995
+||Num Transition So far    : 54009
+||Num Transition           : 3549
+||Num Episode              : 7
+||Avg Human Return per episode   : 52.949
+||Avg Human Reward per transition: 0.104
+||Avg Exo Return per episode   : 50.700
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 507.0
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2214
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 29 === 0h:1m:51s ===
+||Loss Actor               : 0.0014
+||Loss Critic              : 0.4740
+||Loss Muscle              : 0.0000
+||Noise                    : 0.995
+||Num Transition So far    : 56223
+||Num Transition           : 2214
+||Num Episode              : 5
+||Avg Human Return per episode   : 49.362
+||Avg Human Reward per transition: 0.111
+||Avg Exo Return per episode   : 44.280
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 442.8
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1588
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 30 === 0h:1m:55s ===
+||Loss Actor               : -0.0299
+||Loss Critic              : 1.0863
+||Loss Muscle              : 0.0000
+||Noise                    : 0.995
+||Num Transition So far    : 57811
+||Num Transition           : 1588
+||Num Episode              : 3
+||Avg Human Return per episode   : 45.340
+||Avg Human Reward per transition: 0.086
+||Avg Exo Return per episode   : 52.933
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 529.3
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1764
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 31 === 0h:1m:58s ===
+||Loss Actor               : -0.0136
+||Loss Critic              : 0.2223
+||Loss Muscle              : 0.0000
+||Noise                    : 0.996
+||Num Transition So far    : 59575
+||Num Transition           : 1764
+||Num Episode              : 4
+||Avg Human Return per episode   : 48.883
+||Avg Human Reward per transition: 0.111
+||Avg Exo Return per episode   : 44.100
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 441.0
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2397
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 32 === 0h:2m:2s ===
+||Loss Actor               : -0.0068
+||Loss Critic              : 0.7215
+||Loss Muscle              : 0.0000
+||Noise                    : 0.995
+||Num Transition So far    : 61972
+||Num Transition           : 2397
+||Num Episode              : 5
+||Avg Human Return per episode   : 51.606
+||Avg Human Reward per transition: 0.108
+||Avg Exo Return per episode   : 47.940
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 479.4
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1416
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 33 === 0h:2m:5s ===
+||Loss Actor               : -0.0042
+||Loss Critic              : 0.7086
+||Loss Muscle              : 0.0000
+||Noise                    : 0.995
+||Num Transition So far    : 63388
+||Num Transition           : 1416
+||Num Episode              : 3
+||Avg Human Return per episode   : 50.962
+||Avg Human Reward per transition: 0.108
+||Avg Exo Return per episode   : 47.200
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 472.0
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2602
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 34 === 0h:2m:9s ===
+||Loss Actor               : 0.0002
+||Loss Critic              : 0.3888
+||Loss Muscle              : 0.0000
+||Noise                    : 0.995
+||Num Transition So far    : 65990
+||Num Transition           : 2602
+||Num Episode              : 5
+||Avg Human Return per episode   : 46.745
+||Avg Human Reward per transition: 0.090
+||Avg Exo Return per episode   : 52.040
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 520.4
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2393
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 35 === 0h:2m:15s ===
+||Loss Actor               : -0.0065
+||Loss Critic              : 1.0508
+||Loss Muscle              : 0.0000
+||Noise                    : 0.995
+||Num Transition So far    : 68383
+||Num Transition           : 2393
+||Num Episode              : 5
+||Avg Human Return per episode   : 45.820
+||Avg Human Reward per transition: 0.096
+||Avg Exo Return per episode   : 47.860
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 478.6
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2090
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 36 === 0h:2m:20s ===
+||Loss Actor               : -0.0194
+||Loss Critic              : 0.4611
+||Loss Muscle              : 0.0000
+||Noise                    : 0.995
+||Num Transition So far    : 70473
+||Num Transition           : 2090
+||Num Episode              : 4
+||Avg Human Return per episode   : 44.426
+||Avg Human Reward per transition: 0.085
+||Avg Exo Return per episode   : 52.250
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 522.5
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1351
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 37 === 0h:2m:24s ===
+||Loss Actor               : -0.0067
+||Loss Critic              : 0.2271
+||Loss Muscle              : 0.0000
+||Noise                    : 0.995
+||Num Transition So far    : 71824
+||Num Transition           : 1351
+||Num Episode              : 3
+||Avg Human Return per episode   : 49.696
+||Avg Human Reward per transition: 0.110
+||Avg Exo Return per episode   : 45.033
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 450.3
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2628
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 38 === 0h:2m:30s ===
+||Loss Actor               : 0.0063
+||Loss Critic              : 0.4194
+||Loss Muscle              : 0.0000
+||Noise                    : 0.994
+||Num Transition So far    : 74452
+||Num Transition           : 2628
+||Num Episode              : 5
+||Avg Human Return per episode   : 41.729
+||Avg Human Reward per transition: 0.079
+||Avg Exo Return per episode   : 52.560
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 525.6
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2600
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 39 === 0h:2m:36s ===
+||Loss Actor               : -0.0132
+||Loss Critic              : 0.2741
+||Loss Muscle              : 0.0000
+||Noise                    : 0.995
+||Num Transition So far    : 77052
+||Num Transition           : 2600
+||Num Episode              : 6
+||Avg Human Return per episode   : 52.221
+||Avg Human Reward per transition: 0.121
+||Avg Exo Return per episode   : 43.333
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 433.3
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1099
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 40 === 0h:2m:40s ===
+||Loss Actor               : -0.0137
+||Loss Critic              : 0.6145
+||Loss Muscle              : 0.0000
+||Noise                    : 0.995
+||Num Transition So far    : 78151
+||Num Transition           : 1099
+||Num Episode              : 2
+||Avg Human Return per episode   : 46.196
+||Avg Human Reward per transition: 0.084
+||Avg Exo Return per episode   : 54.950
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 549.5
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2422
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 41 === 0h:2m:45s ===
+||Loss Actor               : -0.0069
+||Loss Critic              : 0.4101
+||Loss Muscle              : 0.0000
+||Noise                    : 0.994
+||Num Transition So far    : 80573
+||Num Transition           : 2422
+||Num Episode              : 5
+||Avg Human Return per episode   : 44.879
+||Avg Human Reward per transition: 0.093
+||Avg Exo Return per episode   : 48.440
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 484.4
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2273
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 42 === 0h:2m:51s ===
+||Loss Actor               : -0.0021
+||Loss Critic              : 0.7216
+||Loss Muscle              : 0.0000
+||Noise                    : 0.993
+||Num Transition So far    : 82846
+||Num Transition           : 2273
+||Num Episode              : 5
+||Avg Human Return per episode   : 48.360
+||Avg Human Reward per transition: 0.106
+||Avg Exo Return per episode   : 45.460
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 454.6
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2367
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 43 === 0h:2m:58s ===
+||Loss Actor               : -0.0066
+||Loss Critic              : 0.3090
+||Loss Muscle              : 0.0000
+||Noise                    : 0.993
+||Num Transition So far    : 85213
+||Num Transition           : 2367
+||Num Episode              : 5
+||Avg Human Return per episode   : 51.453
+||Avg Human Reward per transition: 0.109
+||Avg Exo Return per episode   : 47.340
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 473.4
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 8352
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 44 === 0h:3m:1s ===
+||Loss Actor               : -0.0074
+||Loss Critic              : 0.5355
+||Loss Muscle              : 0.0000
+||Noise                    : 0.993
+||Num Transition So far    : 86048
+||Num Transition           : 835
+||Num Episode              : 2
+||Avg Human Return per episode   : 45.388
+||Avg Human Reward per transition: 0.109
+||Avg Exo Return per episode   : 41.750
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 417.5
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2786
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 45 === 0h:3m:5s ===
+||Loss Actor               : -0.0184
+||Loss Critic              : 0.6400
+||Loss Muscle              : 0.0000
+||Noise                    : 0.994
+||Num Transition So far    : 88834
+||Num Transition           : 2786
+||Num Episode              : 6
+||Avg Human Return per episode   : 43.895
+||Avg Human Reward per transition: 0.095
+||Avg Exo Return per episode   : 46.433
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 464.3
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2668
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 46 === 0h:3m:9s ===
+||Loss Actor               : -0.0144
+||Loss Critic              : 0.8520
+||Loss Muscle              : 0.0000
+||Noise                    : 0.994
+||Num Transition So far    : 91502
+||Num Transition           : 2668
+||Num Episode              : 6
+||Avg Human Return per episode   : 47.671
+||Avg Human Reward per transition: 0.107
+||Avg Exo Return per episode   : 44.467
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 444.7
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1844
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 47 === 0h:3m:13s ===
+||Loss Actor               : -0.0201
+||Loss Critic              : 0.6786
+||Loss Muscle              : 0.0000
+||Noise                    : 0.993
+||Num Transition So far    : 93346
+||Num Transition           : 1844
+||Num Episode              : 4
+||Avg Human Return per episode   : 43.906
+||Avg Human Reward per transition: 0.095
+||Avg Exo Return per episode   : 46.100
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 461.0
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1655
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 48 === 0h:3m:16s ===
+||Loss Actor               : -0.0080
+||Loss Critic              : 0.9677
+||Loss Muscle              : 0.0000
+||Noise                    : 0.993
+||Num Transition So far    : 95001
+||Num Transition           : 1655
+||Num Episode              : 4
+||Avg Human Return per episode   : 45.373
+||Avg Human Reward per transition: 0.110
+||Avg Exo Return per episode   : 41.375
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 413.8
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1085
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 49 === 0h:3m:19s ===
+||Loss Actor               : -0.0094
+||Loss Critic              : 0.2166
+||Loss Muscle              : 0.0000
+||Noise                    : 0.993
+||Num Transition So far    : 96086
+||Num Transition           : 1085
+||Num Episode              : 2
+||Avg Human Return per episode   : 49.102
+||Avg Human Reward per transition: 0.091
+||Avg Exo Return per episode   : 54.250
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 542.5
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 2056
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 50 === 0h:3m:22s ===
+||Loss Actor               : -0.0146
+||Loss Critic              : 0.3268
+||Loss Muscle              : 0.0000
+||Noise                    : 0.993
+||Num Transition So far    : 98142
+||Num Transition           : 2056
+||Num Episode              : 4
+||Avg Human Return per episode   : 50.403
+||Avg Human Reward per transition: 0.098
+||Avg Exo Return per episode   : 51.400
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 514.0
+||Max Avg Retun So far     : 56.423 at #20
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 4090
+(0, 0)
+Optimizing sim nn : 10/10
+Optimizing sim nn : 10/10
+# 51 === 0h:3m:27s ===
+||Loss Actor               : -0.0162
+||Loss Critic              : 0.2758
+||Loss Muscle              : 0.0000
+||Noise                    : 0.993
+||Num Transition So far    : 102232
+||Num Transition           : 4090
+||Num Episode              : 8
+||Avg Human Return per episode   : 58.402
+||Avg Human Reward per transition: 0.114
+||Avg Exo Return per episode   : 51.125
+||Avg Exo Reward per transition: 0.100
+||Avg Step per episode     : 511.2
+||Max Avg Retun So far     : 58.402 at #51
+save simulation nn ../nn/current_exo.pt
+save simulation nn ../nn/current_human.pt
+save muscle nn ../nn/current_muscle.pt
+save simulation nn ../nn/max_exo.pt
+save simulation nn ../nn/max_human.pt
+save muscle nn ../nn/max_muscle.pt
+=============================================
+=============================================
+states exo : (16, 12)
+states human : (16, 100)
+SIM : 1902

@@ -609,18 +609,18 @@ class PPO(object):
 		self.SaveModel(model_path)  
 		
 		print('=============================================')   
-		wandb.log({
-      		"Loss Actor": self.loss_actor,
-			"Loss Critic": self.loss_critic,
+		wandb.log({ 
 			"Loss Muscle": self.loss_muscle,
 			"Num Transition So far": self.num_tuple_so_far,
 			"Num Transition": self.num_tuple,
 			"Num Episode": self.num_episode,
-			"Avg Return per episode": self.sum_return/self.num_episode,
-			"Avg Reward per transition": self.sum_return/self.num_tuple,
+			"Avg Human Return per episode": self.sum_return_human/self.num_episode,
+			"Avg Human Reward per transition": self.sum_return_human/self.num_tuple,  
+			"Avg Exo Return per episode": self.sum_return_exo/self.num_episode,
+			"Avg Exo Reward per transition": self.sum_return_exo/self.num_tuple,  
 			"Avg Step per episode": self.num_tuple/self.num_episode,
-			"Max Avg Retun So far": self.max_return,
-			"Max Avg Return Epoch": self.max_return_epoch}
+			"Max Avg Retun So far": self.max_return_human, 
+			"Max Avg Return Epoch": self.max_return_human_epoch}    
 		)  
 		print('=============================================')
   
@@ -666,7 +666,7 @@ if __name__=="__main__":
 	parser.add_argument('-f','--flag',help='recognize the main features')     
 
 	parser.add_argument('-wp', '--wandb_project', default='junxi_training', help='wandb project name')
-	parser.add_argument('--wandb_entity', default='markzhumi1805', help='wandb entity name')
+	parser.add_argument('-we', '--wandb_entity', default='markzhumi1805', help='wandb entity name')
 	parser.add_argument('-wn', '--wandb_name', default='Test', help='wandb run name')
 	parser.add_argument('-ws', '--wandb_notes', default='', help='wandb notes')   
  
@@ -700,7 +700,11 @@ if __name__=="__main__":
 	else:
 		ppo.SaveModel(args.save_path)     
 
-	file_name_reward_path = '../data/episode_reward_' + args.algorithm + '_' + args.type + '.npy'  
+	reward_dir = '../reward'   
+	if not os.path.exists(reward_dir):    
+		os.makedirs(reward_dir)       
+	
+	file_name_reward_path = '../reward/episode_reward_' + args.algorithm + '_' + args.type + '.npy'  
 	episode_reward = []  
 	print('num states: {}, num actions: {}'.format(ppo.env.GetNumState(),ppo.env.GetNumAction()))
 	for i in range(ppo.max_iteration-5):

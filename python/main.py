@@ -125,9 +125,12 @@ class PPO(object):
 
 		self.w_entropy = -0.001
 
-		self.loss_actor = 0.0
-		self.loss_critic = 0.0
+		self.loss_actor_human = 0.0
+		self.loss_critic_human = 0.0  
+		self.loss_actor_exo = 0.0
+		self.loss_critic_exo = 0.0  
 		self.loss_muscle = 0.0
+  
 		self.rewards = []  
 		self.rewards_exo = []   
 		self.rewards_human = []    
@@ -456,8 +459,8 @@ class PPO(object):
 				'''Entropy Loss'''
 				loss_entropy = - self.w_entropy * a_dist.entropy().mean()
 
-				self.loss_actor = loss_actor.cpu().detach().numpy().tolist()
-				self.loss_critic = loss_critic.cpu().detach().numpy().tolist()
+				self.loss_actor_human = loss_actor.cpu().detach().numpy().tolist()
+				self.loss_critic_human = loss_critic.cpu().detach().numpy().tolist()
 				
 				loss = loss_actor + loss_entropy + loss_critic
 
@@ -499,8 +502,8 @@ class PPO(object):
 				'''Entropy Loss'''
 				loss_entropy = - self.w_entropy * a_dist.entropy().mean()
 
-				self.loss_actor = loss_actor.cpu().detach().numpy().tolist()
-				self.loss_critic = loss_critic.cpu().detach().numpy().tolist()
+				self.loss_actor_exo = loss_actor.cpu().detach().numpy().tolist()
+				self.loss_critic_exo = loss_critic.cpu().detach().numpy().tolist()
 				
 				loss = loss_actor + loss_entropy + loss_critic
 
@@ -510,7 +513,7 @@ class PPO(object):
 					if param.grad is not None:  
 						param.grad.data.clamp_(-0.5,0.5)  
 				self.optimizer_exo.step()   
-			print('Optimizing sim nn : {}/{}'.format(j+1,self.num_epochs),end='\r')
+			print('Optimizing sim nn : {}/{}'.format(j+1,self.num_epochs),end='\r')  
 		print('')  
 
 	def generate_shuffle_indices(self, batch_size, minibatch_size):
@@ -590,9 +593,9 @@ class PPO(object):
 			self.max_return_human_epoch = self.num_evaluation
 
 		print('# {} === {}h:{}m:{}s ==='.format(self.num_evaluation,h,m,s))
-		print('||Loss Actor               : {:.4f}'.format(self.loss_actor))
-		print('||Loss Critic              : {:.4f}'.format(self.loss_critic))
-		print('||Loss Muscle              : {:.4f}'.format(self.loss_muscle))
+		# print('||Loss Actor               : {:.4f}'.format(self.loss_actor))
+		# print('||Loss Critic              : {:.4f}'.format(self.loss_critic))
+		# print('||Loss Muscle              : {:.4f}'.format(self.loss_muscle))
 		print('||Noise                    : {:.3f}'.format(self.human_model.log_std.exp().mean()))		
 		print('||Num Transition So far    : {}'.format(self.num_tuple_so_far))
 		print('||Num Transition           : {}'.format(self.num_tuple))
@@ -610,6 +613,10 @@ class PPO(object):
 		
 		print('=============================================')   
 		wandb.log({ 
+            "Loss actor human": self.loss_actor_human, 
+            "Loss critic human": self.loss_critic_human,  
+            "Loss actor exo": self.loss_actor_exo, 
+            "Loss critic exo": self.loss_critic_exo,  
 			"Loss Muscle": self.loss_muscle,
 			"Num Transition So far": self.num_tuple_so_far,
 			"Num Transition": self.num_tuple,
@@ -670,7 +677,7 @@ if __name__=="__main__":
 	parser.add_argument('-wn', '--wandb_name', default='Test', help='wandb run name')
 	parser.add_argument('-ws', '--wandb_notes', default='', help='wandb notes')   
  
-	parser.add_argument('--maxiterations',type=int, default=50000, help='meta file')    
+	parser.add_argument('--max_iterations',type=int, default=50000, help='meta file')    
  
 	args =parser.parse_args()
 	if args.meta is None:

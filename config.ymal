@@ -1,3 +1,6 @@
 num_env: 16
 learning_rate: 0.0001 
 max_iterations: 100000
+batch_size 128 
+muscle_batch_size 128 
+num_epochs 10 

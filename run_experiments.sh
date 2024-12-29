@@ -1,2 +1,2 @@
-python3 main.py -d ../data/metadata_mass_wm.txt -a tmech -t wm -wp tmech -wn tmech-with-muscle -sp nn
-python3 main.py -d ../data/metadata_mass_wo.txt -a tmech -t wo -wp tmech -wn tmech-without-muscle -sp nn 
+python3 main.py -d ../data/metadata_mass_wm.txt -a tmech -t wm -wp tmech -wn tmech-with-muscle -sp nn_tmech_wm
+python3 main.py -d ../data/metadata_mass_wo.txt -a tmech -t wo -wp tmech -wn tmech-without-muscle -sp nn_tmech_wo 

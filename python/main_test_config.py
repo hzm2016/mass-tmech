@@ -13,4 +13,4 @@ with open("../config.yaml", "r") as f:
 
 # 合并配置（文件配置优先）
 config = {**default_config, **file_config}
-print(config) 
+print(config['max_iteration']) 

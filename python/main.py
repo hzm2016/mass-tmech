@@ -62,11 +62,12 @@ class ReplayBuffer(object):
 	def Clear(self):
 		self.buffer.clear()
 class PPO(object):
-	def __init__(self,meta_file):
+	def __init__(self,meta_file,save_path='nn',num_slaves=16,num_epochs=10):
 		np.random.seed(seed = int(time.time()))
 		self.num_slaves = 16
 		self.env = pymss.pymss(meta_file,self.num_slaves)  
-  
+
+		self.save_path = save_path  
 		self.only_human = 0    
 
 		self.use_muscle = self.env.UseMuscle()    
@@ -194,19 +195,19 @@ class PPO(object):
 			filtered_action_human.append(self._action_filter_human[i].filter(action[i]))
 		return np.vstack(filtered_action_human)  
 
-	def SaveModel(self,model_path):      
-		self.exo_model.save('../'+model_path+'/current_exo.pt')  
-		self.human_model.save('../'+model_path+'/current_human.pt')   
-		self.muscle_model.save('../'+model_path+'/current_muscle.pt')    
+	def SaveModel(self,):      
+		self.exo_model.save('../'+self.save_path+'/current_exo.pt')  
+		self.human_model.save('../'+self.save_path+'/current_human.pt')   
+		self.muscle_model.save('../'+self.save_path+'/current_muscle.pt')    
 
 		if self.max_return_human_epoch == self.num_evaluation:
-			self.exo_model.save('../'+model_path+'/max_exo.pt')
-			self.human_model.save('../'+model_path+'/max_human.pt')  
-			self.muscle_model.save('../'+model_path+'/max_muscle.pt')  
+			self.exo_model.save('../'+self.save_path+'/max_exo.pt')
+			self.human_model.save('../'+self.save_path+'/max_human.pt')  
+			self.muscle_model.save('../'+self.save_path+'/max_muscle.pt')  
 		if self.num_evaluation%100 == 0:
-			self.exo_model.save('../'+model_path+'/'+str(self.num_evaluation//100)+'_exo.pt')  
-			self.human_model.save('../'+model_path+'/'+str(self.num_evaluation//100)+'_human.pt')  
-			self.muscle_model.save('../'+model_path+'/'+str(self.num_evaluation//100)+'_muscle.pt')  
+			self.exo_model.save('../'+self.save_path+'/'+str(self.num_evaluation//100)+'_exo.pt')  
+			self.human_model.save('../'+self.save_path+'/'+str(self.num_evaluation//100)+'_human.pt')  
+			self.muscle_model.save('../'+self.save_path+'/'+str(self.num_evaluation//100)+'_muscle.pt')  
 
 	def LoadModel(self,model_path,model_name):   
 		self.exo_model.load('../'+model_path+'/'+model_name+'_exo.pt')  
@@ -575,7 +576,7 @@ class PPO(object):
 		self.GenerateTransitions()   
 		self.OptimizeModel()   
 
-	def Evaluate(self,model_path):  
+	def Evaluate(self,):   
 		self.num_evaluation = self.num_evaluation + 1
 		h = int((time.time() - self.tic)//3600.0)
 		m = int((time.time() - self.tic)//60.0)
@@ -610,7 +611,7 @@ class PPO(object):
 		self.rewards_exo.append(self.sum_return_exo/self.num_episode)  
 		self.rewards_human.append(self.sum_return_human/self.num_episode)  
 		
-		self.SaveModel(model_path)   
+		self.SaveModel()     
 		
 		print('=============================================')   
 		wandb.log({ 
@@ -634,8 +635,8 @@ class PPO(object):
   
 		return np.array(self.rewards_exo), np.array(self.rewards_human)  
 
-import matplotlib
-import matplotlib.pyplot as plt
+import matplotlib  
+import matplotlib.pyplot as plt   
 
 plt.ion()
 
@@ -665,13 +666,13 @@ import argparse
 import os
 if __name__=="__main__":  
 	parser = argparse.ArgumentParser()  
-	parser.add_argument('-m','--path',help='model path')
+	parser.add_argument('-lp','--load_path',default=None,help='load model path')
 	parser.add_argument('-n','--name',help='model name') 
-	parser.add_argument('-sp','--save_path',help='save path')
+	parser.add_argument('-sp','--save_path',default='nn',help='save model path')
 	parser.add_argument('-d','--meta',help='meta file')  
 	parser.add_argument('-a','--algorithm',help='mass nature tmech')   
 	parser.add_argument('-t','--type',help='wm: with muscle, wo: without muscle')   
-	parser.add_argument('-f','--flag',help='recognize the main features')     
+	parser.add_argument('-f','--flag',default='',help='recognize the main features')       
 
 	parser.add_argument('-wp', '--wandb_project', default='junxi_training', help='wandb project name')
 	parser.add_argument('-we', '--wandb_entity', default='markzhumi1805', help='wandb entity name')
@@ -680,7 +681,7 @@ if __name__=="__main__":
  
 	parser.add_argument('--max_iteration',type=int, default=50000, help='meta file')    
  
-	args =parser.parse_args()
+	args =parser.parse_args()  
 	if args.meta is None:
 		print('Provide meta file')
 		exit()
@@ -697,25 +698,27 @@ if __name__=="__main__":
 
 	with open("config.yaml", "r") as f:
 		file_config = yaml.safe_load(f)  
-	config = {**default_config, **file_config}
+	config = {**default_config, **file_config}  
 
 	wandb.init(
-		project=args.wandb_project,
+		project=args.wandb_project, 
 		name=args.wandb_name, 
 		config=config  
-    ) 
+    )    
  
-	ppo = PPO(args.meta)
-	nn_dir = '../nn'
-	if not os.path.exists(nn_dir):    
-		os.makedirs(nn_dir)    
+	args.max_iteration = config['max_iteration']
+	# save trained policy 
+	nn_dir = '../trained_policy/' + args.save_path + '/'    
+	if not os.path.exists(nn_dir):      
+		os.makedirs(nn_dir)      
+	ppo = PPO(args.meta, save_path=nn_dir)    
 	
-	if args.path is not None: 
-		# ppo.LoadModel(args.path, args.name)  
-		ppo.LoadHumanModel(args.path, args.name)   
-		ppo.LoadMuscleModel(args.path, args.name)   
+	if args.load_path is not None:  
+		# ppo.LoadModel(args.load_path, args.name)   
+		ppo.LoadHumanModel(args.load_path, args.name)   
+		ppo.LoadMuscleModel(args.load_path, args.name)   
 	else:
-		ppo.SaveModel(args.save_path)     
+		ppo.SaveModel()     
 
 	reward_dir = '../reward'   
 	if not os.path.exists(reward_dir):    
@@ -723,13 +726,13 @@ if __name__=="__main__":
 	
 	file_name_exo_reward_path = '../reward/episode_reward_' + args.algorithm + '_' + args.type + '_exo.npy' 
 	file_name_human_reward_path = '../reward/episode_reward_' + args.algorithm + '_' + args.type + '_human.npy'   
-	episode_reward = []  
-	print('num states: {}, num actions: {}'.format(ppo.env.GetNumState(),ppo.env.GetNumAction()))
-	for i in range(ppo.max_iteration-5):
-		ppo.Train()  
-		rewards_exo, rewards_human = ppo.Evaluate(args.save_path)      
-		Plot(rewards_exo,'reward_exo', 0, False)    
-		Plot(rewards_human,'reward_human', 0, False)    
+	episode_reward = []   
+	print('num states: {}, num actions: {}'.format(ppo.env.GetNumState(),ppo.env.GetNumAction()))  
+	for i in range(ppo.max_iteration-5):   
+		ppo.Train()    
+		rewards_exo, rewards_human = ppo.Evaluate(args.save_path)        
+		Plot(rewards_exo,'reward_exo', 0, False)     
+		Plot(rewards_human,'reward_human', 0, False)     
   
 		if i%100==0: 
 			np.save(file_name_exo_reward_path, rewards_exo)       

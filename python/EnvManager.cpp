@@ -52,8 +52,15 @@ int
 EnvManager::
 GetNumAction()
 {
-	return mEnvs[0]->GetNumAction(); 
+	return mEnvs[0]->GetNumAction();  
 }
+
+int
+EnvManager::
+GetNumExoAction()
+{
+	return mEnvs[0]->GetNumExoAction();    
+}  
 
 int
 EnvManager::
@@ -446,7 +453,8 @@ PYBIND11_MODULE(pymss, m)
 		.def("GetNumState",&EnvManager::GetNumState)
 		.def("GetNumHumanState",&EnvManager::GetNumHumanState)
 		.def("GetNumExoState",&EnvManager::GetNumExoState)
-		.def("GetNumAction",&EnvManager::GetNumAction)
+		.def("GetNumAction",&EnvManager::GetNumAction) 
+		.def("GetNumExoAction",&EnvManager::GetNumExoAction)
 		.def("GetSimulationHz",&EnvManager::GetSimulationHz)
 		.def("GetControlHz",&EnvManager::GetControlHz)
 		.def("GetNumSteps",&EnvManager::GetNumSteps)

@@ -89,11 +89,14 @@ public:
 	int GetControlHz(){return mControlHz;}
 	int GetSimulationHz(){return mSimulationHz;}
 	int GetNumTotalRelatedDofs(){return mCurrentMuscleTuple.JtA.rows();}
-	std::vector<MuscleTuple>& GetMuscleTuples(){return mMuscleTuples;};
-	int GetNumState(){return mNumState;}  
-	int GetNumExoState(){return mNumExoControlState;}  
-	int GetNumHumanState(){return mNumHumanState;}
-	int GetNumAction(){return mNumActiveDof;}
+	std::vector<MuscleTuple>& GetMuscleTuples(){return mMuscleTuples;};  
+
+	int GetNumState(){return mNumState;}   
+	int GetNumExoState(){return mNumExoControlState;}    
+	int GetNumHumanState(){return mNumHumanState;}  
+	int GetNumAction(){return mNumActiveDof;}   
+	int GetNumExoAction(){return mNumExoControlDof;}   
+
 	int GetNumSteps(){return mSimulationHz/mControlHz;}
 	
 	const Eigen::VectorXd& GetActivationLevels(){return mActivationLevels;}
@@ -169,7 +172,7 @@ private:
 	double mkp;  
 
 	double mkp_human,mkp_exo;  
-	  
+
 	double upper_bound_p;   
 	double lower_bound_p; 
 	double upper_bound_v;  

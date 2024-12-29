@@ -165,9 +165,9 @@ Initialize()
 	mAction = Eigen::VectorXd::Zero(mNumActiveDof); 
 
 	// human action 
-	mHumanAction = Eigen::VectorXd::Zero(mNumActiveDof);   
-	mCurrentHumanAction = Eigen::VectorXd::Zero(mNumActiveDof);  
-	mPrevHumanAction = Eigen::VectorXd::Zero(mNumActiveDof); 
+	mHumanAction = Eigen::VectorXd::Zero(mNumHumanActiveDof);   
+	mCurrentHumanAction = Eigen::VectorXd::Zero(mNumHumanActiveDof);    
+	mPrevHumanAction = Eigen::VectorXd::Zero(mNumHumanActiveDof);    
 
 	// exo action 
 	mNumExoControlDof = mNumExoActiveDof;  
@@ -181,23 +181,24 @@ Initialize()
 	// observation   
 	Reset(false);  
 
+	// original mass human states  
 	mNumState = GetState().rows();   
 
-	/// human states  
+	// human states  
 	mNumHumanState = GetHumanState().rows();    
 
-	/// exo states
-	// mNumExoState = GetExoControlState().rows();      
+	// exo states  
 	mNumExoState = GetExoTrueState().rows();    
 
+	// mNumExoState = GetExoControlState().rows();    
 	mNumExoControlState = 4 * 3;     
  
 	std::cout << "NumState: " << mNumState << std::endl; 
 	std::cout << "NumHumanState: " << mNumHumanState << std::endl;  
-	std::cout << "NumExoState: " << mNumExoControlState << std::endl;  
-	std::cout << "RootDof: " << mRootJointDof << std::endl;   
-	std::cout << "HumanDof: " << mCharacter->GetHumandof() << std::endl;   
-	std::cout << "NumBodyNodes: " << mCharacter->GetSkeleton()->getNumBodyNodes() << std::endl;   
+	std::cout << "NumExoState: " << mNumExoControlState << std::endl;    
+	std::cout << "RootDof: " << mRootJointDof << std::endl;    
+	std::cout << "HumanDof: " << mCharacter->GetHumandof() << std::endl;    
+	std::cout << "NumBodyNodes: " << mCharacter->GetSkeleton()->getNumBodyNodes() << std::endl;    
 }   
 
 void
@@ -228,7 +229,7 @@ Reset(bool RSI)
 	mPrevExoAction.setZero();     
 	
 	mDesiredExoTorque.setZero();  
-	mDesiredTorque.setZero();  
+	mDesiredTorque.setZero();   
 
 	std::pair<Eigen::VectorXd,Eigen::VectorXd> pv = mCharacter->GetTargetPosAndVel(t,1.0/mControlHz);
 	mTargetPositions = pv.first;   
@@ -528,8 +529,8 @@ GetHumanState()
 	v_cur_human = v_human/10.0;    
 	Eigen::VectorXd human_state(p_cur_human.rows()+v_cur_human.rows());
 	human_state << p_cur_human, v_cur_human;  
-	return human_state;  
-}
+	return human_state;   
+}   
 
 void 
 Environment::
@@ -703,14 +704,14 @@ UpdateStateBuffer()
 {
 	history_buffer_human_state.push_back(this->GetHumanState());        
 	history_buffer_exo_state.push_back(this->GetExoTrueState());         
-}
+}   
 
 void 
 Environment:: 
-UpdateExoActionBuffer(Eigen::VectorXd exoaction)  
+UpdateExoActionBuffer(Eigen::VectorXd exoaction)     
 {
 	history_buffer_exo_action.push_back(exoaction);   
-}
+}   
 
 void 
 Environment:: 
@@ -748,8 +749,8 @@ GetExoControlState()
 	// observation << states_v,actions_v;  
 
 	observation.resize(states_v.rows());     
-	observation << states_v;   
-    return observation;  
+	observation << states_v;    
+    return observation;   
 }
 
 Eigen::VectorXd 
@@ -811,7 +812,7 @@ ProcessAction(int substep_count, int num)
     double lerp = double(substep_count + 1) / num;     //substep_count: the step count should be between [0, num_action_repeat).
     mExoAction = mPrevExoAction + lerp * (mCurrentExoAction - mPrevExoAction);
 	mHumanAction = mPrevHumanAction + lerp * (mCurrentHumanAction - mPrevHumanAction);
-}
+}  
 
 double 
 Environment::  

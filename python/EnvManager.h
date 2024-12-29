@@ -20,8 +20,10 @@ public:
 	int GetNumAction();
 	int GetSimulationHz();
 	int GetControlHz();
-	int GetNumSteps();
-	bool UseMuscle();
+	int GetNumSteps();  
+
+	int GetNumExoAction();
+	bool UseMuscle();  
 
 	void Step(int id);
 	void Reset(bool RSI,int id);

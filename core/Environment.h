@@ -94,7 +94,7 @@ public:
 	int GetNumState(){return mNumState;}   
 	int GetNumExoState(){return mNumExoControlState;}    
 	int GetNumHumanState(){return mNumHumanState;}  
-	int GetNumAction(){return mNumActiveDof;}   
+	int GetNumHumanAction(){return mNumActiveDof;}   
 	int GetNumExoAction(){return mNumExoControlDof;}   
 
 	int GetNumSteps(){return mSimulationHz/mControlHz;}

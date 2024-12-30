@@ -50,14 +50,14 @@ GetNumHumanState()
 
 int
 EnvManager::
-GetNumAction()
+GetNumHumanAction()
 {
-	return mEnvs[0]->GetNumAction();  
+	return mEnvs[0]->GetNumHumanAction();  
 }
 
 int
 EnvManager::
-GetNumExoAction()
+GetNumExoAction()  
 {
 	return mEnvs[0]->GetNumExoAction();    
 }  
@@ -213,7 +213,7 @@ SetHumanActions(const Eigen::MatrixXd& actions)
 {
 	for (int id = 0;id<mNumEnvs;++id)
 	{
-		mEnvs[id]->SetAction(actions.row(id).transpose());
+		mEnvs[id]->SetHumanAction(actions.row(id).transpose());  
 	}
 }
 
@@ -223,8 +223,8 @@ SetExoHumanActions(const Eigen::MatrixXd& exoactions, const Eigen::MatrixXd& hum
 {
 	for (int id = 0;id<mNumEnvs;++id) 
 	{
-		mEnvs[id]->SetExoAction(exoactions.row(id).transpose());  
-		mEnvs[id]->SetHumanAction(humanactions.row(id).transpose());     
+		mEnvs[id]->SetExoAction(exoactions.row(id).transpose());    
+		mEnvs[id]->SetHumanAction(humanactions.row(id).transpose());       
 	}
 }   
 
@@ -453,7 +453,7 @@ PYBIND11_MODULE(pymss, m)
 		.def("GetNumState",&EnvManager::GetNumState)
 		.def("GetNumHumanState",&EnvManager::GetNumHumanState)
 		.def("GetNumExoState",&EnvManager::GetNumExoState)
-		.def("GetNumAction",&EnvManager::GetNumAction) 
+		.def("GetNumHumanAction",&EnvManager::GetNumHumanAction) 
 		.def("GetNumExoAction",&EnvManager::GetNumExoAction)
 		.def("GetSimulationHz",&EnvManager::GetSimulationHz)
 		.def("GetControlHz",&EnvManager::GetControlHz)

@@ -617,7 +617,7 @@ SetExoAction(const Eigen::VectorXd& a)
 	mPrevExoAction = mCurrentExoAction;    
 	mCurrentExoAction = a*1;  
 	double t = mWorld->getTime();  
-}
+}   
 
 double
 Environment::

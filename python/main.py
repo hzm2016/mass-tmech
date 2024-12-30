@@ -7,8 +7,8 @@ from datetime import datetime
 
 import collections
 from collections import namedtuple
-from collections import deque
-from itertools import count
+from collections import deque  
+from itertools import count  
 
 import torch
 import torch.nn as nn
@@ -18,7 +18,10 @@ import torchvision.transforms as T
 
 import numpy as np
 import pymss
-from Model import *
+from Model import *  
+import wandb  
+import yaml  
+
 use_cuda = torch.cuda.is_available()
 print("use_cuda :", use_cuda)  
 
@@ -27,10 +30,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 FloatTensor = torch.cuda.FloatTensor if use_cuda else torch.FloatTensor
 LongTensor = torch.cuda.LongTensor if use_cuda else torch.LongTensor
 ByteTensor = torch.cuda.ByteTensor if use_cuda else torch.ByteTensor
-Tensor = FloatTensor
-
-import wandb  
-import yaml  
+Tensor = FloatTensor  
 
 Episode = namedtuple('Episode',('s_e', 'a_e', 'r_e', 'value_e', 'logprob_e', 's_h', 'a_h', 'r_h', 'value_h', 'logprob_h')) 
 class EpisodeBuffer(object):
@@ -80,18 +80,18 @@ class PPO(object):
 		if self.only_human: 
 			self.num_human_state = self.env.GetNumState()    
 			self.num_exo_state = self.num_human_state  
-		else: 
-			self.num_exo_state = self.env.GetNumExoState()  
-			self.num_human_state = self.env.GetNumHumanState()  
+		else:  
+			self.num_human_state = self.env.GetNumHumanState()     
+			self.num_exo_state = self.env.GetNumExoState()    
 
-		self.num_human_action = self.env.GetNumAction()    
-		self.num_exo_action = 2   
+		self.num_human_action = self.env.GetNumHumanAction()     
+		self.num_exo_action = self.env.GetNumExoAction()    
 		
 		self.num_epochs = 10   
-		self.num_epochs_muscle = 3  
-		self.num_evaluation = 0
-		self.num_tuple_so_far = 0
-		self.num_episode = 0
+		self.num_epochs_muscle = 3   
+		self.num_evaluation = 0   
+		self.num_tuple_so_far = 0   
+		self.num_episode = 0   
 		self.num_tuple = 0
 		self.num_simulation_Hz = self.env.GetSimulationHz()
 		self.num_control_Hz = self.env.GetControlHz()
@@ -102,26 +102,25 @@ class PPO(object):
 
 		self.buffer_size = 2048  
 		self.batch_size = 128
-		self.muscle_batch_size = 128
+		self.muscle_batch_size = 128  
+
+		self.learning_rate = 1E-4    
+		self.clip_ratio =0.2    
 
 		self.human_replay_buffer = ReplayBuffer(30000)    
 		self.exo_replay_buffer = ReplayBuffer(30000)    
 		self.replay_buffer = ReplayBuffer(30000)
-		self.muscle_buffer = {}
+		self.muscle_buffer = {}  
 
 		# create models  
 		self.exo_model = SimulationExoNN(self.num_exo_state,self.num_exo_action)  
 		self.human_model = SimulationHumanNN(self.num_human_state,self.num_human_action) 
-		self.muscle_model = MuscleNN(self.env.GetNumTotalMuscleRelatedDofs(),self.num_human_action,self.num_muscles)
+		self.muscle_model = MuscleNN(self.env.GetNumTotalMuscleRelatedDofs(),self.num_human_action,self.num_muscles)  
+
 		if use_cuda:
 			self.exo_model.cuda()  
 			self.human_model.cuda()   
 			self.muscle_model.cuda()   
-
-		self.default_learning_rate = 1E-4
-		self.default_clip_ratio = 0.2
-		self.learning_rate = self.default_learning_rate
-		self.clip_ratio = self.default_clip_ratio
   
 		# optimizer 
 		self.optimizer_exo = optim.Adam(self.exo_model.parameters(),lr=self.learning_rate)
@@ -137,19 +136,18 @@ class PPO(object):
 		self.loss_critic_exo = 0.0  
 		self.loss_muscle = 0.0
   
-		self.rewards = []  
 		self.rewards_exo = []   
 		self.rewards_human = []    
-		self.max_return_human = -1.0  
-		self.max_return_human_epoch = 1   
+		self.max_return_human = -1.0     
+		self.max_return_human_epoch = 1      
   
 		self.max_return_exo = -1.0  
 		self.max_return_exo_epoch = 1     
-		self.tic = time.time()
+		self.tic = time.time()  
 
 		self.episodes = [None]*self.num_slaves
-		for j in range(self.num_slaves):
-			self.episodes[j] = EpisodeBuffer()   
+		for j in range(self.num_slaves):   
+			self.episodes[j] = EpisodeBuffer()     
    
 		self._action_filter_exo = [self._BuildExoActionFilter() for _i in range(self.num_slaves)]  
 		self._action_filter_human = [self._BuildHumanActionFilter() for _i in range(self.num_slaves)]   
@@ -200,7 +198,7 @@ class PPO(object):
 			filtered_action_human.append(self._action_filter_human[i].filter(action[i]))
 		return np.vstack(filtered_action_human)  
 
-	def SaveModel(self,):      
+	def SaveModel(self,):       
 		self.exo_model.save(self.save_path+'current_exo.pt')  
 		self.human_model.save(self.save_path+'current_human.pt')   
 		self.muscle_model.save(self.save_path+'current_muscle.pt')    
@@ -228,15 +226,15 @@ class PPO(object):
 	def LoadMuscleModel(self,model_path,model_name):   
 		self.muscle_model.load('../'+model_path+'/'+model_name+'_muscle.pt')    
 
-	def ComputeTDandGAE(self):
-		self.exo_replay_buffer.Clear()   
-		self.human_replay_buffer.Clear()   
-		self.muscle_buffer = {}    
+	def ComputeTDandGAE(self):  
+		self.exo_replay_buffer.Clear()    
+		self.human_replay_buffer.Clear()    
+		self.muscle_buffer = {}     
 
 		self.sum_return_exo = 0.0
 		self.sum_return_human = 0.0    
 		for epi in self.total_episodes:  
-			data = epi.GetData()  
+			data = epi.GetData()   
 			size = len(data)  
 			if size == 0:
 				continue
@@ -299,12 +297,12 @@ class PPO(object):
 			states = self.env.GetStates()   
 			states_exo = states     
 			states_human = states    
-			print("states :", states.shape)  
+			print("states :", states.shape)    
 		else: 
-			states_exo = [None]*self.num_slaves 
+			states_exo = [None]*self.num_slaves  
 			states_human = [None]*self.num_slaves   
 			states_exo = self.env.GetExoStates()   
-			states_human = self.env.GetHumanStates()     
+			states_human = self.env.GetHumanStates()      
 			print("states exo :", states_exo.shape)      
 			print("states human :", states_human.shape)        
 		
@@ -317,18 +315,18 @@ class PPO(object):
 		rewards_human = [None]*self.num_slaves    
   
 		local_step = 0  
-		terminated = [False]*self.num_slaves
+		terminated = [False]*self.num_slaves  
 
 		counter = 0  
 		counter_list = [0]*self.num_slaves   
 		while True:
 			counter += 1
 			if counter%10 == 0:
-				print('SIM : {}'.format(local_step),end='\r') 
+				print('SIM : {}'.format(local_step),end='\r')   
 
 			if self.only_human:   
-				# human action 
-				a_dist_human,v_human = self.human_model(Tensor(states_human))
+				# human action   
+				a_dist_human,v_human = self.human_model(Tensor(states_human))  
 				actions_human = a_dist_human.sample().cpu().detach().numpy()    
 				logprobs_human = a_dist_human.log_prob(Tensor(actions_human)).cpu().detach().numpy().reshape(-1)
 				values_human = v_human.cpu().detach().numpy().reshape(-1)   
@@ -337,8 +335,8 @@ class PPO(object):
 				self.env.SetHumanActions(actions_human)     
 				self.env.UpdateHumanActionBuffers(actions_human)     
 			else:  
-				# human action 
-				a_dist_human,v_human = self.human_model(Tensor(states_human))
+				# human action   
+				a_dist_human,v_human = self.human_model(Tensor(states_human)) 
 				actions_human = a_dist_human.sample().cpu().detach().numpy()    
 				logprobs_human = a_dist_human.log_prob(Tensor(actions_human)).cpu().detach().numpy().reshape(-1)
 				values_human = v_human.cpu().detach().numpy().reshape(-1)   
@@ -362,7 +360,7 @@ class PPO(object):
 				for i in range(self.num_simulation_per_control//2):    
 					dt = Tensor(self.env.GetDesiredTorques())    
 					activations = self.muscle_model(mt,dt).cpu().detach().numpy()    
-					self.env.SetActivationLevels(activations)    
+					self.env.SetActivationLevels(activations)     
 					self.env.Steps(2, i*2)    
 			else:
 				self.env.StepsAtOnce()       # move 20 steps 
@@ -377,9 +375,9 @@ class PPO(object):
 				nan_occur = False    
 				terminated_state = True    
 				
-				if self.only_human: 
+				if self.only_human:  
 					if np.any(np.isnan(states_human[j])) or np.any(np.isnan(actions_human[j])) or np.any(np.isnan(values_human[j])) or np.any(np.isnan(logprobs_human[j])):    
-						nan_occur = True
+						nan_occur = True  
 					
 					elif self.env.IsEndOfEpisode(j) is False:
 						terminated_state = False 
@@ -452,6 +450,7 @@ class PPO(object):
 				stack_gae = np.vstack(batch.GAE).astype(np.float32)
 				
 				a_dist,v = self.human_model(Tensor(stack_s))
+    
 				'''Critic Loss'''
 				loss_critic = ((v-Tensor(stack_td)).pow(2)).mean()
 				
@@ -570,16 +569,16 @@ class PPO(object):
 		self.loss_muscle = loss.cpu().detach().numpy().tolist()
 		print('')  
   
-	def OptimizeModel(self):
-		self.ComputeTDandGAE()  
-		self.OptimizeSimulationHumanNN()   
-		self.OptimizeSimulationExoNN()  
-		if self.use_muscle:  
-			self.OptimizeMuscleNN()   
+	def OptimizeModel(self):  
+		self.ComputeTDandGAE()    
+		self.OptimizeSimulationHumanNN()     
+		self.OptimizeSimulationExoNN()   
+		if self.use_muscle:    
+			self.OptimizeMuscleNN()      
 		
-	def Train(self):   
+	def Train(self):    
 		self.GenerateTransitions()   
-		self.OptimizeModel()   
+		self.OptimizeModel()    
 
 	def Evaluate(self,):   
 		self.num_evaluation = self.num_evaluation + 1
@@ -626,8 +625,8 @@ class PPO(object):
             "Loss critic exo": self.loss_critic_exo,  
 			"Loss Muscle": self.loss_muscle,
 			"Num Transition So far": self.num_tuple_so_far,
-			"Num Transition": self.num_tuple,
-			"Num Episode": self.num_episode,
+			"Num Transition": self.num_tuple,  
+			"Num Episode": self.num_episode, 
 			"Avg Human Return per episode": self.sum_return_human/self.num_episode,
 			"Avg Human Reward per transition": self.sum_return_human/self.num_tuple,  
 			"Avg Exo Return per episode": self.sum_return_exo/self.num_episode,
@@ -686,7 +685,8 @@ if __name__=="__main__":
  
 	parser.add_argument('--max_iteration',type=int, default=50000, help='meta file')    
  
-	args =parser.parse_args()  
+	args =parser.parse_args()    
+ 
 	if args.meta is None:
 		print('Provide meta file')
 		exit()
@@ -711,12 +711,13 @@ if __name__=="__main__":
 		config=config  
     )    
  
-	args.max_iteration = config['max_iteration']
+	args.max_iteration = config['max_iteration']  
+ 
 	# save trained policy 
 	nn_dir = '../trained_policy/' + args.save_path + '/'
-	if not os.path.exists(nn_dir):      
+	if not os.path.exists(nn_dir):       
 		os.makedirs(nn_dir)      
-	ppo = PPO(args.meta, save_path=nn_dir)    
+	ppo = PPO(args.meta, save_path=nn_dir)     
 	
 	if args.load_path is not None:  
 		# ppo.LoadModel(args.load_path, args.name)   
@@ -732,12 +733,12 @@ if __name__=="__main__":
 	file_name_exo_reward_path = '../reward/episode_reward_' + args.algorithm + '_' + args.type + '_exo.npy' 
 	file_name_human_reward_path = '../reward/episode_reward_' + args.algorithm + '_' + args.type + '_human.npy'   
 	episode_reward = []   
-	print('num states: {}, num actions: {}'.format(ppo.env.GetNumState(),ppo.env.GetNumAction()))  
+	print('num states: {}, num actions: {}'.format(ppo.env.GetNumState(),ppo.env.GetNumHumanAction()))  
 	for i in range(ppo.max_iteration-5):   
 		ppo.Train()    
 		rewards_exo, rewards_human = ppo.Evaluate()         
 		Plot(rewards_exo,'reward_exo', 0, False)     
-		Plot(rewards_human,'reward_human', 0, False)     
+		Plot(rewards_human,'reward_human', 0, False)       
   
 		if i%100==0: 
 			np.save(file_name_exo_reward_path, rewards_exo)       

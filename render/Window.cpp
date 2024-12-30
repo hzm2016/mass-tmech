@@ -23,9 +23,9 @@ Window(Environment* env)
 	mFocus = false;
 	mNNLoaded = false;
 
-	mm = py::module::import("__main__");
-	mns = mm.attr("__dict__");
-	sys_module = py::module::import("sys");
+	mm = py::module::import("__main__");  
+	mns = mm.attr("__dict__");  
+	sys_module = py::module::import("sys");  
 	
 	py::str module_dir = (std::string(MASS_ROOT_DIR)+"/python").c_str();
 	sys_module.attr("path").attr("insert")(1, module_dir);
@@ -45,7 +45,7 @@ Window(Environment* env,const std::string& nn_path)
 
 	py::str str = ("num_state = "+std::to_string(mEnv->GetNumState())).c_str();
 	py::exec(str,mns);
-	str = ("num_action = "+std::to_string(mEnv->GetNumAction())).c_str();
+	str = ("num_action = "+std::to_string(mEnv->GetNumHumanAction())).c_str();
 	py::exec(str,mns);
 
 	nn_module = py::eval("SimulationNN(num_state,num_action)",mns);
@@ -61,7 +61,7 @@ Window(Environment* env,const std::string& nn_path,const std::string& muscle_nn_
 
 	py::str str = ("num_total_muscle_related_dofs = "+std::to_string(mEnv->GetNumTotalRelatedDofs())).c_str();
 	py::exec(str,mns);
-	str = ("num_actions = "+std::to_string(mEnv->GetNumAction())).c_str();
+	str = ("num_actions = "+std::to_string(mEnv->GetNumHumanAction())).c_str();
 	py::exec(str,mns);
 	str = ("num_muscles = "+std::to_string(mEnv->GetCharacter()->GetMuscles().size())).c_str();
 	py::exec(str,mns);
@@ -135,7 +135,7 @@ Step()
 	if(mNNLoaded)
 		action = GetActionFromNN();
 	else
-		action = Eigen::VectorXd::Zero(mEnv->GetNumAction());
+		action = Eigen::VectorXd::Zero(mEnv->GetNumHumanAction());
 	mEnv->SetAction(action);
 
 	if(mEnv->GetUseMuscle())

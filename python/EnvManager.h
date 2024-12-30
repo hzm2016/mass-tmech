@@ -16,14 +16,14 @@ class EnvManager
 public:
 	EnvManager(std::string meta_file,int num_envs);
 
-	int GetNumState();
-	int GetNumAction();
+	int GetNumState();  
 	int GetSimulationHz();
 	int GetControlHz();
-	int GetNumSteps();  
+	int GetNumSteps();    
 
-	int GetNumExoAction();
-	bool UseMuscle();  
+	int GetNumHumanAction();    
+	int GetNumExoAction();   
+	bool UseMuscle();   
 
 	void Step(int id);
 	void Reset(bool RSI,int id);

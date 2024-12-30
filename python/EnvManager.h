@@ -77,7 +77,8 @@ public:
 	const Eigen::MatrixXd& GetMuscleTuplesJtA();
 	const Eigen::MatrixXd& GetMuscleTuplesTauDes();
 	const Eigen::MatrixXd& GetMuscleTuplesL();
-	const Eigen::MatrixXd& GetMuscleTuplesb();
+	const Eigen::MatrixXd& GetMuscleTuplesb();  
+
 private:
 	std::vector<MASS::Environment*> mEnvs;
 

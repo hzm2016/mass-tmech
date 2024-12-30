@@ -6,3 +6,6 @@
 {"time":"2024-12-29T10:50:05.564918319-05:00","level":"INFO","msg":"writer: Do: started","stream_id":"j58n1i4g"}
 {"time":"2024-12-29T10:50:05.56495786-05:00","level":"INFO","msg":"sender: started","stream_id":"j58n1i4g"}
 {"time":"2024-12-29T10:50:06.089078091-05:00","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-29T15:10:01.110970151-05:00","level":"INFO","msg":"stream: closing","id":"j58n1i4g"}
+{"time":"2024-12-29T15:10:01.111000101-05:00","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-29T15:10:01.111595989-05:00","level":"INFO","msg":"Stopped system monitor"}

@@ -327,7 +327,7 @@ GetDesiredTorques()
 	Eigen::VectorXd p_des = mTargetPositions;   
 	p_des.tail(mNumHumanActiveDof) += mHumanAction;    
 
-	mDesiredTorque = mCharacter->GetSPDForces(p_des);     
+	mDesiredTorque = mCharacter->GetSPDForces(p_des);      
 	return mDesiredTorque.tail(mNumHumanActiveDof);    
 }   
 
@@ -536,34 +536,37 @@ void
 Environment::
 SetHumanAction(const Eigen::VectorXd& a)
 {
+	// ?  
 	mPrevHumanAction = mCurrentHumanAction;   
-	mCurrentHumanAction = a*0.1; 
+	mCurrentHumanAction = a*0.1;  
+	
+	mHumanAction = a*0.1;    
 
 	double t = mWorld->getTime();   
 
 	std::pair<Eigen::VectorXd,Eigen::VectorXd> pv = mCharacter->GetTargetPosAndVel(t,1.0/mControlHz);  
 	mTargetPositions = pv.first;  
-	mTargetVelocities = pv.second;   
+	mTargetVelocities = pv.second;    
 
-	mSimCount = 0;
+	mSimCount = 0;  
 	mRandomSampleIndex = rand()%(mSimulationHz/mControlHz);
 	mAverageActivationLevels.setZero();  
 }
 
 double 
 Environment::
-GetHumanReward() 
+GetHumanReward()   
 {
 	auto& skel = mCharacter->GetSkeleton();
 
 	Eigen::VectorXd cur_pos = skel->getPositions();
 	Eigen::VectorXd cur_vel = skel->getVelocities();
 
-	Eigen::VectorXd p_diff_all = skel->getPositionDifferences(mTargetPositions,cur_pos);
-	Eigen::VectorXd v_diff_all = skel->getPositionDifferences(mTargetVelocities,cur_vel);
+	Eigen::VectorXd p_diff_all = skel->getPositionDifferences(mTargetPositions,cur_pos);   
+	Eigen::VectorXd v_diff_all = skel->getPositionDifferences(mTargetVelocities,cur_vel);   
 
 	Eigen::VectorXd p_diff = Eigen::VectorXd::Zero(skel->getNumDofs());
-	Eigen::VectorXd v_diff = Eigen::VectorXd::Zero(skel->getNumDofs());
+	Eigen::VectorXd v_diff = Eigen::VectorXd::Zero(skel->getNumDofs());  
 
 	const auto& bvh_map = mCharacter->GetBVH()->GetBVHMap();  
 
@@ -577,7 +580,7 @@ GetHumanReward()
 			p_diff[idx] = p_diff_all[idx];
 		else if(joint->getType()=="BallJoint")
 			p_diff.segment<3>(idx) = p_diff_all.segment<3>(idx);
-	}
+	}   
 
 	auto ees = mCharacter->GetEndEffectors();
 	Eigen::VectorXd ee_diff(ees.size()*3);
@@ -615,8 +618,8 @@ Environment::
 SetExoAction(const Eigen::VectorXd& a)      
 {
 	mPrevExoAction = mCurrentExoAction;    
-	mCurrentExoAction = a*1;  
-	double t = mWorld->getTime();  
+	mCurrentExoAction = a*1;     
+	double t = mWorld->getTime();        
 }   
 
 double
@@ -631,7 +634,7 @@ GetExoReward()
  	Eigen::VectorXd torque_exo = GetDesiredExoTorques();    
     double r_torque_exo = exp_of_squared(mDesiredExoTorque, 0.01);      
 
-	r_torque_exo = 0.001; 
+	// r_torque_exo = 0.001;  
 
 	double r_human = GetHumanReward();     
 
@@ -644,16 +647,16 @@ GetExoReward()
 		std::cout << "r_torque_smooth  "<< r_torque_smooth << " r_torque " << r_torque_exo << "r_muscle :" << r_muscle << "r_human" << r_human << std::endl;
 	}   
 
-	r = 0.1;  
-	return r; 
+	r = r_human;    
+	return r;   
 }  
 
 Eigen::VectorXd  
 Environment::  
 GetExoState() 
 {  
-	double dt = 1.0/mControlHz; 
-	Eigen::VectorXd observation;   
+	double dt = 1.0/mControlHz;  
+	Eigen::VectorXd observation;    
 	if((randomized_latency <= 0) || (history_buffer_exo_state.size() == 1)){
     	observation = history_buffer_exo_state.get(HISTORY_BUFFER_LEN-1);
 	}
@@ -809,9 +812,9 @@ void
 Environment::  
 ProcessAction(int substep_count, int num)
 {
-    double lerp = double(substep_count + 1) / num;     //substep_count: the step count should be between [0, num_action_repeat).
-    mExoAction = mPrevExoAction + lerp * (mCurrentExoAction - mPrevExoAction);
-	mHumanAction = mPrevHumanAction + lerp * (mCurrentHumanAction - mPrevHumanAction);
+    double lerp = double(substep_count + 1) / num;       //substep_count: the step count should be between [0, num_action_repeat).
+    mExoAction = mPrevExoAction + lerp * (mCurrentExoAction - mPrevExoAction);  
+	// mHumanAction = mPrevHumanAction + lerp * (mCurrentHumanAction - mPrevHumanAction);   
 }  
 
 double 

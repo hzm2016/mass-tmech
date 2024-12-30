@@ -122,10 +122,10 @@ GetSPDForces(const Eigen::VectorXd& p_desired)
 	Eigen::VectorXd qdqdt = q + dq*dt;
 
 	Eigen::VectorXd p_diff = -mKp.cwiseProduct(mSkeleton->getPositionDifferences(qdqdt,p_desired));
-	Eigen::VectorXd v_diff = -mKv.cwiseProduct(dq);
+	Eigen::VectorXd v_diff = -mKv.cwiseProduct(dq);  
 	Eigen::VectorXd ddq = M_inv*(-mSkeleton->getCoriolisAndGravityForces()+p_diff+v_diff+mSkeleton->getConstraintForces());
 
-	Eigen::VectorXd tau = p_diff + v_diff - dt*mKv.cwiseProduct(ddq);
+	Eigen::VectorXd tau = p_diff + v_diff - dt*mKv.cwiseProduct(ddq); 
 
 	tau.head<6>().setZero();
 
